@@ -4,7 +4,7 @@ require_version('Gdk', '3.0')
 from wikidata import Wikidata
 from gi.repository.Gdk import Color, Screen
 from gi.repository.Gio import ThemedIcon
-from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, PolicyType, PopoverMenu, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StateFlags, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
+from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StateFlags, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from gi.repository.GLib import unix_signal_add, PRIORITY_DEFAULT
 from signal import SIGINT
 
@@ -45,118 +45,182 @@ row {
     style_provider.load_from_data(css)
     StyleContext.add_provider_for_screen(Screen.get_default(), style_provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-class MainWindow(Window):
+class WelcomeWindow(Window):
 
     def __init__(self, wikidata):
-
-        # Wikidata library init
-        self.wikidata = wikidata
-
         # Window properties
-        Window.__init__(self, title="Cool application")
+        Window.__init__(self, title="Daty")
         self.set_border_width(0)
         self.set_default_size(850, 450)
         self.set_position(WindowPosition(1))
-        self.set_title ("Cool application")
+        self.set_title ("Daty")
         #self.set_icon_from_file('icon.png')
         self.connect('destroy', main_quit)
         unix_signal_add(PRIORITY_DEFAULT, SIGINT, main_quit)
 
+        # Title
+        label = Label(label="<b>Daty</b>")
+        label.set_use_markup(True)
+
+        # Title revealer 
+        title_revealer = Revealer()
+        title_revealer.set_transition_type (RevealerTransitionType.CROSSFADE)
+        title_revealer.set_transition_duration(500)
+        title_revealer.add(label)
+        title_revealer.set_reveal_child(True)
+
         # Headerbar        
         hb = HeaderBar()
         hb.set_show_close_button(True)
-        hb.set_title("Cool Application")
+        hb.set_custom_title(title_revealer)
         self.set_titlebar(hb)
 
         # Headerbar: New items
 #        new_items = Button.new()
 #        new_items.set_label ("Aggiungi")
-#        new_items.connect ("clicked", self.on_new_items_clicked)
+#        new_items.connect ("clicked", self.on_constraint_search)
 #        hb.pack_end(new_items)
 
-        welcome_page = WelcomePage(parent)
-        self.add(
+        # Welcome page
+        self.search_visible = False
+        daty_description = """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva.
+<b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!"""
+        welcome_page = WelcomePage(icon_name="system-search-symbolic",
+                                   description=daty_description,
+                                   button_text="Cerca usando i vincoli",
+                                   button_callback=self.on_constraint_search,
+                                   callback_arguments=[wikidata],
+                                   parent=self)
 
-        # Placeholder image
-        icon = Image.new_from_icon_name('system-search-symbolic', size=IconSize.DIALOG)
-        icon.set_pixel_size(192)
-        icon.get_style_context().add_class("dim-label")
+        # Welcome revealer 
+        welcome_revealer = Revealer()
+        welcome_revealer.set_transition_type (RevealerTransitionType.CROSSFADE)
+        welcome_revealer.set_transition_duration(500)
+        welcome_revealer.add(welcome_page)
+        welcome_revealer.set_reveal_child(True)
+        self.add(welcome_revealer)
 
-        # Welcome description
-        label = Label(label="Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva. <b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!", halign=Align.BASELINE)
-        label.set_max_width_chars(60)
-        label.set_use_markup(True)
-        label.set_line_wrap(True)
+        # SparqlPage
+        sparql_page = SparqlPage(wikidata)
 
-        # Welcome text box
-        textbox = Box(orientation=Orientation(1))
-        textbox.pack_start(label, True, True, 0)
+        # Label search
+        #label_search = SearchByLabelPage(wikidata)
 
-        # Welcome button
-        button = Button.new_with_label("Cerca usando i vincoli")
-        button.get_style_context().add_class(STYLE_CLASS_SUGGESTED_ACTION)
-        button.connect ("clicked", self.on_new_items_clicked)
+        # On demand stack
+        stack = Stack()
+        stack.set_transition_type (StackTransitionType.SLIDE_LEFT_RIGHT)
+        stack.set_transition_duration (1000)
+        stack.add_titled(sparql_page, "Cerca per vincolo", "Cerca per vincolo")
 
-        # Welcome button box
+        # Stack revealer 
+        stack_revealer = Revealer()
+        stack_revealer.set_transition_type (RevealerTransitionType.CROSSFADE)
+        stack_revealer.set_transition_duration(500)
+        stack_revealer.set_reveal_child(False)
+        stack_revealer.add(stack)
 
-        button_box = Box(orientation=Orientation(0))
-        button_box.pack_start(button, True, False, 0)        
+        # Switcher
+        switcher = StackSwitcher()
+        switcher.set_stack(stack)
 
-        # Vertical Box
-        vbox = Box(orientation=Orientation(1))
-        vbox.pack_start(icon, False, True, 50)
-        vbox.pack_start(textbox, False, True, 0)
-        vbox.pack_start(button_box, False, False, 25)
-       
-        hbox = Box(orientation=Orientation(0))
-        hbox.pack_start(vbox, True, False, 0) 
-        self.add(hbox)
+        # Switcher revealer 
+        switcher_revealer = Revealer()
+        switcher_revealer.set_transition_type (RevealerTransitionType.CROSSFADE)
+        switcher_revealer.set_transition_duration(500)
+        switcher_revealer.set_reveal_child(False)
+        switcher_revealer.add(switcher)
 
-    def on_test(self, widget, event, searchbar):
-        #for arg in args:
-        #    print(args)
-        searchbar.handle_event(event)
 
-    def on_new_items_clicked(self, button):
-        add_items = AddItemsWindow(self.wikidata)
+#        self.connect("key_press_event", self.on_test, label_search.search_bar)
+#        stack.add_titled(label_search, "Per etichetta", "Per etichetta")
+
+        # Write to search
+        self.connect("key_press_event", self.on_key_press, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer)
+
+
+    def on_key_press(self, widget, event, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+        if self.search_visible:
+            if event.keyval == 65307:
+                self.deactivate_search(hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer)
+        if not self.search_visible:
+            if not event.keyval == 65307:
+                self.activate_search(hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer)
+
+    def activate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+        # Hide welcome and title
+        welcome_revealer.set_reveal_child(False)
+        self.remove(welcome_revealer)
+        title_revealer.set_reveal_child(False)
+
+        # Show switcher and stack
+        hb.set_custom_title(switcher_revealer)
+        switcher_revealer.set_reveal_child(True)
+        hb.show_all()
+        self.add(stack_revealer)
+        stack_revealer.set_reveal_child(True)
+
+        # Set search visible
+        self.search_visible = True 
+        self.show_all()
+
+    def deactivate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+        # Hide stack and switcher
+        stack_revealer.set_reveal_child(False)
+        self.remove(stack_revealer)
+        switcher_revealer.set_reveal_child(False)
+
+        # Show title and welcome
+        hb.set_custom_title(title_revealer)
+        title_revealer.set_reveal_child(True)
+        hb.show_all()
+        self.add(welcome_revealer)
+        welcome_revealer.set_reveal_child(True)
+
+        # Set search not visible
+        self.search_visible = False
+        self.show_all()
+
+    def on_constraint_search(self, button, wikidata):
+        add_items = AddItemsWindow(wikidata)
         add_items.show_all() 
 
 class WelcomePage(HBox):
-def __init__(self, parent):
+    def __init__(self, icon_name='system-search-symbolic', description="Sample description", button_text="Sample button", button_callback=None, callback_arguments=[], parent=None):
         HBox.__init__(self)
 
+        #Vertical Box
+        vbox = VBox()
+        self.pack_start(vbox, expand=True, fill=False, padding=0)
+
         # Placeholder image
-        icon = Image.new_from_icon_name('system-search-symbolic', size=IconSize.DIALOG)
+        icon = Image.new_from_icon_name(icon_name, size=IconSize.DIALOG)
         icon.set_pixel_size(192)
         icon.get_style_context().add_class("dim-label")
-
-        # Welcome description
-        label = Label(label="Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva. <b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!", halign=Align.BASELINE)
-        label.set_max_width_chars(60)
-        label.set_use_markup(True)
-        label.set_line_wrap(True)
-
-        # Welcome text box
-        textbox = Box(orientation=Orientation(1))
-        textbox.pack_start(label, True, True, 0)
-
-        # Welcome button
-        button = Button.new_with_label("Cerca usando i vincoli")
-        button.get_style_context().add_class(STYLE_CLASS_SUGGESTED_ACTION)
-        button.connect ("clicked", self.on_new_items_clicked)
-
-        # Welcome button box
-
-        button_box = Box(orientation=Orientation(0))
-        button_box.pack_start(button, True, False, 0)                
-
-        # Vertical Box
-        vbox = Box(orientation=Orientation(1))
         vbox.pack_start(icon, False, True, 50)
-        vbox.pack_start(textbox, False, True, 0)
-        vbox.pack_start(button_box, False, False, 25)
-        self.pack_start(vbox, True, False, 0)
 
+        if description:
+            # Welcome description
+            label = Label(label="Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva. <b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!", halign=Align.BASELINE)
+            label.set_max_width_chars(60)
+            label.set_use_markup(True)
+            label.set_line_wrap(True)
+
+        if button_text:
+            # Welcome text box
+            textbox = Box(orientation=Orientation(1))
+            textbox.pack_start(label, True, True, 0)
+            vbox.pack_start(textbox, False, True, 0)
+
+            # Welcome button
+            button = Button.new_with_label(button_text)
+            button.get_style_context().add_class(STYLE_CLASS_SUGGESTED_ACTION)
+            if button_callback:
+                button.connect ("clicked", button_callback, *callback_arguments)
+
+            # Welcome button box
+            button_box = Box(orientation=Orientation(0))
+            button_box.pack_start(button, True, False, 0)                
+            vbox.pack_start(button_box, False, False, 25)
 
 class AddItemsWindow(Window):
 
@@ -217,41 +281,47 @@ class AddItemsWindow(Window):
         del self
 
 class NameDescriptionLabel(VBox):
-    def __init__(self, name_text, description_text):
+    def __init__(self, name, description):
+        # Init
         VBox.__init__(self)
-        self.name = name_text
-        self.description = description_text
+        self.name = name
+        self.description = description
 
-        label = Label(halign=Align.START)
-        label.set_label(self.name)
-        label.set_use_markup(True)
-        label.set_line_wrap(True)
+        # Name
+        name = Label(halign=Align.START)
+        name.set_label(self.name)
+        name.set_use_markup(True)
+        name.set_line_wrap(True)
+        self.pack_start(name, True, True, 0)
 
+        # Description
         description = Label(halign=Align.START)
         description.set_label("<span font_desc=\"8.0\">" + self.description + "</span>")
         description.set_line_wrap(True)
         description.set_use_markup(True)
-
-        self.pack_start(label, True, True, 0)
         self.pack_start(description, True, True, 0)
 
 class Result(ListBoxRow):
     def __init__(self, result):
         ListBoxRow.__init__(self)
-        hbox = HBox()
-        self.add(hbox)
         self.content = result
 
-        text = "<b>" + result["Label"] + "</b>"
+        # Horizontal Box
+        self.hbox = HBox()
+        self.add(self.hbox)
 
-        if "URI" in result.keys(): 
-            checkbox = CheckButton()
-            hbox.pack_start(checkbox, False, False, 10)
+        # Contents Box
+        self.name_description = NameDescriptionLabel(text, self.content["Description"])
+        self.hbox.pack_start(self.name_description, True, True, 10)
+
+    def update(self):
+        text = "<b>" + self.content["Label"] + "</b>"
+        if "URI" in self.content.keys():
             text = text + " (" + result["URI"] + ")"
-
-        vbox = NameDescriptionLabel(text, result["Description"])
-        hbox.pack_start(vbox, True, True, 10)
-        
+            checkbox = CheckButton()
+            self.hbox.pack_start(checkbox, False, False, 10)
+        self.name_description = NameDescriptionLabel(text, self.content["Description"])
+        self.show_all() 
 
 class LabelResultsBox(HBox):
     def __init__(self):
@@ -281,21 +351,25 @@ class SearchByLabelPage(VBox):
     def __init__(self, wikidata):
         VBox.__init__(self)
 
+        # Search Box
         search_box = HBox()
-        search_entry = SearchEntry()
-        search_entry.show()
-        results = LabelResultsBox()
-
-        search_entry.connect("search_changed", results.on_query_changed, wikidata)
-        self.search_bar = SearchBar()
-        self.search_bar.add(search_entry)
-        self.search_bar.set_search_mode(False)
-        self.search_bar.connect_entry(search_entry)
-        search_box.pack_start(self.search_bar, expand=True, fill=True, padding=0)
         self.pack_start(search_box, False, False, 0)
 
+        # Results Box
+        results = LabelResultsBox()
         self.pack_start(results, True, True, 10)
 
+        # Search Entry
+        search_entry = SearchEntry()
+        search_entry.connect("search_changed", results.on_query_changed, wikidata)
+        #search_entry.show()
+
+        # Search bar
+        self.search_bar = SearchBar()
+        self.search_bar.set_search_mode(True)
+        self.search_bar.connect_entry(search_entry)
+        self.search_bar.add(search_entry)
+        search_box.pack_start(self.search_bar, expand=True, fill=True, padding=0)
 
 class SparqlPage(VBox):
     def __init__(self, wikidata):
@@ -572,7 +646,7 @@ class WikidataEditor():
     def __init__(self):
         wikidata = Wikidata()
         gtk_style()
-        win = MainWindow(wikidata)
+        win = WelcomeWindow(wikidata)
         win.show_all()
         main()
 
