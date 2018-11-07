@@ -51,7 +51,7 @@ class WelcomeWindow(Window):
         # Window properties
         Window.__init__(self, title="Daty")
         self.set_border_width(0)
-        self.set_default_size(850, 450)
+        self.set_default_size(600, 400)
         self.set_position(WindowPosition(1))
         self.set_title ("Daty")
         #self.set_icon_from_file('icon.png')
@@ -81,36 +81,10 @@ class WelcomeWindow(Window):
 #        new_items.connect ("clicked", self.on_constraint_search)
 #        hb.pack_end(new_items)
 
-        # Welcome page
-        self.search_visible = False
-        daty_description = """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva.
-<b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!"""
-        welcome_page = WelcomePage(icon_name="system-search-symbolic",
-                                   description=daty_description,
-                                   button_text="Cerca usando i vincoli",
-                                   button_callback=self.on_constraint_search,
-                                   callback_arguments=[wikidata],
-                                   parent=self)
-
-        # Welcome revealer 
-        welcome_revealer = Revealer()
-        welcome_revealer.set_transition_type (RevealerTransitionType.CROSSFADE)
-        welcome_revealer.set_transition_duration(500)
-        welcome_revealer.add(welcome_page)
-        welcome_revealer.set_reveal_child(True)
-        self.add(welcome_revealer)
-
-        # SparqlPage
-        sparql_page = SparqlPage(wikidata)
-
-        # Label search
-        #label_search = SearchByLabelPage(wikidata)
-
         # On demand stack
         stack = Stack()
         stack.set_transition_type (StackTransitionType.SLIDE_LEFT_RIGHT)
         stack.set_transition_duration (1000)
-        stack.add_titled(sparql_page, "Cerca per vincolo", "Cerca per vincolo")
 
         # Stack revealer 
         stack_revealer = Revealer()
@@ -118,6 +92,14 @@ class WelcomeWindow(Window):
         stack_revealer.set_transition_duration(500)
         stack_revealer.set_reveal_child(False)
         stack_revealer.add(stack)
+
+        # Label search
+        label_search_page = LabelSearchPage(wikidata, set_visible_search_entry=True)
+        stack.add_titled(label_search_page, "Cerca per etichetta", "Cerca per etichetta")
+
+        # Sparql Page
+        sparql_page = SparqlPage(wikidata)
+        stack.add_titled(sparql_page, "Cerca per vincolo", "Cerca per vincolo")
 
         # Switcher
         switcher = StackSwitcher()
@@ -130,23 +112,38 @@ class WelcomeWindow(Window):
         switcher_revealer.set_reveal_child(False)
         switcher_revealer.add(switcher)
 
+        # Welcome revealer 
+        welcome_revealer = Revealer()
+        welcome_revealer.set_transition_type (RevealerTransitionType.CROSSFADE)
+        welcome_revealer.set_transition_duration(500)
+        welcome_revealer.set_reveal_child(True)
+        self.add(welcome_revealer)
 
-#        self.connect("key_press_event", self.on_test, label_search.search_bar)
-#        stack.add_titled(label_search, "Per etichetta", "Per etichetta")
+        # Welcome page
+        self.search_visible = False
+        daty_description = """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva.
+<b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!"""
+        welcome_page = WelcomePage(icon_name="system-search-symbolic",
+                                   description=daty_description,
+                                   button_text="Cerca usando i vincoli",
+                                   button_callback=self.on_constraint_search,
+                                   callback_arguments=[stack, sparql_page, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
+                                   parent=self)
+        welcome_revealer.add(welcome_page)
 
         # Write to search
-        self.connect("key_press_event", self.on_key_press, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer)
+        self.connect("key_press_event", self.on_key_press, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
 
-    def on_key_press(self, widget, event, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+    def on_key_press(self, widget, event, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         if self.search_visible:
             if event.keyval == 65307:
-                self.deactivate_search(hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer)
+                self.deactivate_search(hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
         if not self.search_visible:
             if not event.keyval == 65307:
-                self.activate_search(hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer)
+                self.activate_search(hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
-    def activate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+    def activate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         # Hide welcome and title
         welcome_revealer.set_reveal_child(False)
         self.remove(welcome_revealer)
@@ -160,10 +157,13 @@ class WelcomeWindow(Window):
         stack_revealer.set_reveal_child(True)
 
         # Set search visible
+        stack.set_visible_child_full("Cerca per etichetta", StackTransitionType.NONE)
         self.search_visible = True 
         self.show_all()
+        search_entry = stack.get_child_by_name("Cerca per etichetta").search_entry
+        search_entry.grab_focus_without_selecting()
 
-    def deactivate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+    def deactivate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         # Hide stack and switcher
         stack_revealer.set_reveal_child(False)
         self.remove(stack_revealer)
@@ -178,11 +178,15 @@ class WelcomeWindow(Window):
 
         # Set search not visible
         self.search_visible = False
+        search_entry = stack.get_child_by_name("Cerca per etichetta").search_entry
+        search_entry.set_text("")
         self.show_all()
 
-    def on_constraint_search(self, button, wikidata):
-        add_items = AddItemsWindow(wikidata)
-        add_items.show_all() 
+    def on_constraint_search(self, button, stack, sparql_page, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+        self.activate_search(hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+        stack.set_visible_child_full("Cerca per vincolo", StackTransitionType.NONE) 
+        #add_items = AddItemsWindow(wikidata)
+        #add_items.show_all() 
 
 class WelcomePage(HBox):
     def __init__(self, icon_name='system-search-symbolic', description="Sample description", button_text="Sample button", button_callback=None, callback_arguments=[], parent=None):
@@ -247,7 +251,7 @@ class AddItemsWindow(Window):
         stack.set_transition_duration (1000)
         #stack.connect("notify::visible-child", self.stack_page_changed)
 
-        label_search = SearchByLabelPage(wikidata)
+        label_search = LabelSearchPage(wikidata)
         self.connect("key_press_event", self.on_test, label_search.search_bar)
         stack.add_titled(label_search, "Per etichetta", "Per etichetta")
         stack.add_titled(SparqlPage(self.wikidata), "Per vincolo", "Per vincolo")
@@ -291,15 +295,21 @@ class NameDescriptionLabel(VBox):
         name = Label(halign=Align.START)
         name.set_label(self.name)
         name.set_use_markup(True)
+        name.set_xalign(0)
         name.set_line_wrap(True)
-        self.pack_start(name, True, True, 0)
 
         # Description
         description = Label(halign=Align.START)
         description.set_label("<span font_desc=\"8.0\">" + self.description + "</span>")
+        description.set_xalign(0)
         description.set_line_wrap(True)
         description.set_use_markup(True)
-        self.pack_start(description, True, True, 0)
+
+        # Vertical box
+        vbox = VBox()
+        vbox.pack_start(name, True, True, 0)
+        vbox.pack_start(description, True, True, 0)
+        self.pack_start(vbox, True, True, 2)
 
 class Result(ListBoxRow):
     def __init__(self, result):
@@ -311,44 +321,37 @@ class Result(ListBoxRow):
         self.add(self.hbox)
 
         # Contents Box
-        self.name_description = NameDescriptionLabel(text, self.content["Description"])
-        self.hbox.pack_start(self.name_description, True, True, 10)
+        self.update()
+        self.hbox.pack_start(self.name_description, True, True, self.padding)
 
     def update(self):
         text = "<b>" + self.content["Label"] + "</b>"
         if "URI" in self.content.keys():
-            text = text + " (" + result["URI"] + ")"
+            text = text + " <span font_desc=\"8.0\">(" + self.content["URI"] + ")</span>"
             checkbox = CheckButton()
             self.hbox.pack_start(checkbox, False, False, 10)
+            self.padding = 0
+        else:
+            self.padding = 20
         self.name_description = NameDescriptionLabel(text, self.content["Description"])
         self.show_all() 
 
-class LabelResultsBox(HBox):
-    def __init__(self):
+class ResultsBox(HBox):
+    def __init__(self, horizontal_padding=0):
         HBox.__init__(self)
+
+        # Scrolled Box
         self.scrolled = ScrolledWindow()
         self.scrolled.set_policy(PolicyType.NEVER, PolicyType.AUTOMATIC)
+        self.pack_start(self.scrolled, True, True, padding=horizontal_padding)
+
+        # List Box
         self.listbox = ListBox()
         self.scrolled.add(self.listbox)
-        self.pack_start(self.scrolled, True, True, padding=10)
 
-    def on_query_changed(self, widget, wikidata):
-        query = widget.get_text()
-        self.scrolled.remove(self.listbox)
-        print("searching", query)
-        self.listbox = ListBox()
+class LabelSearchPage(VBox):
 
-        results = wikidata.search(query) 
-
-        for r in results:
-            row = Result(r)
-            self.listbox.add(row)
-        self.scrolled.add(self.listbox) 
-        self.listbox.show_all()
-
-class SearchByLabelPage(VBox):
-
-    def __init__(self, wikidata):
+    def __init__(self, wikidata, set_visible_search_entry=True, results_border=0):
         VBox.__init__(self)
 
         # Search Box
@@ -356,20 +359,41 @@ class SearchByLabelPage(VBox):
         self.pack_start(search_box, False, False, 0)
 
         # Results Box
-        results = LabelResultsBox()
-        self.pack_start(results, True, True, 10)
+        results = ResultsBox()
+        self.pack_start(results, True, True, results_border)
 
         # Search Entry
-        search_entry = SearchEntry()
-        search_entry.connect("search_changed", results.on_query_changed, wikidata)
-        #search_entry.show()
+        self.search_entry = SearchEntry()
+        self.search_entry.connect("search_changed", self.on_search_changed, results, wikidata)
+        self.search_entry.show()
 
         # Search bar
         self.search_bar = SearchBar()
         self.search_bar.set_search_mode(True)
-        self.search_bar.connect_entry(search_entry)
-        self.search_bar.add(search_entry)
+        self.search_bar.connect_entry(self.search_entry)
+        self.search_bar.add(self.search_entry)
         search_box.pack_start(self.search_bar, expand=True, fill=True, padding=0)
+
+    def on_search_changed(self, search_entry, results, wikidata):
+        # Get query
+        query = search_entry.get_text()
+
+        # Clean results
+        results.scrolled.remove(results.listbox)
+        results.listbox = ListBox()
+
+        # Obtain data
+        if query != "":
+            data = wikidata.search(query)
+        else:
+            data = []
+
+        # Populate results
+        for d in data:
+            row = Result(d)
+            results.listbox.add(row)
+        results.scrolled.add(results.listbox)
+        results.listbox.show_all()
 
 class SparqlPage(VBox):
     def __init__(self, wikidata):
