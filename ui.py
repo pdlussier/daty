@@ -240,7 +240,7 @@ class WelcomePage(HBox):
             # Welcome description
             for line in description.split("<br>"):
                 label = Label(label=line, halign=Align.FILL)
-                label.set_max_width_chars(55)
+                label.set_max_width_chars(50)
                 label.set_use_markup(True)
                 label.set_line_wrap(True)
                 textbox.pack_start(label, True, True, 0)
@@ -442,7 +442,7 @@ class SparqlPage(VBox):
         label_button_box.pack_start(label, True, True, 2)
 
         # Selected variable
-        variable = ItemSelectionButton(wikidata, label="variabile", css="target")
+        variable = ItemSelectionButton(wikidata, text="variabile", css="target")
         label_button_box.pack_start(variable, True, True, 2)
         label_button_box.remove(variable)
         label_button_box.pack_start(variable, True, True, 2)
@@ -559,18 +559,19 @@ class ItemSearchPopover(PopoverMenu):
         PopoverMenu.__init__(self)
         self.set_relative_to(parent) 
 
-class ItemSelectionButton(ModelButton):
-    def __init__(self, wikidata, label="var", css="subject"):
-        ModelButton.__init__(self)
+class ItemSelectionButton(EventBox):
+    def __init__(self, wikidata, text="var", css="subject"):
+        EventBox.__init__(self)
 
-        self.set_css_name(css)
-        StyleContext.add_class(self.get_style_context(), css)
-
-        self.set_label(label)
-        self.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
+        # Text Label
+        label = Label()
+        label.set_label(text)
+        label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
+        StyleContext.add_class(label.get_style_context(), css)
+        self.add(label)
 
         self.popover = ItemSearchPopover(self, wikidata)
-        self.connect ("clicked", self.on_self_clicked, self.popover)
+        self.connect ("button_press_event", self.on_self_clicked, self.popover)
 
         popover_box = VBox()
 
@@ -582,7 +583,7 @@ class ItemSelectionButton(ModelButton):
         for arg in args:
             self.remove(arg)
 
-    def on_self_clicked(self, widget, popover):
+    def on_self_clicked(self, widget, event, popover):
         if popover.get_visible():
             popover.hide()
         else:
