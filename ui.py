@@ -41,6 +41,28 @@ row {
     border-bottom-left-radius: 5px;
 }
 
+.unselected {
+
+    background-color: rgb(137.7,138.2,134.3);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(137.7,138.2,134.3);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(137.7,138.2,134.3);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(137.7,138.2,134.3);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(137.7,138.2,134.3);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+}
+
 .target { 
     background-color: rgb(90.8,192.8,121.6);
     border-top-width: 5px;
@@ -446,7 +468,7 @@ class SparqlPage(VBox):
         label_button_box.pack_start(label, True, True, 2)
 
         # Selected variable
-        variable = ItemSelectionButton(wikidata, text="variabile", css="target")
+        variable = ButtonWithPopover(text="variabile", css="unselected")
         label_button_box.pack_start(variable, True, True, 2)
         label_button_box.remove(variable)
         label_button_box.pack_start(variable, True, True, 2)
@@ -558,41 +580,46 @@ class ItemSearchBox(VBox):
         self.pack_start(hbox, False, True, 10)
         self.pack_start(results, True, True, 3)
 
-class ItemSearchPopover(PopoverMenu):
-    def __init__(self, parent, wikidata):
+class BetterPopover(PopoverMenu):
+    def __init__(self, parent, child, width=500, height=300):
         PopoverMenu.__init__(self)
+        self.width = width
+        self.height = height
         self.set_relative_to(parent) 
+        self.add(child)
 
-class ItemSelectionButton(EventBox):
-    def __init__(self, wikidata, text="var", css="subject"):
+    def trigger(self):
+        if self.get_visible():
+            self.hide()
+        else:
+            self.set_size_request(self.width, self.height)
+            self.show_all()
+
+class ButtonWithPopover(EventBox):
+    def __init__(self, popover_box=None, text="var", css="unselected"):
         EventBox.__init__(self)
 
-        # Text Label
+        if popover_box == None:
+            popover_box = VBox()
+            #popover_box.add(ItemSearchBox(self, wikidata))
+
+        # Popover
+        popover = BetterPopover(self, popover_box)
+        self.connect ("button_press_event", self.clicked, popover)
+
+        # Label and style
         label = Label()
         label.set_label(text)
         label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
         StyleContext.add_class(label.get_style_context(), css)
         self.add(label)
 
-        self.popover = ItemSearchPopover(self, wikidata)
-        self.connect ("button_press_event", self.on_self_clicked, self.popover)
-
-        popover_box = VBox()
-
-        popover_box.add(ItemSearchBox(self, wikidata))
-
-        self.popover.add(popover_box)
-
     def remove_children(self, *args):
         for arg in args:
             self.remove(arg)
 
-    def on_self_clicked(self, widget, event, popover):
-        if popover.get_visible():
-            popover.hide()
-        else:
-            popover.set_size_request(500,300)
-            popover.show_all()
+    def clicked(self, widget, event, popover):
+        popover.trigger()
 
 class EditableListBox(HBox):
     def __init__(self, new_row_callback=None, new_row_callback_arguments=[], delete_row_callback=None, delete_row_callback_arguments=[], horizontal_padding=0, new_row_height=14, selectable=0):
@@ -654,14 +681,14 @@ class EditableListBoxRow(ListBoxRow):
         self.remove_icon = Image.new_from_icon_name('window-close-symbolic', IconSize.BUTTON)
 
         # Remove Row EventBox
-        eventbox = EventBox()
-        eventbox.add(self.remove_icon)
-        eventbox.connect("button_press_event", self.on_delete_row, listbox, delete_callback, *delete_callback_arguments)
+        remove_row_eventbox = EventBox()
+        remove_row_eventbox.add(self.remove_icon)
+        remove_row_eventbox.connect("button_press_event", self.on_delete_row, listbox, delete_callback, *delete_callback_arguments)
        
         # Remove Row Revealer
         revealer = Revealer()
         revealer.set_transition_type (RevealerTransitionType.NONE)
-        revealer.add(eventbox)
+        revealer.add(remove_row_eventbox)
         revealer.set_reveal_child(False)
 
         # Overlay Box
@@ -700,9 +727,9 @@ class TripleBox(VBox):
         self.pack_start(hbox, True, True, vertical_padding)
 
         # S/P/O 
-        subject = ItemSelectionButton(wikidata, "Soggetto")
-        prop = ItemSelectionButton(wikidata, "Proprietà")
-        obj = ItemSelectionButton(wikidata, "Oggetto")
+        subject = ButtonWithPopover(text="Soggetto", css="unselected")
+        prop = ButtonWithPopover(text="Proprietà", css="unselected")
+        obj = ButtonWithPopover(text="Oggetto", css="unselected")
 
         # Tuple
         first = VBox()
@@ -718,19 +745,6 @@ class TripleBox(VBox):
         tuple_box.pack_start(second, True, False, 0)
         tuple_box.pack_start(third, True, False, 0)
         hbox.pack_start(tuple_box, True, True, vertical_padding)
-
-    def on_remove_tuple_clicked(self, widget, event, callback, *callback_arguments):
-        print("delete row")
-        for arg in args:
-            print(arg)
-
-    def enter(self, *args):
-        self.remove_icon.set_visible(True)
-        for arg in args:
-            print(arg)
-
-    def leave(self, *args):
-        self.remove_icon.set_visible(False)
 
 class ConstraintEditWindow(Window):
     def __init__(self, listbox, row, wikidata):
