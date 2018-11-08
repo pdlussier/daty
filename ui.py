@@ -2,9 +2,9 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
 from wikidata import Wikidata
-from gi.repository.Gdk import Color, Screen
+from gi.repository.Gdk import Color, Event, Screen
 from gi.repository.Gio import ThemedIcon
-from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, Overlay, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
+from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, Overlay, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, SelectionMode, Stack, StackSwitcher, StackTransitionType, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from gi.repository.GLib import unix_signal_add, PRIORITY_DEFAULT
 from signal import SIGINT
 
@@ -214,9 +214,13 @@ class WelcomeWindow(Window):
 
     def on_constraint_search(self, button, stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
         self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
-        stack.set_visible_child_full("Cerca per vincolo", StackTransitionType.NONE) 
+        stack.set_visible_child_full("Cerca per vincolo", StackTransitionType.NONE)
+        sparql_page.constraints.eventbox.emit("button_press_event", Event())
         #add_items = AddItemsWindow(wikidata)
-        #add_items.show_all() 
+        #add_items.show_all()
+
+    def on_tet(self, *args):
+        print(*args)
 
 class WelcomePage(HBox):
     def __init__(self, icon_name='system-search-symbolic', description="Sample description", button_text="Sample button", button_callback=None, callback_arguments=[], parent=None):
@@ -454,8 +458,8 @@ class SparqlPage(VBox):
         selection_box.pack_start(self.selection_bar, expand=True, fill=True, padding=0)
 
         # Constraints
-        constraints = EditableListBox(new_row_callback=self.new_constraint, new_row_callback_arguments = [wikidata], horizontal_padding=0)
-        self.pack_start(constraints, True, True, 0)
+        self.constraints = EditableListBox(new_row_callback=self.new_constraint, new_row_callback_arguments = [wikidata], horizontal_padding=0)
+        self.pack_start(self.constraints, True, True, 0)
 
     def new_constraint(self, row, wikidata):
         # Add a triple box
@@ -591,7 +595,7 @@ class ItemSelectionButton(EventBox):
             popover.show_all()
 
 class EditableListBox(HBox):
-    def __init__(self, new_row_callback=None, new_row_callback_arguments=[], delete_row_callback=None, delete_row_callback_arguments=[], horizontal_padding=0, new_row_height=14):
+    def __init__(self, new_row_callback=None, new_row_callback_arguments=[], delete_row_callback=None, delete_row_callback_arguments=[], horizontal_padding=0, new_row_height=14, selectable=0):
         HBox.__init__(self)
 
         # Scrolled window
@@ -601,6 +605,7 @@ class EditableListBox(HBox):
 
         # Listbox
         self.listbox = ListBox()
+        self.listbox.set_selection_mode(SelectionMode(selectable))
         self.scrolled.add(self.listbox)
 
         # New row
@@ -615,12 +620,12 @@ class EditableListBox(HBox):
         vbox.pack_start(icon, True, True, new_row_height)
 
         # New row Eventbox
-        eventbox = EventBox()
-        eventbox.add(vbox)
-        eventbox.connect("button_press_event", self.on_new_row, new_row,
+        self.eventbox = EventBox()
+        self.eventbox.add(vbox)
+        self.eventbox.connect("button_press_event", self.on_new_row, new_row,
                                                new_row_callback, new_row_callback_arguments,
                                                delete_row_callback, delete_row_callback_arguments)
-        new_row.add(eventbox)
+        new_row.add(self.eventbox)
 
     def on_new_row(self, widget, event, new_row,
                                         new_row_callback, new_row_callback_arguments,
