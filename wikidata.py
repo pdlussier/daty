@@ -22,7 +22,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-
+from bleach import clean
 from bs4 import BeautifulSoup
 from os import mkdir
 from pprint import pprint
@@ -80,7 +80,7 @@ class Wikidata:
         results = list(set([r['subject']['value'].split("/")[-1] for r in results]))
         return results 
 
-    def search(self, query):
+    def search(self, query, verbose=False):
         pattern = 'https://www.wikidata.org/w/index.php?search='
         page = get(pattern + query).content
         soup = BeautifulSoup(page, 'html.parser')
@@ -89,11 +89,11 @@ class Wikidata:
             results = soup.find(name='ul', attrs={'class':'mw-search-results'})
             results = results.find_all(name='li', attrs={'class':'mw-search-result'})
             results = [{"URI":r.find(name="span", attrs={'class':'wb-itemlink-id'}).text.split("(")[1].split(")")[0],
-                        "Label":sub("&", "&amp;", r.find(name="span", attrs={'class':'wb-itemlink-label'}).text),
-                        "Description":r.find(name='span', attrs={'class':'wb-itemlink-description'}).text} for r in results]
+                        "Label":clean(r.find(name="span", attrs={'class':'wb-itemlink-label'}).text),
+                        "Description":clean(r.find(name='span', attrs={'class':'wb-itemlink-description'}).text)} for r in results]
         except Exception as e:
             results = []
-            if self.verbose:
+            if verbose:
                 print(e)
         if self.verbose:
             pprint(results)

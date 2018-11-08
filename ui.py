@@ -4,7 +4,7 @@ require_version('Gdk', '3.0')
 from wikidata import Wikidata
 from gi.repository.Gdk import Color, Screen
 from gi.repository.Gio import ThemedIcon
-from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StateFlags, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
+from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, Overlay, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from gi.repository.GLib import unix_signal_add, PRIORITY_DEFAULT
 from signal import SIGINT
 
@@ -12,7 +12,7 @@ def gtk_style():
     css = b"""
 list {
     border-style: solid;
-    border-width: 1px 1px 1px 1px;
+    border-width: 0px 1px 1px 1px;
 }
 
 row {
@@ -40,6 +40,26 @@ row {
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
+
+.target { 
+    background-color: rgb(90.8,192.8,121.6);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(90.8,192.8,121.6);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(90.8,192.8,121.6);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(90.8,192.8,121.6);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(90.8,192.8,121.6);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
     """
     style_provider = CssProvider()
     style_provider.load_from_data(css)
@@ -51,7 +71,7 @@ class WelcomeWindow(Window):
         # Window properties
         Window.__init__(self, title="Daty")
         self.set_border_width(0)
-        self.set_default_size(600, 400)
+        self.set_default_size(500, 200)
         self.set_position(WindowPosition(1))
         self.set_title ("Daty")
         #self.set_icon_from_file('icon.png')
@@ -76,10 +96,10 @@ class WelcomeWindow(Window):
         self.set_titlebar(hb)
 
         # Headerbar: New items
-#        new_items = Button.new()
-#        new_items.set_label ("Aggiungi")
-#        new_items.connect ("clicked", self.on_constraint_search)
-#        hb.pack_end(new_items)
+        open_session = Button.new()
+        open_session.set_label ("Apri sessione")
+        open_session.connect ("clicked", self.on_constraint_search)
+        hb.pack_start(open_session)
 
         # On demand stack
         stack = Stack()
@@ -101,6 +121,9 @@ class WelcomeWindow(Window):
         sparql_page = SparqlPage(wikidata)
         stack.add_titled(sparql_page, "Cerca per vincolo", "Cerca per vincolo")
 
+        # Back button
+        back = Button.new_from_icon_name("go-previous-symbolic", size=IconSize.BUTTON)
+
         # Switcher
         switcher = StackSwitcher()
         switcher.set_stack(stack)
@@ -121,35 +144,40 @@ class WelcomeWindow(Window):
 
         # Welcome page
         self.search_visible = False
-        daty_description = """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva.
-<b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!"""
+        daty_description = """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva. <br>
+<b>Batti sulla tastiera per cercare o creare nuovi elementi</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!"""
         welcome_page = WelcomePage(icon_name="system-search-symbolic",
                                    description=daty_description,
-                                   button_text="Cerca usando i vincoli",
+                                   button_text="Aggiungi un vincolo",
                                    button_callback=self.on_constraint_search,
-                                   callback_arguments=[stack, sparql_page, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
+                                   callback_arguments=[stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
                                    parent=self)
         welcome_revealer.add(welcome_page)
 
         # Write to search
-        self.connect("key_press_event", self.on_key_press, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+        self.connect("key_press_event", self.on_key_press, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+        back.connect("clicked", self.on_back_button, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
-
-    def on_key_press(self, widget, event, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+    def on_key_press(self, widget, event, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         if self.search_visible:
             if event.keyval == 65307:
-                self.deactivate_search(hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+                self.deactivate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
         if not self.search_visible:
             if not event.keyval == 65307:
-                self.activate_search(hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+                self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
-    def activate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+    def on_back_button(self, button, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+        self.deactivate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+
+    def activate_search(self, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         # Hide welcome and title
         welcome_revealer.set_reveal_child(False)
         self.remove(welcome_revealer)
         title_revealer.set_reveal_child(False)
+        hb.remove(open_session)
 
-        # Show switcher and stack
+        # Show switcher, stack and back
+        hb.pack_start(back)
         hb.set_custom_title(switcher_revealer)
         switcher_revealer.set_reveal_child(True)
         hb.show_all()
@@ -163,14 +191,16 @@ class WelcomeWindow(Window):
         search_entry = stack.get_child_by_name("Cerca per etichetta").search_entry
         search_entry.grab_focus_without_selecting()
 
-    def deactivate_search(self, hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
-        # Hide stack and switcher
+    def deactivate_search(self, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+        # Hide stack, switcher and back
         stack_revealer.set_reveal_child(False)
         self.remove(stack_revealer)
         switcher_revealer.set_reveal_child(False)
+        hb.remove(back)
 
         # Show title and welcome
         hb.set_custom_title(title_revealer)
+        hb.pack_start(open_session)
         title_revealer.set_reveal_child(True)
         hb.show_all()
         self.add(welcome_revealer)
@@ -182,8 +212,8 @@ class WelcomeWindow(Window):
         search_entry.set_text("")
         self.show_all()
 
-    def on_constraint_search(self, button, stack, sparql_page, hb, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
-        self.activate_search(hb, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+    def on_constraint_search(self, button, stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+        self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
         stack.set_visible_child_full("Cerca per vincolo", StackTransitionType.NONE) 
         #add_items = AddItemsWindow(wikidata)
         #add_items.show_all() 
@@ -200,20 +230,22 @@ class WelcomePage(HBox):
         icon = Image.new_from_icon_name(icon_name, size=IconSize.DIALOG)
         icon.set_pixel_size(192)
         icon.get_style_context().add_class("dim-label")
-        vbox.pack_start(icon, False, True, 50)
+        vbox.pack_start(icon, False, True, 25)
+
+        # Welcome text box
+        textbox = Box(orientation=Orientation(1))
+        vbox.pack_start(textbox, False, True, 0)
 
         if description:
             # Welcome description
-            label = Label(label="Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva. <b>Digita per cercare o creare nuovi item</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!", halign=Align.BASELINE)
-            label.set_max_width_chars(60)
-            label.set_use_markup(True)
-            label.set_line_wrap(True)
+            for line in description.split("<br>"):
+                label = Label(label=line, halign=Align.FILL)
+                label.set_max_width_chars(55)
+                label.set_use_markup(True)
+                label.set_line_wrap(True)
+                textbox.pack_start(label, True, True, 0)
 
         if button_text:
-            # Welcome text box
-            textbox = Box(orientation=Orientation(1))
-            textbox.pack_start(label, True, True, 0)
-            vbox.pack_start(textbox, False, True, 0)
 
             # Welcome button
             button = Button.new_with_label(button_text)
@@ -226,18 +258,16 @@ class WelcomePage(HBox):
             button_box.pack_start(button, True, False, 0)                
             vbox.pack_start(button_box, False, False, 25)
 
-class AddItemsWindow(Window):
+class AddWindow(Window): # Da scrivere meglio
 
     def __init__(self, wikidata):
-
-        self.wikidata = wikidata
          
         # Window properties
-        Window.__init__(self, title="Add items")
+        Window.__init__(self, title="Aggiungi elementi")
         self.set_border_width(0)
-        self.set_default_size(500, 400)
+        self.set_default_size(500, 200)
         self.set_position(WindowPosition(1))
-        self.set_title ("Add Item")
+        self.set_title ("Aggiungi elementi")
         #self.set_icon_from_file('icon.png')
         unix_signal_add(PRIORITY_DEFAULT, SIGINT, main_quit)
 
@@ -249,7 +279,6 @@ class AddItemsWindow(Window):
         stack = Stack()
         stack.set_transition_type (StackTransitionType.SLIDE_LEFT_RIGHT)
         stack.set_transition_duration (1000)
-        #stack.connect("notify::visible-child", self.stack_page_changed)
 
         label_search = LabelSearchPage(wikidata)
         self.connect("key_press_event", self.on_test, label_search.search_bar)
@@ -395,22 +424,43 @@ class LabelSearchPage(VBox):
         results.scrolled.add(results.listbox)
         results.listbox.show_all()
 
+
 class SparqlPage(VBox):
     def __init__(self, wikidata):
         VBox.__init__(self)
-        select_box = HBox()
-        self.pack_start(select_box, False, False, 20)
 
+        # Selection Box
+        selection_box = HBox()
+        self.pack_start(selection_box, False, False, 0)
+
+        # Label + Button horizontal Box
+        label_button_box = HBox()
+
+        # Select label
         label = Label()
-        label.set_label("Variabile selezionata: ")
+        label.set_label("Seleziona")
+        label_button_box.pack_start(label, True, True, 2)
 
+        # Selected variable
+        variable = ItemSelectionButton(wikidata, label="variabile", css="target")
+        label_button_box.pack_start(variable, True, True, 2)
+        label_button_box.remove(variable)
+        label_button_box.pack_start(variable, True, True, 2)
 
-        constraint_box = SparqlConstraintsBox(wikidata)
+        # Search bar
+        self.selection_bar = SearchBar()
+        self.selection_bar.set_search_mode(True)
+        self.selection_bar.add(label_button_box)
+        selection_box.pack_start(self.selection_bar, expand=True, fill=True, padding=0)
 
-        select_box.pack_start(label, False, True, 30)
-        select_box.pack_start(ItemSelectionButton(wikidata), False, True, 0)
-        #select_box.pack_start(label_2, False, True, 10)
-        self.pack_start(constraint_box, True, True, 30)
+        # Constraints
+        constraints = EditableListBox(new_row_callback=self.new_constraint, new_row_callback_arguments = [wikidata], horizontal_padding=0)
+        self.pack_start(constraints, True, True, 0)
+
+    def new_constraint(self, row, wikidata):
+        # Add a triple box
+        triple_box = TripleBox(wikidata)
+        row.add_widget(triple_box)
 
 class ItemResultsBox(HBox):
     def __init__(self, wikidata, search_entry, button):
@@ -461,10 +511,13 @@ class ItemResultsBox(HBox):
 class ExtendedModelButton(ModelButton):
     def __init__(self, widget, *args):
         ModelButton.__init__(self)
-        self.forall(self.remove_children)
         self.child = widget
         self.args = args
+
+        # Remove and replace child
+        self.forall(self.remove_children)
         self.add(self.child)
+        self.show_all()
 
     def update_child(self):
         self.forall(self.remove_children)
@@ -507,11 +560,11 @@ class ItemSearchPopover(PopoverMenu):
         self.set_relative_to(parent) 
 
 class ItemSelectionButton(ModelButton):
-    def __init__(self, wikidata, label="var"):
+    def __init__(self, wikidata, label="var", css="subject"):
         ModelButton.__init__(self)
 
-        self.set_css_name("subject")
-        StyleContext.add_class(self.get_style_context(), "subject")
+        self.set_css_name(css)
+        StyleContext.add_class(self.get_style_context(), css)
 
         self.set_label(label)
         self.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
@@ -536,43 +589,142 @@ class ItemSelectionButton(ModelButton):
             popover.set_size_request(500,300)
             popover.show_all()
 
-class SparqlConstraintsBox(HBox):
-    def __init__(self, wikidata):
+class EditableListBox(HBox):
+    def __init__(self, new_row_callback=None, new_row_callback_arguments=[], delete_row_callback=None, delete_row_callback_arguments=[], horizontal_padding=0, new_row_height=14):
         HBox.__init__(self)
+
+        # Scrolled window
         self.scrolled = ScrolledWindow()
         self.scrolled.set_policy(PolicyType.NEVER, PolicyType.AUTOMATIC)
+        self.pack_start(self.scrolled, True, True, padding=horizontal_padding)
+
+        # Listbox
         self.listbox = ListBox()
         self.scrolled.add(self.listbox)
-        self.pack_start(self.scrolled, True, True, padding=30)
 
-        new_constraint_row = ListBoxRow()
+        # New row
+        new_row = ListBoxRow()
+        self.listbox.add(new_row)
+
+        # New row icon
+        icon = Image.new_from_icon_name('list-add-symbolic', IconSize.MENU)
+
+        # New row VBox
+        vbox = VBox()
+        vbox.pack_start(icon, True, True, new_row_height)
+
+        # New row Eventbox
         eventbox = EventBox()
-        new_icon = Image.new_from_icon_name('list-add-symbolic', IconSize.DIALOG)
-        new_icon.set_pixel_size(32)
-        eventbox.add(new_icon)
-        new_constraint_row.add(eventbox)
-        eventbox.connect("button_press_event", self.on_new_constraint_row, new_constraint_row, wikidata)
+        eventbox.add(vbox)
+        eventbox.connect("button_press_event", self.on_new_row, new_row,
+                                               new_row_callback, new_row_callback_arguments,
+                                               delete_row_callback, delete_row_callback_arguments)
+        new_row.add(eventbox)
 
-        self.listbox.add(new_constraint_row)
+    def on_new_row(self, widget, event, new_row,
+                                        new_row_callback, new_row_callback_arguments,
+                                        delete_row_callback, delete_row_callback_arguments):
 
-    def on_new_constraint_row(self, widget, event, new_constraint_row, wikidata):
-        self.listbox.remove(new_constraint_row)
-        row = ListBoxRow()
-        triple_box = TripleBox(wikidata)
-        eventbox = EventBox()
-        eventbox.add(triple_box)
-        row.add(eventbox)
-        eventbox.connect("enter_notify_event", triple_box.enter)
-        eventbox.connect("leave_notify_event", triple_box.leave)
+        # Remove "New row" from ListBox
+        self.listbox.remove(new_row)
+
+        # Create new row and give it to callback
+        row = EditableListBoxRow(self.listbox, delete_row_callback, *delete_row_callback_arguments)
+        new_row_callback(row, *new_row_callback_arguments)
+
+        # Add the new row to the listbox with the "New row" button
         self.listbox.add(row)
-        self.listbox.add(new_constraint_row)
+        self.listbox.add(new_row)
         self.listbox.show_all()
-        
-        #edit_window = ConstraintEditWindow(self.listbox, row, wikidata)
-        #edit_window.show_all()
-        #print("selection_get")
-        #for arg in args:
-        #    print(arg)
+
+class EditableListBoxRow(ListBoxRow):
+    def __init__(self, listbox, delete_callback=None, delete_callback_arguments=[], vertical_padding=10):
+        ListBoxRow.__init__(self)
+
+        # Overlay
+        self.overlay = Overlay()
+
+        # Remove Icon
+        self.remove_icon = Image.new_from_icon_name('window-close-symbolic', IconSize.BUTTON)
+
+        # Remove Row EventBox
+        eventbox = EventBox()
+        eventbox.add(self.remove_icon)
+        eventbox.connect("button_press_event", self.on_delete_row, listbox, delete_callback, *delete_callback_arguments)
+       
+        # Remove Row Revealer
+        revealer = Revealer()
+        revealer.set_transition_type (RevealerTransitionType.NONE)
+        revealer.add(eventbox)
+        revealer.set_reveal_child(False)
+
+        # Overlay Box
+        overlay_box = HBox()
+        overlay_box.pack_end(revealer, False, False, 4)
+        self.overlay.add_overlay(overlay_box)
+
+        # Event Box
+        eventbox = EventBox()
+        eventbox.add(self.overlay)
+        eventbox.connect("enter_notify_event", self.enter, revealer)
+        eventbox.connect("leave_notify_event", self.leave, revealer)
+        self.add(eventbox)
+
+
+    def add_widget(self, widget):
+        self.overlay.add(widget) 
+        self.show_all()
+ 
+    def on_delete_row(self, widget, event, listbox, callback, *callback_arguments):
+        listbox.remove(self)
+        callback(self, widget, event, *callback_arguments)
+
+    def enter(self, widget, event, revealer):
+        revealer.set_reveal_child(True)
+
+    def leave(self, widget, event, revealer):
+        revealer.set_reveal_child(False)
+
+class TripleBox(VBox):
+    def __init__(self, wikidata, vertical_padding=8):
+        VBox.__init__(self)
+
+        # Tuple Box
+        hbox = HBox()
+        self.pack_start(hbox, True, True, vertical_padding)
+
+        # S/P/O 
+        subject = ItemSelectionButton(wikidata, "Soggetto")
+        prop = ItemSelectionButton(wikidata, "Proprietà")
+        obj = ItemSelectionButton(wikidata, "Oggetto")
+
+        # Tuple
+        first = VBox()
+        second = VBox()
+        third = VBox()
+        first.pack_start(subject, False, False, 0)
+        second.pack_start(prop, False, False, 0)
+        third.pack_start(obj, False, False, 0)
+
+        # Tuple Box
+        tuple_box = HBox(homogeneous=True)
+        tuple_box.pack_start(first, True, False, 0)
+        tuple_box.pack_start(second, True, False, 0)
+        tuple_box.pack_start(third, True, False, 0)
+        hbox.pack_start(tuple_box, True, True, vertical_padding)
+
+    def on_remove_tuple_clicked(self, widget, event, callback, *callback_arguments):
+        print("delete row")
+        for arg in args:
+            print(arg)
+
+    def enter(self, *args):
+        self.remove_icon.set_visible(True)
+        for arg in args:
+            print(arg)
+
+    def leave(self, *args):
+        self.remove_icon.set_visible(False)
 
 class ConstraintEditWindow(Window):
     def __init__(self, listbox, row, wikidata):
@@ -625,53 +777,14 @@ class ConstraintEditWindow(Window):
         listbox.remove(row)
         del row
 
-class TripleBox(HBox):
-    def __init__(self, wikidata):
-        HBox.__init__(self)
-        hbox = HBox(homogeneous=True)
-        self.pack_start(hbox, True, True, 4)
-        subject = ItemSelectionButton(wikidata, "Soggetto")
-        prop = ItemSelectionButton(wikidata, "Proprietà")
-        obj = ItemSelectionButton(wikidata, "Oggetto")
-        first = VBox()
-        second = VBox()
-        third = VBox()
-        first.pack_start(subject, False, False, 4)
-        second.pack_start(prop, False, False, 4)
-        third.pack_start(obj, False, False, 4)
-        hbox.pack_start(first, True, False, 0)
-        hbox.pack_start(second, True, False, 0)
-        hbox.pack_start(third, True, False, 0)
-
-        self.remove_icon = Image.new_from_icon_name('edit-delete-symbolic', IconSize.BUTTON)
-        self.remove_icon.set_visible(False)
-        eventbox = HBox()
-        eventbox.add(self.remove_icon)
-        eventbox.connect("button_press_event", self.on_remove_icon_clicked)
-        self.pack_end(eventbox, False, False, 4)
-        
-        #remove_icon.set_pixel_size(32)
-        #remove_icon.get_style_context().add_class("dim-label")
-
-    def on_remove_icon_clicked(self, *args):
-        print("delete row")
-        for arg in args:
-            print(arg)
-
-    def enter(self, *args):
-        self.remove_icon.set_visible(True)
-        for arg in args:
-            print(arg)
-
-    def leave(self, *args):
-        self.remove_icon.set_visible(False)
-
 class WikidataEditor():
     def __init__(self):
-        wikidata = Wikidata()
+        wikidata = Wikidata(verbose=False)
         gtk_style()
         win = WelcomeWindow(wikidata)
         win.show_all()
+#        add_ = AddItemsWindow(wikidata)
+#        add_.show_all()
         main()
 
 if __name__ == "__main__":
