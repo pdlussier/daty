@@ -518,7 +518,7 @@ class SparqlPage(VBox):
     def new_constraint(self, row, wikidata):
         # Add a triple box
         triple_box = TripleBox(wikidata)
-        same_size_widget = TripleBox(wikidata, css="empty")
+        same_size_widget = TripleBox(wikidata, first=" ", second=" ", third=" ", css="empty")
         row.add_widget(triple_box, same_size_widget)
 
 class ItemResults(HBox):
@@ -545,8 +545,6 @@ class ItemResults(HBox):
 
     def on_row_activated(self, listbox, row, row_activated_callback, row_activated_callback_arguments):
         row_activated_callback(self, listbox, row, *row_activated_callback_arguments)
-        button.set_label(row.content["Label"])
-        button.popover.hide()
 
 class ExtendedModelButton(ModelButton):
     def __init__(self, widget, *args):
@@ -602,54 +600,64 @@ class ItemSearchBox(VBox):
                                    vpadding=15,
                                    description=description,
                                    description_max_length=25,
-                                   parent=None)  
-        vbox.pack_start(welcome_page, True, True, vpadding)
+                                   parent=None)
+
+        # Placeholder revealer
+        welcome_revealer = Revealer()
+        welcome_revealer.set_transition_type(RevealerTransitionType.NONE)
+        welcome_revealer.set_reveal_child(True)
+        welcome_revealer.add(welcome_page)
+        vbox.pack_start(welcome_revealer, False, True, vpadding)
 
         # Results revealer
-        revealer = Revealer()
-        revealer.set_transition_type(RevealerTransitionType.NONE)
-        revealer.set_reveal_child(False)
-        revealer_box = VBox()
-        revealer.add(revealer_box)
-        vbox.pack_start(revealer, True, True, 0)
+        results_revealer = Revealer()
+        results_revealer.set_transition_type(RevealerTransitionType.NONE)
+        results_revealer.set_reveal_child(False)
+        results_revealer_box = VBox()
+        results_revealer.add(results_revealer_box)
+        vbox.pack_start(results_revealer, True, True, 0)
 
         # New variable button 
         new_variable_label = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
         new_variable = ExtendedModelButton(new_variable_label)
         new_variable.set_sensitive(False)
-        revealer_box.pack_start(new_variable, False, False, vpadding)
+        results_revealer_box.pack_start(new_variable, False, False, vpadding)
 
         # Search results 
         results = ItemResults(wikidata,
                               row_activated_callback=self.on_result_clicked,
                               row_activated_callback_arguments=[item_selection_button])
         results.set_visible(False)
-        self.search_entry.connect("search_changed", self.on_search_changed, revealer,
-                                                    welcome_page,
+        self.search_entry.connect("search_changed", self.on_search_changed, results_revealer,
+                                                    welcome_revealer,
                                                     new_variable, results,
                                                     item_selection_button, wikidata)
-        revealer_box.pack_start(results, True, True, vpadding)
+        results_revealer_box.pack_start(results, True, True, vpadding)
 
-    def on_new_variable(self, widget, event, wikidata):
+    def on_new_variable(self, widget, event, welcome_revealer, item_selection_button, wikidata):
         var = self.search_entry.get_text()
         labels = set([v["Label"] for v in wikidata.vars])
+
         if not var in labels and var != "":
             wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
+
+        item_selection_button.popover.trigger() 
         self.search_entry.set_text("")
+        welcome_revealer.set_reveal_child(False)
 
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
-        item_selection_button.set_label(row.content["Label"])
+        item_selection_button.label.set_label(row.content["Label"])
         item_selection_button.popover.hide()
 
-    def on_search_changed(self, widget, revealer, welcome_page, new_variable, results, item_selection_button, wikidata):
+    def on_search_changed(self, widget, results_revealer, welcome_revealer, new_variable, results, item_selection_button, wikidata):
 
         # Obtain query from search widget
         query = widget.get_text()
 
         if query != "":
             # Hide welcome and show search revealer
-            welcome_page.set_visible(False)
-            revealer.set_reveal_child(True)
+            welcome_revealer.set_reveal_child(False)
+            results_revealer.set_reveal_child(True)
 
             # Check variable existence
             labels = set([v["Label"] for v in wikidata.vars])
@@ -662,21 +670,21 @@ class ItemSearchBox(VBox):
             new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", description)
             new_variable.set_sensitive(True)
             new_variable.update_child()
-            new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
+            new_variable.connect("button_press_event", self.on_new_variable, welcome_revealer, item_selection_button, wikidata)
 
         if query == "":
             if wikidata.vars == []:
                 # Hide revealer and show placeholder
-                revealer.set_reveal_child(False)
-                welcome_page.set_visible(True)
+                results_revealer.set_reveal_child(False)
+                welcome_revealer.set_reveal_child(True)
 
             if wikidata.vars != []:
-                welcome_page.set_visible(False)
-                # Show new variable not selectable
+                # Show new variable not selectable and hide welcome revealer
                 new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
                 new_variable.set_sensitive(False)
                 new_variable.update_child()
                 new_variable.set_visible(True)
+                welcome_revealer.set_reveal_child(False)
 
         if query != "" or wikidata.vars != []:
             # Destroy and re-create listbox
@@ -687,7 +695,7 @@ class ItemSearchBox(VBox):
             results.scrolled.add(results.listbox)
          
             # Get data
-            data = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
+            data = [v for v in wikidata.vars if query in v["Label"] and query != v["Label"]] + wikidata.search(query)
          
             # Populate listbox
             for d in data:
@@ -724,11 +732,11 @@ class ButtonWithPopover(EventBox):
         self.connect ("button_press_event", self.clicked)
 
         # Label and style
-        label = Label()
-        label.set_label(text)
-        label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
-        StyleContext.add_class(label.get_style_context(), css)
-        self.add(label)
+        self.label = Label()
+        self.label.set_label(text)
+        self.label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
+        StyleContext.add_class(self.label.get_style_context(), css)
+        self.add(self.label)
 
     def set_popover_box(self, popover_box):
         self.popover = BetterPopover(self, popover_box)
