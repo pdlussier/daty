@@ -633,6 +633,7 @@ class ItemSearchBox(VBox):
 
         # Results revealer
         revealer = Revealer()
+        revealer.set_transition_type(RevealerTransitionType.NONE)
         revealer.set_reveal_child(False)
         revealer_box = VBox()
         revealer.add(revealer_box)
@@ -707,7 +708,7 @@ class ItemSearchBox(VBox):
             results.set_visible(True)
 
 class BetterPopover(PopoverMenu):
-    def __init__(self, parent, child, width=300, height=250, vpadding=2):
+    def __init__(self, parent, child, width=300, height=275, vpadding=2):
         PopoverMenu.__init__(self)
         self.width = width
         self.height = height
