@@ -542,32 +542,6 @@ class ItemResults(HBox):
             row = Result(var)
             self.listbox.add(row)
 
-   # def on_query_changed(self, widget, new_variable, button, wikidata):
-
-   #     # Obtain query from search widget
-   #     query = widget.get_text()
-   #     self.scrolled.remove(self.listbox)
-   #     print("searching", query)
-
-   #     if query != "":
-   #         new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", "Registra come variabile")
-   #         new_variable.set_sensitive(True)
-   #         new_variable.update_child()
-   #         new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
-   #     else:
-   #         new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
-   #         new_variable.set_sensitive(False)
-   #         new_variable.update_child()
-   #     self.listbox = ListBox()
-
-   #     results = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
-
-   #     for r in results:
-   #         row = Result(r)
-   #         self.listbox.add(row)
-   #     #self.listbox.connect("row_activated", self.on_row_activated, button)
-   #     self.scrolled.add(self.listbox)
-   #     self.listbox.show_all()
 
     def on_row_activated(self, listbox, row, row_activated_callback, row_activated_callback_arguments):
         row_activated_callback(self, listbox, row, *row_activated_callback_arguments)
@@ -656,6 +630,13 @@ class ItemSearchBox(VBox):
                                                     item_selection_button, wikidata)
         revealer_box.pack_start(results, True, True, vpadding)
 
+    def on_new_variable(self, widget, event, wikidata):
+        var = self.search_entry.get_text()
+        labels = set([v["Label"] for v in wikidata.vars])
+        if not var in labels and var != "":
+            wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
+        self.search_entry.set_text("")
+
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
         item_selection_button.set_label(row.content["Label"])
         item_selection_button.popover.hide()
@@ -670,8 +651,15 @@ class ItemSearchBox(VBox):
             welcome_page.set_visible(False)
             revealer.set_reveal_child(True)
 
+            # Check variable existence
+            labels = set([v["Label"] for v in wikidata.vars])
+            if query in labels:
+                description = "Seleziona variabile"
+            else:
+                description = "Registra variabile"
+
             # Set new variable label
-            new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", "Registra come variabile")
+            new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", description)
             new_variable.set_sensitive(True)
             new_variable.update_child()
             new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
@@ -683,6 +671,7 @@ class ItemSearchBox(VBox):
                 welcome_page.set_visible(True)
 
             if wikidata.vars != []:
+                welcome_page.set_visible(False)
                 # Show new variable not selectable
                 new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
                 new_variable.set_sensitive(False)
@@ -931,8 +920,6 @@ class WikidataEditor():
         gtk_style()
         win = WelcomeWindow(wikidata)
         win.show_all()
-#        add_ = AddItemsWindow(wikidata)
-#        add_.show_all()
         main()
 
 if __name__ == "__main__":
