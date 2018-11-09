@@ -625,64 +625,86 @@ class ItemSearchBox(VBox):
         # Placeholder
         welcome_page = WelcomePage(icon_name=icon_name,
                                    icon_size=96,
-                                   vpadding=25,
+                                   vpadding=15,
                                    description=description,
                                    description_max_length=25,
                                    parent=None)  
+        vbox.pack_start(welcome_page, True, True, vpadding)
+
+        # Results revealer
+        revealer = Revealer()
+        revealer.set_reveal_child(False)
+        revealer_box = VBox()
+        revealer.add(revealer_box)
+        vbox.pack_start(revealer, True, True, 0)
 
         # New variable button 
         new_variable_label = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
         new_variable = ExtendedModelButton(new_variable_label)
         new_variable.set_sensitive(False)
+        revealer_box.pack_start(new_variable, False, False, vpadding)
 
         # Search results 
         results = ItemResults(wikidata,
                               row_activated_callback=self.on_result_clicked,
                               row_activated_callback_arguments=[item_selection_button])
-        self.search_entry.connect("search_changed", self.on_search_changed, results, new_variable, item_selection_button, wikidata)
-
-        if wikidata.vars == []:
-            vbox.pack_start(welcome_page, True, True, vpadding)
-        else:
-            vbox.pack_start(new_variable, False, False, vpadding)
-            vbox.pack_start(results, True, True, vpadding)
+        results.set_visible(False)
+        self.search_entry.connect("search_changed", self.on_search_changed, revealer,
+                                                    welcome_page,
+                                                    new_variable, results,
+                                                    item_selection_button, wikidata)
+        revealer_box.pack_start(results, True, True, vpadding)
 
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
         item_selection_button.set_label(row.content["Label"])
         item_selection_button.popover.hide()
 
-    def on_search_changed(self, widget, results, new_variable, item_selection_button, wikidata):
+    def on_search_changed(self, widget, revealer, welcome_page, new_variable, results, item_selection_button, wikidata):
 
         # Obtain query from search widget
         query = widget.get_text()
 
-        # Process "New variable" button
         if query != "":
+            # Hide welcome and show search revealer
+            welcome_page.set_visible(False)
+            revealer.set_reveal_child(True)
+
+            # Set new variable label
             new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", "Registra come variabile")
             new_variable.set_sensitive(True)
             new_variable.update_child()
             new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
-        else:
-            new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
-            new_variable.set_sensitive(False)
-            new_variable.update_child()
 
-        # Destroy and re-create listbox
-        results.scrolled.remove(results.listbox)
-        results.listbox = ListBox()
-        StyleContext.add_class(results.listbox.get_style_context(), "itemResultsListBox")
-        results.listbox.connect("row_activated", results.on_row_activated, self.on_result_clicked, [item_selection_button])
-        results.scrolled.add(results.listbox)
+        if query == "":
+            if wikidata.vars == []:
+                # Hide revealer and show placeholder
+                revealer.set_reveal_child(False)
+                welcome_page.set_visible(True)
 
-        # Get data
-        data = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
+            if wikidata.vars != []:
+                # Show new variable not selectable
+                new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
+                new_variable.set_sensitive(False)
+                new_variable.update_child()
+                new_variable.set_visible(True)
 
-        # Populate listbox
-        for d in data:
-            row = Result(d)
-            results.listbox.add(row)
-        results.listbox.show_all()
-
+        if query != "" or wikidata.vars != []:
+            # Destroy and re-create listbox
+            results.scrolled.remove(results.listbox)
+            results.listbox = ListBox()
+            StyleContext.add_class(results.listbox.get_style_context(), "itemResultsListBox")
+            results.listbox.connect("row_activated", results.on_row_activated, self.on_result_clicked, [item_selection_button])
+            results.scrolled.add(results.listbox)
+         
+            # Get data
+            data = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
+         
+            # Populate listbox
+            for d in data:
+                row = Result(d)
+                results.listbox.add(row)
+            results.listbox.show_all()
+            results.set_visible(True)
 
 class BetterPopover(PopoverMenu):
     def __init__(self, parent, child, width=300, height=250, vpadding=2):
