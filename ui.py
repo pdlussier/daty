@@ -12,13 +12,18 @@ def gtk_style():
     css = b"""
 list {
     border-style: solid;
-    border-width: 0px 1px 1px 1px;
+    border-width: 0px 1px 0px 1px;
 }
 
 row {
     border-bottom-color: rgb(192,192,189);
     border-bottom-style: solid;
     border-bottom-width: 1px;
+}
+
+.itemResultsListBox {
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
 }
 
 .subject {
@@ -73,7 +78,7 @@ row {
     border-right-width: 5px;
     border-right-style: solid;
     border-right-color: rgb(186,189,182);
-    border-bottom-width: 5px;
+    border-bottom-width: 6px;
     border-bottom-style: solid;
     border-bottom-color: rgb(186,189,182);
     border-top-right-radius: 5px;
@@ -192,7 +197,7 @@ class WelcomeWindow(Window):
                                    description=daty_description,
                                    button_text="Aggiungi un vincolo",
                                    button_callback=self.on_constraint_search,
-                                   callback_arguments=[stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
+                                   button_callback_arguments=[stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
                                    parent=self)
         welcome_revealer.add(welcome_page)
 
@@ -265,7 +270,7 @@ class WelcomeWindow(Window):
         print(*args)
 
 class WelcomePage(HBox):
-    def __init__(self, icon_name='system-search-symbolic', description="Sample description", button_text="Sample button", button_callback=None, callback_arguments=[], parent=None):
+    def __init__(self, icon_name='system-search-symbolic', icon_size=192, vpadding=25, description="Sample description", description_max_length=50, button_text=None, button_callback=None, button_callback_arguments=[], parent=None):
         HBox.__init__(self)
 
         #Vertical Box
@@ -274,22 +279,27 @@ class WelcomePage(HBox):
 
         # Placeholder image
         icon = Image.new_from_icon_name(icon_name, size=IconSize.DIALOG)
-        icon.set_pixel_size(192)
+        icon.set_pixel_size(icon_size)
         icon.get_style_context().add_class("dim-label")
-        vbox.pack_start(icon, False, True, 25)
+        vbox.pack_start(icon, False, True, vpadding)
 
         # Welcome text box
         textbox = Box(orientation=Orientation(1))
         vbox.pack_start(textbox, False, True, 0)
 
         if description:
+
+            if not button_text:
+                tb_padding = vpadding
+            else:
+                tb_padding = 0
             # Welcome description
             for line in description.split("<br>"):
                 label = Label(label=line, halign=Align.FILL)
-                label.set_max_width_chars(50)
+                label.set_max_width_chars(description_max_length)
                 label.set_use_markup(True)
                 label.set_line_wrap(True)
-                textbox.pack_start(label, True, True, 0)
+                textbox.pack_start(label, True, True, tb_padding)
 
         if button_text:
 
@@ -297,12 +307,12 @@ class WelcomePage(HBox):
             button = Button.new_with_label(button_text)
             button.get_style_context().add_class(STYLE_CLASS_SUGGESTED_ACTION)
             if button_callback:
-                button.connect ("clicked", button_callback, *callback_arguments)
+                button.connect ("clicked", button_callback, *button_callback_arguments)
 
             # Welcome button box
             button_box = Box(orientation=Orientation(0))
             button_box.pack_start(button, True, False, 0)                
-            vbox.pack_start(button_box, False, False, 25)
+            vbox.pack_start(button_box, False, False, vpadding)
 
 class AddWindow(Window): # Da scrivere meglio
 
@@ -471,31 +481,34 @@ class LabelSearchPage(VBox):
         results.listbox.show_all()
 
 class SparqlPage(VBox):
-    def __init__(self, wikidata):
+    def __init__(self, wikidata, selection_vpadding=3):
         VBox.__init__(self)
 
         # Selection Box
-        selection_box = HBox()
+        selection_box = VBox()
         self.pack_start(selection_box, False, False, 0)
 
+        # label + Button vertical Box
+        label_button_vbox = VBox()
+
         # Label + Button horizontal Box
-        label_button_box = HBox()
+        label_button_hbox = HBox()
+        label_button_vbox.pack_start(label_button_hbox, True, True, selection_vpadding)
 
         # Select label
         label = Label()
         label.set_label("Seleziona")
-        label_button_box.pack_start(label, True, True, 2)
+        label_button_hbox.pack_start(label, True, True, 2)
 
         # Selected variable
-        variable = ButtonWithPopover(text="variabile", css="unselected")
-        label_button_box.pack_start(variable, True, True, 2)
-        label_button_box.remove(variable)
-        label_button_box.pack_start(variable, True, True, 2)
+        variable = ButtonWithPopover(text="variabile", css="unselected", vpadding=2)
+        variable.set_popover_box(ItemSearchBox(variable, wikidata, type="var"))
+        label_button_hbox.pack_start(variable, True, True, 2)
 
         # Search bar
         self.selection_bar = SearchBar()
         self.selection_bar.set_search_mode(True)
-        self.selection_bar.add(label_button_box)
+        self.selection_bar.add(label_button_vbox)
         selection_box.pack_start(self.selection_bar, expand=True, fill=True, padding=0)
 
         # Constraints
@@ -509,19 +522,19 @@ class SparqlPage(VBox):
         row.add_widget(triple_box, same_size_widget)
 
 class ItemResults(HBox):
-    def __init__(self, wikidata, search_entry, button, horizontal_padding=10):
+    def __init__(self, wikidata, row_activated_callback=None, row_activated_callback_arguments=[]):
         HBox.__init__(self)
-        self.search_entry = search_entry
-        self.pack_start(self.scrolled, True, True, padding=horizontal_padding)
 
         # Scrolled Window
         self.scrolled = ScrolledWindow()
         self.scrolled.set_policy(PolicyType.NEVER, PolicyType.AUTOMATIC)
+        self.pack_start(self.scrolled, True, True, padding=0)
 
         # ListBox             			# per dopo l'itwikicon. rendere eliminabili le variabili dichiarate
         self.listbox = ListBox()
+        StyleContext.add_class(self.listbox.get_style_context(), "itemResultsListBox")
         self.scrolled.add(self.listbox)
-        self.listbox.connect("row_activated", self.on_row_activated, button)
+        self.listbox.connect("row_activated", self.on_row_activated, row_activated_callback, row_activated_callback_arguments)
         self.listbox.show_all()
 
         # Populate listbox with sparql vars
@@ -529,35 +542,35 @@ class ItemResults(HBox):
             row = Result(var)
             self.listbox.add(row)
 
-    def on_query_changed(self, widget, new_variable, button, wikidata):
+   # def on_query_changed(self, widget, new_variable, button, wikidata):
 
-        # Obtain query from search widget
-        query = widget.get_text()
-        self.scrolled.remove(self.listbox)
-        print("searching", query)
+   #     # Obtain query from search widget
+   #     query = widget.get_text()
+   #     self.scrolled.remove(self.listbox)
+   #     print("searching", query)
 
-        if query != "":
-            new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", "Registra come variabile")
-            new_variable.set_sensitive(True)
-            new_variable.update_child()
-            new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
-        else:
-            new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
-            new_variable.set_sensitive(False)
-            new_variable.update_child()
-        self.listbox = ListBox()
+   #     if query != "":
+   #         new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", "Registra come variabile")
+   #         new_variable.set_sensitive(True)
+   #         new_variable.update_child()
+   #         new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
+   #     else:
+   #         new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
+   #         new_variable.set_sensitive(False)
+   #         new_variable.update_child()
+   #     self.listbox = ListBox()
 
-        results = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
+   #     results = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
 
-        for r in results:
-            row = Result(r)
-            self.listbox.add(row)
-        self.listbox.connect("row_activated", self.on_row_activated, button)
-        self.scrolled.add(self.listbox)
-        self.listbox.show_all()
+   #     for r in results:
+   #         row = Result(r)
+   #         self.listbox.add(row)
+   #     #self.listbox.connect("row_activated", self.on_row_activated, button)
+   #     self.scrolled.add(self.listbox)
+   #     self.listbox.show_all()
 
-    def on_row_activated(self, listbox, row, button):
-        print(row.content)
+    def on_row_activated(self, listbox, row, row_activated_callback, row_activated_callback_arguments):
+        row_activated_callback(self, listbox, row, *row_activated_callback_arguments)
         button.set_label(row.content["Label"])
         button.popover.hide()
 
@@ -586,40 +599,100 @@ class ExtendedModelButton(ModelButton):
         if not var in set([var["Label"] for var in wikidata.vars]) and var != "":
             wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
         search_entry.set_text("")
-        
 
 class ItemSearchBox(VBox):
-    def __init__(self, button, wikidata):
+    def __init__(self, item_selection_button, wikidata, type="var+search", vpadding=2, hpadding=4):
         VBox.__init__(self)
+        if type == "var":
+            icon_name = "bookmark-new-symbolic"
+            description = "Definisci una nuova variabile"
+        if type == "var+search":
+            icon_name = "system-search-symbolic"
+            description = "Cerca un item o una variabile, oppure <b>definiscine una nuova</b>"
+
+        # Horizontal box
+        hbox = HBox()
+        self.pack_start(hbox, True, True, 0)
+
+        # Vertical box
+        vbox = VBox()
+        hbox.pack_start(vbox, True, True, hpadding)
 
         # Search entry
-        search_entry = SearchEntry()
+        self.search_entry = SearchEntry()
+        vbox.pack_start(self.search_entry, False, False, vpadding)
+
+        # Placeholder
+        welcome_page = WelcomePage(icon_name=icon_name,
+                                   icon_size=96,
+                                   vpadding=25,
+                                   description=description,
+                                   description_max_length=25,
+                                   parent=None)  
 
         # New variable button 
         new_variable_label = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
         new_variable = ExtendedModelButton(new_variable_label)
         new_variable.set_sensitive(False)
 
-        
-        results = ItemResults(wikidata, search_entry, button)
-        search_entry.connect("search_changed", results.on_query_changed, new_variable, button, wikidata)
+        # Search results 
+        results = ItemResults(wikidata,
+                              row_activated_callback=self.on_result_clicked,
+                              row_activated_callback_arguments=[item_selection_button])
+        self.search_entry.connect("search_changed", self.on_search_changed, results, new_variable, item_selection_button, wikidata)
 
-        hbox = HBox()
-        vbox = VBox()
+        if wikidata.vars == []:
+            vbox.pack_start(welcome_page, True, True, vpadding)
+        else:
+            vbox.pack_start(new_variable, False, False, vpadding)
+            vbox.pack_start(results, True, True, vpadding)
 
-        vbox.pack_start(search_entry, False, False, 10)
-        vbox.pack_start(new_variable, False, False, 3)
-        hbox.pack_start(vbox, True, True, 10)
-        self.pack_start(hbox, False, True, 10)
-        self.pack_start(results, True, True, 3)
+    def on_result_clicked(self, item_results, listbox, row, item_selection_button):
+        item_selection_button.set_label(row.content["Label"])
+        item_selection_button.popover.hide()
+
+    def on_search_changed(self, widget, results, new_variable, item_selection_button, wikidata):
+
+        # Obtain query from search widget
+        query = widget.get_text()
+
+        # Process "New variable" button
+        if query != "":
+            new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", "Registra come variabile")
+            new_variable.set_sensitive(True)
+            new_variable.update_child()
+            new_variable.connect("button_press_event", new_variable.on_new_variable, self.search_entry, wikidata)
+        else:
+            new_variable.child = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
+            new_variable.set_sensitive(False)
+            new_variable.update_child()
+
+        # Destroy and re-create listbox
+        results.scrolled.remove(results.listbox)
+        results.listbox = ListBox()
+        StyleContext.add_class(results.listbox.get_style_context(), "itemResultsListBox")
+        results.listbox.connect("row_activated", results.on_row_activated, self.on_result_clicked, [item_selection_button])
+        results.scrolled.add(results.listbox)
+
+        # Get data
+        data = [var for var in wikidata.vars if query in var["Label"]] + wikidata.search(query)
+
+        # Populate listbox
+        for d in data:
+            row = Result(d)
+            results.listbox.add(row)
+        results.listbox.show_all()
+
 
 class BetterPopover(PopoverMenu):
-    def __init__(self, parent, child, width=500, height=300):
+    def __init__(self, parent, child, width=300, height=250, vpadding=2):
         PopoverMenu.__init__(self)
         self.width = width
         self.height = height
-        self.set_relative_to(parent) 
-        self.add(child)
+        self.set_relative_to(parent)
+        vbox = VBox()
+        vbox.pack_start(child, True, True, vpadding)
+        self.add(vbox)
 
     def trigger(self):
         if self.get_visible():
@@ -629,15 +702,14 @@ class BetterPopover(PopoverMenu):
             self.show_all()
 
 class ButtonWithPopover(EventBox):
-    def __init__(self, popover_box=None, text="var", css="unselected"):
+    def __init__(self, popover_box=None, text="var", css="unselected", vpadding=2):
         EventBox.__init__(self)
-
-        if popover_box == None: # test
-            popover_box = ItemSearchBox(self, Wikidata())
+        if popover_box == None:
+            popover_box = HBox()
 
         # Popover
-        popover = BetterPopover(self, popover_box)
-        self.connect ("button_press_event", self.clicked, popover)
+        self.popover = BetterPopover(self, popover_box, vpadding=vpadding)
+        self.connect ("button_press_event", self.clicked)
 
         # Label and style
         label = Label()
@@ -646,12 +718,11 @@ class ButtonWithPopover(EventBox):
         StyleContext.add_class(label.get_style_context(), css)
         self.add(label)
 
-    def remove_children(self, *args):
-        for arg in args:
-            self.remove(arg)
+    def set_popover_box(self, popover_box):
+        self.popover = BetterPopover(self, popover_box)
 
-    def clicked(self, widget, event, popover):
-        popover.trigger()
+    def clicked(self, widget, event):
+        self.popover.trigger()
 
 class EditableListBox(HBox):
     def __init__(self, new_row_callback=None, new_row_callback_arguments=[], delete_row_callback=None, delete_row_callback_arguments=[], horizontal_padding=0, new_row_height=14, selectable=0):
@@ -757,10 +828,13 @@ class TripleBox(VBox):
         hbox = HBox()
         self.pack_start(hbox, True, True, vertical_padding)
 
-        # S/P/O 
+        # S/P/O
         subject = ButtonWithPopover(text=first, css=css)
+        subject.set_popover_box(ItemSearchBox(subject, wikidata))
         prop = ButtonWithPopover(text=second, css=css)
+        prop.set_popover_box(ItemSearchBox(prop, wikidata))
         obj = ButtonWithPopover(text=third, css=css)
+        obj.set_popover_box(ItemSearchBox(obj, wikidata))
 
         # Tuple
         first = VBox()
