@@ -41,21 +41,41 @@ row {
     border-bottom-left-radius: 5px;
 }
 
-.unselected {
-
-    background-color: rgb(137.7,138.2,134.3);
+.empty { 
+    background-color: rgb(255,255,255);
     border-top-width: 5px;
     border-top-style: solid;
-    border-top-color: rgb(137.7,138.2,134.3);
+    border-top-color: rgb(255,255,255);
     border-left-width: 5px;
     border-left-style: solid;
-    border-left-color: rgb(137.7,138.2,134.3);
+    border-left-color: rgb(255,255,255);
     border-right-width: 5px;
     border-right-style: solid;
-    border-right-color: rgb(137.7,138.2,134.3);
+    border-right-color: rgb(255,255,255);
     border-bottom-width: 5px;
     border-bottom-style: solid;
-    border-bottom-color: rgb(137.7,138.2,134.3);
+    border-bottom-color: rgb(255,255,255);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.unselected {
+
+    background-color: rgb(186,189,182);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(186,189,182);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(186,189,182);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(186,189,182);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(186,189,182);
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -340,7 +360,7 @@ class AddWindow(Window): # Da scrivere meglio
         del self
 
 class NameDescriptionLabel(VBox):
-    def __init__(self, name, description):
+    def __init__(self, name, description, vertical_padding=2):
         # Init
         VBox.__init__(self)
         self.name = name
@@ -364,7 +384,7 @@ class NameDescriptionLabel(VBox):
         vbox = VBox()
         vbox.pack_start(name, True, True, 0)
         vbox.pack_start(description, True, True, 0)
-        self.pack_start(vbox, True, True, 2)
+        self.pack_start(vbox, True, True, vertical_padding)
 
 class Result(ListBoxRow):
     def __init__(self, result):
@@ -450,7 +470,6 @@ class LabelSearchPage(VBox):
         results.scrolled.add(results.listbox)
         results.listbox.show_all()
 
-
 class SparqlPage(VBox):
     def __init__(self, wikidata):
         VBox.__init__(self)
@@ -486,25 +505,33 @@ class SparqlPage(VBox):
     def new_constraint(self, row, wikidata):
         # Add a triple box
         triple_box = TripleBox(wikidata)
-        row.add_widget(triple_box)
+        same_size_widget = TripleBox(wikidata, css="empty")
+        row.add_widget(triple_box, same_size_widget)
 
-class ItemResultsBox(HBox):
-    def __init__(self, wikidata, search_entry, button):
+class ItemResults(HBox):
+    def __init__(self, wikidata, search_entry, button, horizontal_padding=10):
         HBox.__init__(self)
         self.search_entry = search_entry
+        self.pack_start(self.scrolled, True, True, padding=horizontal_padding)
+
+        # Scrolled Window
         self.scrolled = ScrolledWindow()
         self.scrolled.set_policy(PolicyType.NEVER, PolicyType.AUTOMATIC)
+
+        # ListBox             			# per dopo l'itwikicon. rendere eliminabili le variabili dichiarate
         self.listbox = ListBox()
         self.scrolled.add(self.listbox)
-        self.pack_start(self.scrolled, True, True, padding=10)
-        for var in wikidata.vars:
-            row = Result(var)
-            self.listbox.add(row)
         self.listbox.connect("row_activated", self.on_row_activated, button)
         self.listbox.show_all()
 
+        # Populate listbox with sparql vars
+        for var in wikidata.vars:
+            row = Result(var)
+            self.listbox.add(row)
 
     def on_query_changed(self, widget, new_variable, button, wikidata):
+
+        # Obtain query from search widget
         query = widget.get_text()
         self.scrolled.remove(self.listbox)
         print("searching", query)
@@ -564,11 +591,17 @@ class ExtendedModelButton(ModelButton):
 class ItemSearchBox(VBox):
     def __init__(self, button, wikidata):
         VBox.__init__(self)
+
+        # Search entry
         search_entry = SearchEntry()
-        vbox = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
-        new_variable = ExtendedModelButton(vbox)
+
+        # New variable button 
+        new_variable_label = NameDescriptionLabel("<b>Seleziona un item o una variabile</b>", "oppure definiscine una nuova")
+        new_variable = ExtendedModelButton(new_variable_label)
         new_variable.set_sensitive(False)
-        results = ItemResultsBox(wikidata, search_entry, button)
+
+        
+        results = ItemResults(wikidata, search_entry, button)
         search_entry.connect("search_changed", results.on_query_changed, new_variable, button, wikidata)
 
         hbox = HBox()
@@ -599,9 +632,8 @@ class ButtonWithPopover(EventBox):
     def __init__(self, popover_box=None, text="var", css="unselected"):
         EventBox.__init__(self)
 
-        if popover_box == None:
-            popover_box = VBox()
-            #popover_box.add(ItemSearchBox(self, wikidata))
+        if popover_box == None: # test
+            popover_box = ItemSearchBox(self, Wikidata())
 
         # Popover
         popover = BetterPopover(self, popover_box)
@@ -673,10 +705,11 @@ class EditableListBox(HBox):
 class EditableListBoxRow(ListBoxRow):
     def __init__(self, listbox, delete_callback=None, delete_callback_arguments=[], vertical_padding=10):
         ListBoxRow.__init__(self)
+        self.set_activatable(False)
 
         # Overlay
         self.overlay = Overlay()
-
+        
         # Remove Icon
         self.remove_icon = Image.new_from_icon_name('window-close-symbolic', IconSize.BUTTON)
 
@@ -686,40 +719,38 @@ class EditableListBoxRow(ListBoxRow):
         remove_row_eventbox.connect("button_press_event", self.on_delete_row, listbox, delete_callback, *delete_callback_arguments)
        
         # Remove Row Revealer
-        revealer = Revealer()
-        revealer.set_transition_type (RevealerTransitionType.NONE)
-        revealer.add(remove_row_eventbox)
-        revealer.set_reveal_child(False)
-
-        # Overlay Box
-        overlay_box = HBox()
-        overlay_box.pack_end(revealer, False, False, 4)
-        self.overlay.add_overlay(overlay_box)
+        self.revealer = Revealer()
+        self.revealer.set_transition_type (RevealerTransitionType.NONE)
+        self.revealer.add(remove_row_eventbox)
+        self.revealer.set_reveal_child(False)
+        self.revealer.set_property("halign", Align.END)
 
         # Event Box
         eventbox = EventBox()
+        eventbox.set_above_child(False)
         eventbox.add(self.overlay)
-        eventbox.connect("enter_notify_event", self.enter, revealer)
-        eventbox.connect("leave_notify_event", self.leave, revealer)
+        eventbox.connect("enter_notify_event", self.enter)
+        eventbox.connect("leave_notify_event", self.leave)
         self.add(eventbox)
 
-
-    def add_widget(self, widget):
-        self.overlay.add(widget) 
+    def add_widget(self, widget, same_size_widget): 
+        self.overlay.add(same_size_widget)
+        self.overlay.add_overlay(widget)
+        self.overlay.add_overlay(self.revealer)
         self.show_all()
  
     def on_delete_row(self, widget, event, listbox, callback, *callback_arguments):
         listbox.remove(self)
         callback(self, widget, event, *callback_arguments)
 
-    def enter(self, widget, event, revealer):
-        revealer.set_reveal_child(True)
+    def enter(self, widget, event):
+        self.revealer.set_reveal_child(True)
 
-    def leave(self, widget, event, revealer):
-        revealer.set_reveal_child(False)
+    def leave(self, widget, event):
+        self.revealer.set_reveal_child(False)
 
 class TripleBox(VBox):
-    def __init__(self, wikidata, vertical_padding=8):
+    def __init__(self, wikidata, css="unselected", first="Soggetto", second="Proprietà", third="Oggetto", vertical_padding=8):
         VBox.__init__(self)
 
         # Tuple Box
@@ -727,9 +758,9 @@ class TripleBox(VBox):
         self.pack_start(hbox, True, True, vertical_padding)
 
         # S/P/O 
-        subject = ButtonWithPopover(text="Soggetto", css="unselected")
-        prop = ButtonWithPopover(text="Proprietà", css="unselected")
-        obj = ButtonWithPopover(text="Oggetto", css="unselected")
+        subject = ButtonWithPopover(text=first, css=css)
+        prop = ButtonWithPopover(text=second, css=css)
+        obj = ButtonWithPopover(text=third, css=css)
 
         # Tuple
         first = VBox()
