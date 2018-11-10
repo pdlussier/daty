@@ -47,110 +47,65 @@ row {
     color: white;
 }
 
-.unselected {
-
-    background-color: rgb(186,189,182);
-    border-top-width: 5px;
-    border-top-style: solid;
-    border-top-color: rgb(186,189,182);
-    border-left-width: 5px;
-    border-left-style: solid;
-    border-left-color: rgb(186,189,182);
-    border-right-width: 5px;
-    border-right-style: solid;
-    border-right-color: rgb(186,189,182);
-    border-bottom-width: 6px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(186,189,182);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+.unselected { 
+    background-image: linear-gradient(180deg, #c2c0be, #c2c0be);
+    border-bottom-width:1px;
+    border-color: #5d5d64;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
     color: white;
+    padding: 4.5px;
+    text-shadow: 1px 1px #5d5d64;
 }
 
-.variable {
-    background-color: rgb(252.4,120.9,0);
-    border-top-width: 5px;
-    border-top-style: solid;
-    border-top-color: rgb(252.4,120.9,0);
-    border-left-width: 5px;
-    border-left-style: solid;
-    border-left-color: rgb(252.4,120.9,0);
-    border-right-width: 5px;
-    border-right-style: solid;
-    border-right-color: rgb(252.4,120.9,0);
-    border-bottom-width: 5px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(252.4,120.9,0);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-    color: rgb(255,255,255)
-}
-
-.property {
-    background-color: rgb(131.6,64.6,157.8);
-    border-top-width: 5px;
-    border-top-style: solid;
-    border-top-color: rgb(131.6,64.6,157.8);
-    border-left-width: 5px;
-    border-left-style: solid;
-    border-left-color: rgb(131.6,64.6,157.8);
-    border-right-width: 5px;
-    border-right-style: solid;
-    border-right-color: rgb(131.6,64.6,157.8);
-    border-bottom-width: 5px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(131.6,64.6,157.8);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+.variable { 
+    background-image: linear-gradient(180deg, #fb7d40, #fb7d40);
+    border-bottom-width:1px;
+    border-color: #a04127;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
     color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #a04127;
 }
 
-.item {
-    background-color: rgb(0,118.1,218.4);
-    border-top-width: 5px;
-    border-top-style: solid;
-    border-top-color: rgb(0,118.1,218.4);
-    border-left-width: 5px;
-    border-left-style: solid;
-    border-left-color: rgb(0,118.1,218.4);
-    border-right-width: 5px;
-    border-right-style: solid;
-    border-right-color: rgb(0,118.1,218.4);
-    border-bottom-width: 5px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(0,118.1,218.4);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+.property { 
+    background-image: linear-gradient(180deg, #b783cb, #b783cb);
+    border-bottom-width:1px;
+    border-color: #8864ac;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
     color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #8864ac;
 }
+
+.item { 
+    background-image: linear-gradient(180deg, #b58261, #b58261);
+    border-bottom-width:1px;
+    border-color: #865c41;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
+    color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #865c41;
+}
+
 
 .target { 
-    background-color: rgb(0,161.9,105.8);
-    border-top-width: 5px;
-    border-top-style: solid;
-    border-top-color: rgb(0,161.9,105.8);
-    border-left-width: 5px;
-    border-left-style: solid;
-    border-left-color: rgb(0,161.9,105.8);
-    border-right-width: 5px;
-    border-right-style: solid;
-    border-right-color: rgb(0,161.9,105.8);
-    border-bottom-width: 5px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(0,161.9,105.8);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
+    background-image: linear-gradient(180deg, #5bc17a, #52b47d);
+    border-bottom-width:1.5px;
+    border-color: #439768;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:1px;
     color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #2d6445;
 }
     """
     style_provider = CssProvider()
@@ -196,7 +151,7 @@ class WelcomeWindow(Window):
         # On demand stack
         stack = Stack()
         stack.set_transition_type (StackTransitionType.SLIDE_LEFT_RIGHT)
-        stack.set_transition_duration (1000)
+        stack.set_transition_duration (500)
 
         # Stack revealer 
         stack_revealer = Revealer()
@@ -207,11 +162,11 @@ class WelcomeWindow(Window):
 
         # Label search
         label_search_page = LabelSearchPage(wikidata, set_visible_search_entry=True)
-        stack.add_titled(label_search_page, "Cerca per etichetta", "Cerca per etichetta")
+        stack.add_titled(label_search_page, "Seleziona per etichetta", "Seleziona per etichetta")
 
         # Sparql Page
         sparql_page = SparqlPage(wikidata)
-        stack.add_titled(sparql_page, "Cerca per vincolo", "Cerca per vincolo")
+        stack.add_titled(sparql_page, "Seleziona per vincolo", "Seleziona per vincolo")
 
         # Back button
         back = Button.new_from_icon_name("go-previous-symbolic", size=IconSize.BUTTON)
@@ -237,7 +192,7 @@ class WelcomeWindow(Window):
         # Welcome page
         self.search_visible = False
         daty_description = """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva. <br>
-<b>Batti sulla tastiera per cercare o creare nuovi elementi</b> oppure clicca sul pulsante in basso per utilizzare la ricerca avanzata!"""
+<b>Digita sulla tastiera quello che vorresti consultare</b> oppure clicca sul pulsante in basso per utilizzare il form di selezione avanzata!"""
         welcome_page = WelcomePage(icon_name="system-search-symbolic",
                                    description=daty_description,
                                    button_text="Aggiungi un vincolo",
@@ -277,10 +232,10 @@ class WelcomeWindow(Window):
         stack_revealer.set_reveal_child(True)
 
         # Set search visible
-        stack.set_visible_child_full("Cerca per etichetta", StackTransitionType.NONE)
+        stack.set_visible_child_full("Seleziona per etichetta", StackTransitionType.NONE)
         self.search_visible = True 
         self.show_all()
-        search_entry = stack.get_child_by_name("Cerca per etichetta").search_entry
+        search_entry = stack.get_child_by_name("Seleziona per etichetta").search_entry
         search_entry.grab_focus_without_selecting()
 
     def deactivate_search(self, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
@@ -306,7 +261,7 @@ class WelcomeWindow(Window):
 
     def on_constraint_search(self, button, stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
         self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
-        stack.set_visible_child_full("Cerca per vincolo", StackTransitionType.NONE)
+        stack.set_visible_child_full("Seleziona per vincolo", StackTransitionType.NONE)
         sparql_page.constraints.eventbox.emit("button_press_event", Event())
         #add_items = AddItemsWindow(wikidata)
         #add_items.show_all()
@@ -694,6 +649,8 @@ class ItemSearchBox(VBox):
                 item_selection_button.set_css("item")
             if row.content["URI"].startswith("P"):
                 item_selection_button.set_css("property")
+        else:
+            item_selection_button.set_css("variable")
 
     def on_search_changed(self, widget, results_revealer, welcome_revealer, new_variable, results, item_selection_button, wikidata):
 
@@ -781,8 +738,8 @@ class ButtonWithPopover(EventBox):
         self.label = Label()
         self.label.set_label(text)
         self.label.set_use_markup(True)
-        self.label.set_line_wrap(True)
-        self.label.set_max_width_chars(25)
+        self.label.set_line_wrap(False)
+        self.label.set_max_width_chars(30)
         self.set_css(css)
         self.add(self.label)
 
@@ -802,7 +759,7 @@ class EditableListBox(HBox):
 
         # Scrolled window
         self.scrolled = ScrolledWindow()
-        self.scrolled.set_policy(PolicyType.NEVER, PolicyType.AUTOMATIC)
+        self.scrolled.set_policy(PolicyType.AUTOMATIC, PolicyType.AUTOMATIC)
         self.pack_start(self.scrolled, True, True, padding=horizontal_padding)
 
         # Listbox
@@ -895,6 +852,11 @@ class EditableListBoxRow(ListBoxRow):
 class TripleBox(VBox):
     def __init__(self, wikidata, css="unselected", first="Soggetto", second="Proprietà", third="Oggetto", vertical_padding=8):
         VBox.__init__(self)
+
+        # Data handling
+        self.triple = (0,0,0)
+        if css !=
+        wikidata.triples.append(self.triple)
 
         # Tuple Box
         hbox = HBox()

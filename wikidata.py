@@ -62,7 +62,7 @@ class Wikidata:
         self.verbose = verbose
         site = Site('wikidata', 'wikidata')
         self.repo = site.data_repository()
-        self.sparql_vars = []
+        self.triples = []
         self.vars = []
 
     def select(self, what, subject, property, object):
