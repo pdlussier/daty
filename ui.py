@@ -26,26 +26,6 @@ row {
     border-width: 1px 1px 1px 1px;
 }
 
-.subject {
-    background-color: rgb(114,159,207);
-    border-top-width: 5px;
-    border-top-style: solid;
-    border-top-color: rgb(114, 159, 207);
-    border-left-width: 5px;
-    border-left-style: solid;
-    border-left-color: rgb(114, 159, 207);
-    border-right-width: 5px;
-    border-right-style: solid;
-    border-right-color: rgb(114, 159, 207);
-    border-bottom-width: 5px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(114, 159, 207);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
 .empty { 
     background-color: rgb(255,255,255);
     border-top-width: 5px;
@@ -64,6 +44,7 @@ row {
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    color: white;
 }
 
 .unselected {
@@ -85,27 +66,91 @@ row {
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
-
+    color: white;
 }
 
-.target { 
-    background-color: rgb(90.8,192.8,121.6);
+.variable {
+    background-color: rgb(252.4,120.9,0);
     border-top-width: 5px;
     border-top-style: solid;
-    border-top-color: rgb(90.8,192.8,121.6);
+    border-top-color: rgb(252.4,120.9,0);
     border-left-width: 5px;
     border-left-style: solid;
-    border-left-color: rgb(90.8,192.8,121.6);
+    border-left-color: rgb(252.4,120.9,0);
     border-right-width: 5px;
     border-right-style: solid;
-    border-right-color: rgb(90.8,192.8,121.6);
+    border-right-color: rgb(252.4,120.9,0);
     border-bottom-width: 5px;
     border-bottom-style: solid;
-    border-bottom-color: rgb(90.8,192.8,121.6);
+    border-bottom-color: rgb(252.4,120.9,0);
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    color: rgb(255,255,255)
+}
+
+.property {
+    background-color: rgb(131.6,64.6,157.8);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(131.6,64.6,157.8);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(131.6,64.6,157.8);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(131.6,64.6,157.8);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(131.6,64.6,157.8);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: white;
+}
+
+.item {
+    background-color: rgb(0,118.1,218.4);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(0,118.1,218.4);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(0,118.1,218.4);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(0,118.1,218.4);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(0,118.1,218.4);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: white;
+}
+
+.target { 
+    background-color: rgb(0,161.9,105.8);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(0,161.9,105.8);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(0,161.9,105.8);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(0,161.9,105.8);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(0,161.9,105.8);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: white;
 }
     """
     style_provider = CssProvider()
@@ -501,7 +546,7 @@ class SparqlPage(VBox):
         label_button_hbox.pack_start(label, True, True, 2)
 
         # Selected variable
-        variable = ButtonWithPopover(text="variabile", css="unselected", vpadding=2)
+        variable = ButtonWithPopover(text="variabile", css="target", vpadding=2)
         variable.set_popover_box(ItemSearchBox(variable, wikidata, type="var"))
         label_button_hbox.pack_start(variable, True, True, 2)
 
@@ -566,12 +611,6 @@ class ExtendedModelButton(ModelButton):
         for child in children:
             self.remove(child)
 
-    def on_new_variable(self, widget, event, search_entry, wikidata):
-        var = search_entry.get_text()
-        if not var in set([var["Label"] for var in wikidata.vars]) and var != "":
-            wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
-        search_entry.set_text("")
-
 class ItemSearchBox(VBox):
     def __init__(self, item_selection_button, wikidata, type="var+search", vpadding=2, hpadding=4):
         VBox.__init__(self)
@@ -634,20 +673,27 @@ class ItemSearchBox(VBox):
                                                     item_selection_button, wikidata)
         results_revealer_box.pack_start(results, True, True, vpadding)
 
-    def on_new_variable(self, widget, event, welcome_revealer, item_selection_button, wikidata):
+    def on_new_variable(self, widget, event, welcome_revealer, item_selection_button, query, wikidata):
         var = self.search_entry.get_text()
         labels = set([v["Label"] for v in wikidata.vars])
 
         if not var in labels and var != "":
             wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
 
-        item_selection_button.popover.trigger() 
+        item_selection_button.popover.trigger()
+        item_selection_button.label.set_label(query)
+        item_selection_button.set_css("variable")
         self.search_entry.set_text("")
         welcome_revealer.set_reveal_child(False)
 
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
         item_selection_button.label.set_label(row.content["Label"])
         item_selection_button.popover.hide()
+        if "URI" in row.content.keys():
+            if row.content["URI"].startswith("Q"):
+                item_selection_button.set_css("item")
+            if row.content["URI"].startswith("P"):
+                item_selection_button.set_css("property")
 
     def on_search_changed(self, widget, results_revealer, welcome_revealer, new_variable, results, item_selection_button, wikidata):
 
@@ -670,7 +716,7 @@ class ItemSearchBox(VBox):
             new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", description)
             new_variable.set_sensitive(True)
             new_variable.update_child()
-            new_variable.connect("button_press_event", self.on_new_variable, welcome_revealer, item_selection_button, wikidata)
+            new_variable.connect("button_press_event", self.on_new_variable, welcome_revealer, item_selection_button, query, wikidata)
 
         if query == "":
             if wikidata.vars == []:
@@ -734,9 +780,15 @@ class ButtonWithPopover(EventBox):
         # Label and style
         self.label = Label()
         self.label.set_label(text)
+        self.label.set_use_markup(True)
+        self.label.set_line_wrap(True)
+        self.label.set_max_width_chars(25)
+        self.set_css(css)
+        self.add(self.label)
+
+    def set_css(self, css):
         self.label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
         StyleContext.add_class(self.label.get_style_context(), css)
-        self.add(self.label)
 
     def set_popover_box(self, popover_box):
         self.popover = BetterPopover(self, popover_box)
