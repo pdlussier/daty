@@ -66,6 +66,10 @@ class Wikidata:
         self.what = None
         self.vars = []
 
+    def selfcheck(self):
+        pprint(self.triples)
+        return all(not any(t == 0 for t in triple) for triple in self.triples)
+
     def select(self, what, triples):
         query = """SELECT what WHERE {
           SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
@@ -74,7 +78,7 @@ class Wikidata:
         """
         line = ""
         for triple in triples:
-            lines = line + triple[0] + " " + triple[1] + " " + triple[2] + ".\n"     
+            lines = line + triple['s'] + " " + triple['p'] + " " + triple['o'] + ".\n"     
         query = sub('triples', lines, query)
         query = sub('what', what, query)
         sparql = SparqlQuery()

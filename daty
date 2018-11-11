@@ -558,8 +558,6 @@ class SparqlPage(VBox):
     def new_constraint(self, row, wikidata):
         # Add a triple box
         triple_box = TripleBox(wikidata)
-        same_size_widget = TripleBox(wikidata, first=" ", second=" ", third=" ", css="empty")
-        #row.add_widget(triple_box, same_size_widget)
         row.add_widget(triple_box)
 
     def delete_constraint(self, row, widget, event): 
@@ -586,7 +584,6 @@ class ItemResults(HBox):
             row = Result(var)
             self.listbox.add(row)
 
-
     def on_row_activated(self, listbox, row, row_activated_callback, row_activated_callback_arguments):
         row_activated_callback(self, listbox, row, *row_activated_callback_arguments)
 
@@ -611,7 +608,7 @@ class ExtendedModelButton(ModelButton):
             self.remove(child)
 
 class ItemSearchBox(VBox):
-    def __init__(self, item_selection_button, wikidata, type="var+search", vpadding=2, hpadding=4):
+    def __init__(self, parent, wikidata, type="var+search", vpadding=2, hpadding=4):
         VBox.__init__(self)
         self.type = type
         if type == "var":
@@ -665,46 +662,60 @@ class ItemSearchBox(VBox):
         # Search results 
         results = ItemResults(wikidata,
                               row_activated_callback=self.on_result_clicked,
-                              row_activated_callback_arguments=[item_selection_button])
+                              row_activated_callback_arguments=[parent, wikidata])
         results.set_visible(False)
         self.search_entry.connect("search_changed", self.on_search_changed, results_revealer,
                                                     welcome_revealer,
                                                     new_variable, results,
-                                                    item_selection_button, wikidata)
+                                                    parent, wikidata)
         results_revealer_box.pack_start(results, True, True, vpadding)
 
-    def on_new_variable(self, widget, event, welcome_revealer, item_selection_button, query, wikidata):
+    def on_new_variable(self, widget, event, welcome_revealer, parent, query, wikidata):
+        # Extract data
         var = self.search_entry.get_text()
-        labels = set([v["Label"] for v in wikidata.vars])
-        
-        if not var in labels and var != "":
-            wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
+        data = {"Label":var, "Description":"Sparql variable"}
 
-        item_selection_button.popover.trigger()
-        item_selection_button.label.set_label(query)
-        item_selection_button.set_css("variable")
+        # Eventually add data
+        labels = set([v["Label"] for v in wikidata.vars])
+        if not var in labels and var != "":
+            wikidata.vars.append(data)
+
+        # Set data
+        parent.set_data(data)
+        parent.popover.trigger()
+
+        # Adjust button, search entry and addable status after selection
+        parent.set_css("variable")
         self.search_entry.set_text("")
         welcome_revealer.set_reveal_child(False)
-        self.
+        if wikidata.selfcheck():
+            print("ready")
+        else:
+            print("not ready")
 
-    def on_result_clicked(self, item_results, listbox, row, item_selection_button):
-        item_selection_button.label.set_label(row.content["Label"])
-        item_selection_button.data = row.content
-        item_selection_button.popover.hide()
-        self.process_type(row.content, item_selection_button)
 
-    def process_type(self, dictionary, item_selection_button):
+    def on_result_clicked(self, item_results, listbox, row, parent, wikidata):
+        parent.set_data(row.content)
+        parent.popover.hide()
+        self.process_type(row.content, parent)
+        if wikidata.selfcheck():
+            print("ready")
+        else:
+            print("not ready")
+
+    def process_type(self, dictionary, parent):
         if "URI" in dictionary.keys():
             if dictionary["URI"].startswith("Q"):
-                item_selection_button.set_css("item")
+                parent.set_css("item")
             if dictionary["URI"].startswith("P"):
-                item_selection_button.set_css("property")
+                parent.set_css("property")
             if dictionary["URI"] == "":
-                item_selection_button.set_css("variable")
+                parent.set_css("variable")
         else:
-            item_selection_button.set_css("variable")
+            parent.set_css("variable")
 
-    def on_search_changed(self, widget, results_revealer, welcome_revealer, new_variable, results, item_selection_button, wikidata):
+    def on_search_changed(self, widget, results_revealer, welcome_revealer,
+                                new_variable, results, parent, wikidata):
 
         # Obtain query from search widget
         query = widget.get_text()
@@ -725,7 +736,7 @@ class ItemSearchBox(VBox):
             new_variable.child = NameDescriptionLabel("<b>" + query + "</b>", description)
             new_variable.set_sensitive(True)
             new_variable.update_child()
-            new_variable.connect("button_press_event", self.on_new_variable, welcome_revealer, item_selection_button, query, wikidata)
+            new_variable.connect("button_press_event", self.on_new_variable, welcome_revealer, parent, query, wikidata)
 
         if query == "":
             if wikidata.vars == []:
@@ -746,7 +757,7 @@ class ItemSearchBox(VBox):
             results.scrolled.remove(results.listbox)
             results.listbox = ListBox()
             StyleContext.add_class(results.listbox.get_style_context(), "itemResultsListBox")
-            results.listbox.connect("row_activated", results.on_row_activated, self.on_result_clicked, [item_selection_button])
+            results.listbox.connect("row_activated", results.on_row_activated, self.on_result_clicked, [parent, wikidata])
             results.scrolled.add(results.listbox)
          
             # Get data
@@ -810,6 +821,10 @@ class ButtonWithPopover(EventBox):
 
     def clicked(self, widget, event):
         self.popover.trigger()
+
+    def set_data(self, data):
+        self.data = data
+        self.label.set_label(data["Label"])
 
 class EditableListBox(HBox):
     def __init__(self, new_row_callback=None, new_row_callback_arguments=[], delete_row_callback=None, delete_row_callback_arguments=[], horizontal_padding=0, new_row_height=14, selectable=0):
@@ -917,7 +932,7 @@ class TripleBox(VBox):
         VBox.__init__(self)
 
         # Data handling
-        self.triple = (0,0,0)
+        self.triple = {'s':{},'p':{},'o':{}}
         #if css !=
         wikidata.triples.append(self.triple)
 
@@ -926,20 +941,20 @@ class TripleBox(VBox):
         self.pack_start(hbox, True, True, vertical_padding)
 
         # S/P/O
-        subject = ButtonWithPopover(text=first, css=css, data=self.triple[0])
-        subject.set_popover_box(ItemSearchBox(subject, wikidata))
-        prop = ButtonWithPopover(text=second, css=css, data=self.triple[1])
-        prop.set_popover_box(ItemSearchBox(prop, wikidata))
-        obj = ButtonWithPopover(text=third, css=css, data=self.triple[2])
-        obj.set_popover_box(ItemSearchBox(obj, wikidata))
+        self.subject = ButtonWithPopover(text=first, css=css, data=self.triple['s'])
+        self.subject.set_popover_box(ItemSearchBox(self.subject, wikidata))
+        self.prop = ButtonWithPopover(text=second, css=css, data=self.triple['p'])
+        self.prop.set_popover_box(ItemSearchBox(self.prop, wikidata))
+        self.obj = ButtonWithPopover(text=third, css=css, data=self.triple['o'])
+        self.obj.set_popover_box(ItemSearchBox(self.obj, wikidata))
 
         # Tuple
         first = VBox()
         second = VBox()
         third = VBox()
-        first.pack_start(subject, False, False, 0)
-        second.pack_start(prop, False, False, 0)
-        third.pack_start(obj, False, False, 0)
+        first.pack_start(self.subject, False, False, 0)
+        second.pack_start(self.prop, False, False, 0)
+        third.pack_start(self.obj, False, False, 0)
 
         # Tuple Box
         tuple_box = HBox(homogeneous=True)
