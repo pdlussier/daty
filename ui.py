@@ -262,7 +262,7 @@ class WelcomeWindow(Window):
     def on_constraint_search(self, button, stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
         self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
         stack.set_visible_child_full("Seleziona per vincolo", StackTransitionType.NONE)
-        sparql_page.constraints.eventbox.emit("button_press_event", Event())
+        #sparql_page.constraints.eventbox.emit("button_press_event", Event())
         #add_items = AddItemsWindow(wikidata)
         #add_items.show_all()
 
@@ -514,6 +514,7 @@ class SparqlPage(VBox):
         # Constraints
         self.constraints = EditableListBox(new_row_callback=self.new_constraint, new_row_callback_arguments = [wikidata], horizontal_padding=0)
         self.pack_start(self.constraints, True, True, 0)
+        self.constraints.eventbox.emit("button_press_event", Event())
 
     def new_constraint(self, row, wikidata):
         # Add a triple box
@@ -631,7 +632,7 @@ class ItemSearchBox(VBox):
     def on_new_variable(self, widget, event, welcome_revealer, item_selection_button, query, wikidata):
         var = self.search_entry.get_text()
         labels = set([v["Label"] for v in wikidata.vars])
-
+        
         if not var in labels and var != "":
             wikidata.vars.append({"Label":var, "Description":"Sparql variable"})
 
@@ -644,13 +645,20 @@ class ItemSearchBox(VBox):
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
         item_selection_button.label.set_label(row.content["Label"])
         item_selection_button.popover.hide()
-        if "URI" in row.content.keys():
-            if row.content["URI"].startswith("Q"):
+        print(row.content)
+        self.process_type(row.content, item_selection_button)
+
+    def process_type(self, dictionary, item_selection_button):
+        if "URI" in dictionary.keys():
+            if dictionary["URI"].startswith("Q"):
                 item_selection_button.set_css("item")
-            if row.content["URI"].startswith("P"):
+            if dictionary["URI"].startswith("P"):
                 item_selection_button.set_css("property")
+            if dictionary["URI"] == "":
+                item_selection_button.set_css("variable")
         else:
             item_selection_button.set_css("variable")
+
 
     def on_search_changed(self, widget, results_revealer, welcome_revealer, new_variable, results, item_selection_button, wikidata):
 
@@ -746,6 +754,9 @@ class ButtonWithPopover(EventBox):
     def set_css(self, css):
         self.label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
         StyleContext.add_class(self.label.get_style_context(), css)
+        self.label.set_css_name(css)
+        gtk_style()
+        self.label.show_all()
 
     def set_popover_box(self, popover_box):
         self.popover = BetterPopover(self, popover_box)
@@ -855,7 +866,7 @@ class TripleBox(VBox):
 
         # Data handling
         self.triple = (0,0,0)
-        if css !=
+        #if css !=
         wikidata.triples.append(self.triple)
 
         # Tuple Box
