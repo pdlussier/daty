@@ -27,7 +27,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
 from wikidata import Wikidata
-from gi.repository.Gdk import Color, Event, Screen
+from gi.repository.Gdk import Color, Event, EventMask, Screen
 from gi.repository.Gio import ThemedIcon
 from gi.repository.Gtk import main, main_quit, Align, Box, Button, CheckButton, CssProvider, Entry, EventBox, HBox, IconSize, Image, HeaderBar, Label, ListBox, ListBoxRow, ModelButton, Orientation, Overlay, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, SelectionMode, Stack, StackSwitcher, StackTransitionType, StyleContext, TextView, VBox, Window, WindowPosition, WrapMode, STYLE_CLASS_DESTRUCTIVE_ACTION, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from gi.repository.GLib import unix_signal_add, PRIORITY_DEFAULT
@@ -537,7 +537,9 @@ class SparqlPage(VBox):
         selection_box.pack_start(self.selection_bar, expand=True, fill=True, padding=0)
 
         # Constraints
-        self.constraints = EditableListBox(new_row_callback=self.new_constraint, new_row_callback_arguments = [wikidata], horizontal_padding=0)
+        self.constraints = EditableListBox(new_row_callback=self.new_constraint, new_row_callback_arguments=[wikidata],
+                                           delete_row_callback=self.delete_constraint, delete_row_callback_arguments=[],
+                                           horizontal_padding=0)
         self.pack_start(self.constraints, True, True, 0)
         self.constraints.eventbox.emit("button_press_event", Event())
 
@@ -545,7 +547,11 @@ class SparqlPage(VBox):
         # Add a triple box
         triple_box = TripleBox(wikidata)
         same_size_widget = TripleBox(wikidata, first=" ", second=" ", third=" ", css="empty")
-        row.add_widget(triple_box, same_size_widget)
+        #row.add_widget(triple_box, same_size_widget)
+        row.add_widget(triple_box)
+
+    def delete_constraint(self, row, widget, event): 
+        pass
 
 class ItemResults(HBox):
     def __init__(self, wikidata, row_activated_callback=None, row_activated_callback_arguments=[]):
@@ -669,8 +675,8 @@ class ItemSearchBox(VBox):
 
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
         item_selection_button.label.set_label(row.content["Label"])
+        item_selection_button.data = row.content
         item_selection_button.popover.hide()
-        print(row.content)
         self.process_type(row.content, item_selection_button)
 
     def process_type(self, dictionary, item_selection_button):
@@ -758,11 +764,12 @@ class BetterPopover(PopoverMenu):
             self.show_all()
 
 class ButtonWithPopover(EventBox):
-    def __init__(self, popover_box=None, text="var", css="unselected", vpadding=2):
+    def __init__(self, popover_box=None, text="var", css="unselected", vpadding=2, data=None):
         EventBox.__init__(self)
+        self.data = data
         if popover_box == None:
             popover_box = HBox()
-
+ 
         # Popover
         self.popover = BetterPopover(self, popover_box, vpadding=vpadding)
         self.connect ("button_press_event", self.clicked)
@@ -801,6 +808,7 @@ class EditableListBox(HBox):
         # Listbox
         self.listbox = ListBox()
         self.listbox.set_selection_mode(SelectionMode(selectable))
+        self.listbox.connect("motion-notify-event", self.motion)
         self.scrolled.add(self.listbox)
 
         # New row
@@ -822,6 +830,23 @@ class EditableListBox(HBox):
                                                delete_row_callback, delete_row_callback_arguments)
         new_row.add(self.eventbox)
 
+    def motion(self, listbox, event):
+        row = listbox.get_row_at_y(event.y)
+        try:
+            self.lastrow
+        except:
+            self.lastrow = row
+        if row != self.lastrow:
+            try:
+                row.revealer.set_reveal_child(True)
+            except:
+                pass
+            try:
+                self.lastrow.revealer.set_reveal_child(False)
+            except:
+                pass
+            self.lastrow = row
+
     def on_new_row(self, widget, event, new_row,
                                         new_row_callback, new_row_callback_arguments,
                                         delete_row_callback, delete_row_callback_arguments):
@@ -842,10 +867,12 @@ class EditableListBoxRow(ListBoxRow):
     def __init__(self, listbox, delete_callback=None, delete_callback_arguments=[], vertical_padding=10):
         ListBoxRow.__init__(self)
         self.set_activatable(False)
+        self.add_events(EventMask.ENTER_NOTIFY_MASK)
 
         # Overlay
         self.overlay = Overlay()
-        
+        self.add(self.overlay)
+ 
         # Remove Icon
         self.remove_icon = Image.new_from_icon_name('window-close-symbolic', IconSize.BUTTON)
 
@@ -860,30 +887,15 @@ class EditableListBoxRow(ListBoxRow):
         self.revealer.add(remove_row_eventbox)
         self.revealer.set_reveal_child(False)
         self.revealer.set_property("halign", Align.END)
-
-        # Event Box
-        eventbox = EventBox()
-        eventbox.set_above_child(False)
-        eventbox.add(self.overlay)
-        eventbox.connect("enter_notify_event", self.enter)
-        eventbox.connect("leave_notify_event", self.leave)
-        self.add(eventbox)
-
-    def add_widget(self, widget, same_size_widget): 
-        self.overlay.add(same_size_widget)
-        self.overlay.add_overlay(widget)
         self.overlay.add_overlay(self.revealer)
-        self.show_all()
+
+    def add_widget(self, widget): #, same_size_widget):
+        self.child = widget
+        self.overlay.add(widget)
  
     def on_delete_row(self, widget, event, listbox, callback, *callback_arguments):
         listbox.remove(self)
         callback(self, widget, event, *callback_arguments)
-
-    def enter(self, widget, event):
-        self.revealer.set_reveal_child(True)
-
-    def leave(self, widget, event):
-        self.revealer.set_reveal_child(False)
 
 class TripleBox(VBox):
     def __init__(self, wikidata, css="unselected", first="Soggetto", second="Proprietà", third="Oggetto", vertical_padding=8):
@@ -899,11 +911,11 @@ class TripleBox(VBox):
         self.pack_start(hbox, True, True, vertical_padding)
 
         # S/P/O
-        subject = ButtonWithPopover(text=first, css=css)
+        subject = ButtonWithPopover(text=first, css=css, data=self.triple[0])
         subject.set_popover_box(ItemSearchBox(subject, wikidata))
-        prop = ButtonWithPopover(text=second, css=css)
+        prop = ButtonWithPopover(text=second, css=css, data=self.triple[1])
         prop.set_popover_box(ItemSearchBox(prop, wikidata))
-        obj = ButtonWithPopover(text=third, css=css)
+        obj = ButtonWithPopover(text=third, css=css, data=self.triple[2])
         obj.set_popover_box(ItemSearchBox(obj, wikidata))
 
         # Tuple
