@@ -1,5 +1,10 @@
 # Daty
 
+[![Python 3.x Support](https://img.shields.io/pypi/pyversions/Django.svg)](https://python.org)
+[![License: GPL v3+](https://img.shields.io/badge/license-GPL%20v3%2B-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+
+![Daty welcome screen](screenshots/intro.gif)
+
 *Daty* is a free cross-platform advanced Wikidata editor adhering to [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/stable/), intended to enable simpler editing workflows and faster deployment of requested user features. You can use *Daty* to search, select, read, batch edit items, script actions, share and visualize proposed changes and bots.
 
 *Daty* is written in Python 3 and it uses [GTK+ 3.0](https://developer.gnome.org/hig/stable/) python bindings for interface organization and drawing.
@@ -16,9 +21,11 @@ You have to install `Gobject` python bindings and install `pywikibot` library on
     # apt install python3-gi gir1.2-gtk3.0 pip3
     # pip3 install pywikibot
 
-At the moment, you need to manually configure your wikimedia account to use *Daty*. 
+At the moment, you need to manually configure your wikimedia account to use *Daty*. Actually, you just need to create bot credentials at [this page](https://www.wikidata.org/wiki/Special:BotPasswords) and include them in `user-config-example.py` and `user-password-example.py`. After doing that, remove the `-example` part from their names.
 
-    python3 ui.py
+Now, to test the program, just run
+
+    ./ui.py
 
 ## About
 
