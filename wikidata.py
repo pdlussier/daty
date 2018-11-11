@@ -57,6 +57,13 @@ def load(path):
     f.close()
     return variable
 
+class Query:
+    def __init__(self):
+        self.what = None
+        self.vars = []
+        self.triples = []
+
+
 class Wikidata:
     def __init__(self, verbose=True):
         self.verbose = verbose
