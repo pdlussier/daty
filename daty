@@ -196,6 +196,12 @@ class WelcomeWindow(Window):
         # Back button
         back = Button.new_from_icon_name("go-previous-symbolic", size=IconSize.BUTTON)
 
+        # Add Button
+        add = Button.new_with_label ("Apri")
+        add.get_style_context().add_class(STYLE_CLASS_SUGGESTED_ACTION)
+        add.set_sensitive(False)
+        #addButton.connect ("clicked", self.on_ConfirmNewChain_clicked, self, PriceEntry, RatioEntry, AmountEntry)
+
         # Switcher
         switcher = StackSwitcher()
         switcher.set_stack(stack)
@@ -222,34 +228,41 @@ class WelcomeWindow(Window):
                                    description=daty_description,
                                    button_text="Aggiungi un vincolo",
                                    button_callback=self.on_constraint_search,
-                                   button_callback_arguments=[stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
+                                   button_callback_arguments=[stack, sparql_page, hb, open_session, back, add, title_revealer, switcher_revealer, stack_revealer, welcome_revealer],
                                    parent=self)
         welcome_revealer.add(welcome_page)
 
         # Write to search
-        self.connect("key_press_event", self.on_key_press, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
-        back.connect("clicked", self.on_back_button, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+        self.connect("key_press_event", self.on_key_press, hb, open_session, back, add,
+                                                           title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+        back.connect("clicked", self.on_back_button, hb, open_session, back, add,
+                                                     title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
-    def on_key_press(self, widget, event, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+    def on_key_press(self, widget, event, hb, open_session, back, add, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         if self.search_visible:
             if event.keyval == 65307:
-                self.deactivate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+                self.deactivate_search(hb, open_session, back, add,
+                                       title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
         if not self.search_visible:
             if not event.keyval == 65307:
-                self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+                self.activate_search(hb, open_session, back, add,
+                                     title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
-    def on_back_button(self, button, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
-        self.deactivate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+    def on_back_button(self, button, hb, open_session, back, add, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+        self.deactivate_search(hb, open_session, back, add,
+                               title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
 
-    def activate_search(self, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+    def activate_search(self, hb, open_session, back, add, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         # Hide welcome and title
         welcome_revealer.set_reveal_child(False)
         self.remove(welcome_revealer)
         title_revealer.set_reveal_child(False)
         hb.remove(open_session)
+        hb.set_show_close_button(False)
 
         # Show switcher, stack and back
         hb.pack_start(back)
+        hb.pack_end(add)
         hb.set_custom_title(switcher_revealer)
         switcher_revealer.set_reveal_child(True)
         hb.show_all()
@@ -263,12 +276,14 @@ class WelcomeWindow(Window):
         search_entry = stack.get_child_by_name("Seleziona per etichetta").search_entry
         search_entry.grab_focus_without_selecting()
 
-    def deactivate_search(self, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
+    def deactivate_search(self, hb, open_session, back, add, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer):
         # Hide stack, switcher and back
         stack_revealer.set_reveal_child(False)
         self.remove(stack_revealer)
         switcher_revealer.set_reveal_child(False)
         hb.remove(back)
+        hb.remove(add)
+        hb.set_show_close_button(True)
 
         # Show title and welcome
         hb.set_custom_title(title_revealer)
@@ -280,19 +295,16 @@ class WelcomeWindow(Window):
 
         # Set search not visible
         self.search_visible = False
-        search_entry = stack.get_child_by_name("Cerca per etichetta").search_entry
+        search_entry = stack.get_child_by_name("Seleziona per etichetta").search_entry
         search_entry.set_text("")
         self.show_all()
 
-    def on_constraint_search(self, button, stack, sparql_page, hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
-        self.activate_search(hb, open_session, back, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
+    def on_constraint_search(self, button, stack, sparql_page, hb, open_session, back, add, title_revealer, switcher_revealer, stack_revealer, welcome_revealer):
+        self.activate_search(hb, open_session, back,  add, title_revealer, switcher_revealer, stack_revealer, stack, welcome_revealer)
         stack.set_visible_child_full("Seleziona per vincolo", StackTransitionType.NONE)
         #sparql_page.constraints.eventbox.emit("button_press_event", Event())
         #add_items = AddItemsWindow(wikidata)
         #add_items.show_all()
-
-    def on_tet(self, *args):
-        print(*args)
 
 class WelcomePage(HBox):
     def __init__(self, icon_name='system-search-symbolic', icon_size=192, vpadding=25, description="Sample description", description_max_length=50, button_text=None, button_callback=None, button_callback_arguments=[], parent=None):
@@ -526,7 +538,7 @@ class SparqlPage(VBox):
         label_button_hbox.pack_start(label, True, True, 2)
 
         # Selected variable
-        variable = ButtonWithPopover(text="variabile", css="target", vpadding=2)
+        variable = ButtonWithPopover(text="variabile", css="target", vpadding=2, data=wikidata.what)
         variable.set_popover_box(ItemSearchBox(variable, wikidata, type="var"))
         label_button_hbox.pack_start(variable, True, True, 2)
 
@@ -601,6 +613,7 @@ class ExtendedModelButton(ModelButton):
 class ItemSearchBox(VBox):
     def __init__(self, item_selection_button, wikidata, type="var+search", vpadding=2, hpadding=4):
         VBox.__init__(self)
+        self.type = type
         if type == "var":
             icon_name = "bookmark-new-symbolic"
             description = "Definisci una nuova variabile"
@@ -672,6 +685,7 @@ class ItemSearchBox(VBox):
         item_selection_button.set_css("variable")
         self.search_entry.set_text("")
         welcome_revealer.set_reveal_child(False)
+        self.
 
     def on_result_clicked(self, item_results, listbox, row, item_selection_button):
         item_selection_button.label.set_label(row.content["Label"])
@@ -689,7 +703,6 @@ class ItemSearchBox(VBox):
                 item_selection_button.set_css("variable")
         else:
             item_selection_button.set_css("variable")
-
 
     def on_search_changed(self, widget, results_revealer, welcome_revealer, new_variable, results, item_selection_button, wikidata):
 
@@ -737,7 +750,9 @@ class ItemSearchBox(VBox):
             results.scrolled.add(results.listbox)
          
             # Get data
-            data = [v for v in wikidata.vars if query in v["Label"] and query != v["Label"]] + wikidata.search(query)
+            data = [v for v in wikidata.vars if query in v["Label"] and query != v["Label"]]
+            if self.type != "var":
+                data = data + wikidata.search(query)
          
             # Populate listbox
             for d in data:
@@ -778,7 +793,7 @@ class ButtonWithPopover(EventBox):
         self.label = Label()
         self.label.set_label(text)
         self.label.set_use_markup(True)
-        self.label.set_line_wrap(False)
+        self.label.set_line_wrap(True)
         self.label.set_max_width_chars(30)
         self.set_css(css)
         self.add(self.label)

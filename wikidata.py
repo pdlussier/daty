@@ -63,17 +63,19 @@ class Wikidata:
         site = Site('wikidata', 'wikidata')
         self.repo = site.data_repository()
         self.triples = []
+        self.what = None
         self.vars = []
 
-    def select(self, what, subject, property, object):
+    def select(self, what, triples):
         query = """SELECT what WHERE {
           SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-          subject property object.
+          triples
         }
         """
-        query = sub('subject', subject, query)
-        query = sub('property', property, query)
-        query = sub('object', object, query)
+        line = ""
+        for triple in triples:
+            lines = line + triple[0] + " " + triple[1] + " " + triple[2] + ".\n"     
+        query = sub('triples', lines, query)
         query = sub('what', what, query)
         sparql = SparqlQuery()
         results = sparql.query(query)['results']['bindings']
