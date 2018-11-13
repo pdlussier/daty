@@ -19,5 +19,7 @@
 'select variable': "Seleziona variabile",
 'subject': "Soggetto",
 'property': "Proprietà",
-'object': "Oggetto"
+'object': "Oggetto",
+'variable tooltip':"Seleziona la variabile, soggetta ai vincoli, che sarà restituita dalla query.",
+'item tooltip':"Seleziona un item o una variabile per il membro del vincolo."
 }

@@ -53,11 +53,14 @@ class WelcomePage(HBox):
             vbox.pack_start(button_box, False, False, vpadding)
 
 class NameDescriptionLabel(VBox):
-    def __init__(self, name, description, vertical_padding=2):
+    def __init__(self, name, description, vertical_padding=2, description_max_length=300):
         # Init
         VBox.__init__(self)
         self.name = name
-        self.description = description
+        if len(description) > description_max_length:
+            self.description = description[0:description_max_length] + "..."
+        else:
+            self.description = description
 
         # Name
         name = Label(halign=Align.START)
@@ -156,8 +159,10 @@ class BetterPopover(PopoverMenu):
 
 class ButtonWithPopover(EventBox):
     def __init__(self, popover_box=None, data=None,
-                       text="var", css="unselected", vpadding=2):
+                       text="var", tooltip="tooltip",
+                       css="unselected", vpadding=2):
         EventBox.__init__(self)
+        self.tooltip = tooltip
         self.data = data
         if popover_box == None:
             popover_box = HBox()
@@ -176,7 +181,7 @@ class ButtonWithPopover(EventBox):
         self.add(self.label)
 
     def set_css(self, css):
-        self.label.set_tooltip_text("Seleziona la variabile o il valore da assumere come soggetto")
+        self.label.set_tooltip_text(self.tooltip)
         StyleContext.add_class(self.label.get_style_context(), css)
         self.label.set_css_name(css)
         gtk_style()
@@ -262,11 +267,11 @@ class EditableListBox(HBox):
             self.listbox.remove(new_row)
 
         # Create new row and give it to callback
-        row = EditableListBoxRow(self.listbox, delete=True, delete_callback=delete_row_callback, delete_callback_arguments=delete_row_callback_arguments)
-        new_row_callback(row, *new_row_callback_arguments)
+        self.row = EditableListBoxRow(self.listbox, delete=True, delete_callback=delete_row_callback, delete_callback_arguments=delete_row_callback_arguments)
+        new_row_callback(self.row, *new_row_callback_arguments)
 
         # Add the new row to the listbox with the "New row" button
-        self.listbox.add(row)
+        self.listbox.add(self.row)
         if self.new_row:
             self.listbox.add(new_row)
         self.listbox.show_all()
@@ -311,8 +316,10 @@ class EditableListBoxRow(ListBoxRow):
             callback(self, widget, event)
 
 class Result(EditableListBoxRow):
-    def __init__(self, listbox, result):
-        EditableListBoxRow.__init__(self, listbox, activatable=True)
+    def __init__(self, listbox, result, delete=False, description_max_length=300, padding=20):
+        EditableListBoxRow.__init__(self, listbox, activatable=True, delete=delete)
+        self.description_max_length = description_max_length
+        self.padding = padding
         self.content = result
 
         # Horizontal Box
@@ -330,9 +337,8 @@ class Result(EditableListBoxRow):
             checkbox = CheckButton()
             self.hbox.pack_start(checkbox, False, False, 10)
             self.padding = 0
-        else:
-            self.padding = 20
-        self.name_description = NameDescriptionLabel(text, self.content["Description"])
+        self.name_description = NameDescriptionLabel(text, self.content["Description"],
+                                                     description_max_length=self.description_max_length)
         self.show_all()
 
 class ItemSearchBox(VBox):
@@ -510,16 +516,25 @@ class TripleBox(VBox):
         # Data handling
         self.triple = {'s':{},'p':{},'o':{}}
 
-        # Tuple Box
+        # HBox
         hbox = HBox()
         self.pack_start(hbox, True, True, vertical_padding)
 
         # S/P/O
-        self.subject = ButtonWithPopover(text=first, css=css, data=self.triple['s'])
+        self.subject = ButtonWithPopover(text=first, 
+                                         tooltip=lang['item tooltip'],
+                                         data=self.triple['s'],
+                                         css=css)
         self.subject.set_popover_box(ItemSearchBox(self.subject, item_changed_callback=item_changed_callback))
-        self.prop = ButtonWithPopover(text=second, css=css, data=self.triple['p'])
+        self.prop = ButtonWithPopover(text=second,
+                                      tooltip=lang['item tooltip'],
+                                      data=self.triple['p'],
+                                      css=css)
         self.prop.set_popover_box(ItemSearchBox(self.prop, item_changed_callback=item_changed_callback))
-        self.obj = ButtonWithPopover(text=third, css=css, data=self.triple['o'])
+        self.obj = ButtonWithPopover(text=third,
+                                     tooltip=lang['item tooltip'],
+                                     data=self.triple['o'],
+                                     css=css)
         self.obj.set_popover_box(ItemSearchBox(self.obj, item_changed_callback=item_changed_callback))
 
         # Tuple
@@ -529,9 +544,7 @@ class TripleBox(VBox):
         first.pack_start(self.subject, True, False, 0)
         second.pack_start(self.prop, True, False, 0)
         third.pack_start(self.obj, True, False, 0)
-        #first.add(self.subject)
-        #second.add(self.prop)
-        #third.add(self.obj)
+
         # Tuple Box
         tuple_box = HBox(homogeneous=True)
         tuple_box.pack_start(first, True, False, 0)
