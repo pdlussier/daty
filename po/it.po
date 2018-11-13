@@ -1,0 +1,23 @@
+{
+'name': "Daty",
+'open': "Apri",
+'open session': "Apri sessione",
+'select by label': "Seleziona per etichetta",
+'select by constraint': "Seleziona per vincolo",
+'welcome description': """Daty ti permette di consultare e modificare Wikidata in maniera facile e intuitiva.
+
+<b>Digita sulla tastiera quello che vorresti consultare</b> oppure clicca sul pulsante in basso per utilizzare il form di selezione avanzata!""",
+'add constraint': "Aggiungi un vincolo",
+'variable': "variabile",
+'select': "Seleziona",
+'create new item': "Crea nuovo elemento",
+'new variable': "Definisci una nuova variabile",
+'item search': "Cerca items e variabili oppure\n<b>definiscine di nuove</b>",
+'new variable unsensitive':"<b>Seleziona un item o una variabile</b>",
+'new variable unsensitive description':"oppure definiscine una nuova",
+'record new variable': "Registra nuova variabile", 
+'select variable': "Seleziona variabile",
+'subject': "Soggetto",
+'property': "Proprietà",
+'object': "Oggetto"
+}
