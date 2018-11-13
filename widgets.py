@@ -1,3 +1,4 @@
+from gi.repository.Gdk import Event
 from gi.repository.Gtk import Align, Button, CheckButton, EventBox, HBox, IconSize, Image, Label, ListBox, ListBoxRow, ModelButton, Overlay, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchEntry, SelectionMode, StyleContext, TextView, VBox, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from util import import_translations, gtk_style
 from wikidata import Wikidata
@@ -201,10 +202,11 @@ class EditableListBox(HBox):
     def __init__(self, new_row=True, new_row_callback=None, new_row_callback_arguments=[],
                        delete_row_callback=None, delete_row_callback_arguments=[],
                        row_activated_callback=None, row_activated_callback_arguments=[],
-                       horizontal_padding=0, selectable=0, css="sidebar",
+                       horizontal_padding=0, selectable=0, css=None,
                        new_row_height=14):
         HBox.__init__(self)
-        self.get_style_context().add_class("sidebar")
+        if css:
+            self.get_style_context().add_class(css)
         self.new_row = new_row
 
         # Scrolled window
@@ -256,7 +258,7 @@ class EditableListBox(HBox):
             self.lastrow = row
 
     def on_row_activated(self, listbox, row, callback, arguments):
-        callback(self, listbox, row, *arguments)
+        callback(listbox, row, *arguments)
 
     def on_new_row(self, widget, event, new_row,
                                         new_row_callback, new_row_callback_arguments,
@@ -267,7 +269,10 @@ class EditableListBox(HBox):
             self.listbox.remove(new_row)
 
         # Create new row and give it to callback
-        self.row = EditableListBoxRow(self.listbox, delete=True, delete_callback=delete_row_callback, delete_callback_arguments=delete_row_callback_arguments)
+        elbr_args = {"delete":True,
+                     "delete_callback":delete_row_callback,
+                     "delete_callback_arguments":delete_row_callback_arguments}
+        self.row = EditableListBoxRow(self.listbox, **elbr_args)
         new_row_callback(self.row, *new_row_callback_arguments)
 
         # Add the new row to the listbox with the "New row" button
@@ -278,8 +283,10 @@ class EditableListBox(HBox):
 
 class EditableListBoxRow(ListBoxRow):
     def __init__(self, listbox, delete=False, delete_callback=None, delete_callback_arguments=[],
-                                activatable=False, vertical_padding=10):
+                                activatable=False, vertical_padding=10, css=None):
         ListBoxRow.__init__(self)
+        if css:
+            self.get_style_context().add_class(css)
         self.set_activatable(activatable)
         #self.add_events(EventMask.ENTER_NOTIFY_MASK)
 
@@ -316,8 +323,15 @@ class EditableListBoxRow(ListBoxRow):
             callback(self, widget, event)
 
 class Result(EditableListBoxRow):
-    def __init__(self, listbox, result, delete=False, description_max_length=300, padding=20):
-        EditableListBoxRow.__init__(self, listbox, activatable=True, delete=delete)
+    def __init__(self, listbox, result, 
+                       delete=False, delete_callback=None, delete_callback_arguments=[],
+                       description_max_length=300, padding=20, css=None):
+        elbr_args = {"activatable":True,
+                     "delete":delete,
+                     "delete_callback":delete_callback,
+                     "delete_callback_arguments":delete_callback_arguments,
+                     "css":css}
+        EditableListBoxRow.__init__(self, listbox, **elbr_args)
         self.description_max_length = description_max_length
         self.padding = padding
         self.content = result
@@ -340,6 +354,69 @@ class Result(EditableListBoxRow):
         self.name_description = NameDescriptionLabel(text, self.content["Description"],
                                                      description_max_length=self.description_max_length)
         self.show_all()
+
+class Sidebar(EditableListBox):
+    def __init__(self, items= [], stack=None,
+                       horizontal_padding=0, new_row_height=14, selectable=1, css="sidebar",
+                       size=(150,100)):
+        self.items = []
+        sb_args = {"new_row":False,
+                   "new_row_callback":self.add_items,
+                   "new_row_callback_arguments":[items, stack],
+                   "delete_row_callback":self.close_item,
+                   "delete_row_callback_arguments":[],
+                   "row_activated_callback":self.on_item_activated,
+                   "row_activated_callback_arguments":[stack],
+                   "horizontal_padding":horizontal_padding,
+                   "new_row_height":new_row_height,
+                   "selectable":selectable,
+                   "css":css}
+        EditableListBox.__init__(self, **sb_args)
+        self.set_size_request(*size)
+        self.add_items(items, stack) 
+
+    def add_items(self, items, stack):
+        new_items = [i for i in items if not i in self.items]
+        self.items = self.items + new_items
+        for item in new_items:
+           onr_args = {'new_row_callback':self.from_item_to_row,
+                       'new_row_callback_arguments':[item],
+                       'delete_row_callback':self.close_item,
+                       'delete_row_callback_arguments':[]}
+           self.on_new_row(self.new_row, Event(), self.new_row, **onr_args)
+           editor_page = EditorPage(item)
+           result = self.from_item_to_ND(item["Content"])
+           stack.add_titled(editor_page, item["URI"], result["Label"])
+
+    def from_item_to_ND(self, item):
+        result = {}
+        if 'it' in item['labels']:
+           result['Label'] = item['labels']['it']
+        else:
+           result['Label'] = item['labels']['en']
+        if 'it' in item['descriptions']:
+           result['Description'] = item['descriptions']['it']
+        else:
+           result['Description'] = item['descriptions']['en']
+        return result
+
+    def from_item_to_row(self, row, item):
+        result = self.from_item_to_ND(item["Content"])
+        sbr_args = {"delete":True,
+                    "delete_callback":self.close_item,
+                    "description_max_length":30,
+                    "padding":4,
+                    "css":"sidebarRow"}
+        self.row = Result(self.listbox, result, **sbr_args)
+        self.row.item = item
+
+    def close_item(self, row, widget, event):
+        self.items.remove(row.item)
+        print(len(self.items))
+
+    def on_item_activated(self, listbox, row, stack):
+        stack.set_visible_child_name(row.item["URI"])
+        print(stack)
 
 class ItemSearchBox(VBox):
     def __init__(self, parent, 
@@ -508,6 +585,14 @@ class ItemSearchBox(VBox):
                 k['results'].listbox.add(row)
             k['results'].listbox.show_all()
             k['results'].set_visible(True)
+
+class EditorPage(HBox):
+    def __init__(self, item):
+        HBox.__init__(self)
+        label = Label()
+        label.set_label(item["URI"])
+        self.add(label)
+
 
 class TripleBox(VBox):
     def __init__(self, item_changed_callback=None, css="unselected", first=lang['subject'], second=lang['property'], third=lang['object'], vertical_padding=8):
