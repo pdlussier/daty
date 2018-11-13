@@ -24,6 +24,7 @@
 
 from bleach import clean
 from bs4 import BeautifulSoup
+from copy import deepcopy as copy
 from os import mkdir
 from pprint import pprint
 from pywikibot import ItemPage, Site
@@ -57,25 +58,12 @@ def load(path):
     f.close()
     return variable
 
-class Query:
-    def __init__(self):
-        self.what = None
-        self.vars = []
-        self.triples = []
-
-
 class Wikidata:
     def __init__(self, verbose=True):
         self.verbose = verbose
         site = Site('wikidata', 'wikidata')
         self.repo = site.data_repository()
-        self.triples = []
-        self.what = None
         self.vars = []
-
-    def selfcheck(self):
-        pprint(self.triples)
-        return all(not any(t == 0 for t in triple) for triple in self.triples)
 
     def select(self, what, triples):
         query = """SELECT what WHERE {
@@ -83,15 +71,32 @@ class Wikidata:
           triples
         }
         """
-        line = ""
+        if not what in [t[k] for t in triples for k in t.keys()]:
+            print("warning: selected variable not included in constraints!")
+        what = copy(what)
+        what = "?" + what["Label"]
+        triples = copy(triples)
+        for t in triples:
+            for k in t.keys():
+                if not "URI" in t[k].keys() or t[k]["URI"] == "":
+                    t[k] = "?" + t[k]["Label"]
+                else:
+                    if k == "o":
+                        t[k] = "wd:" + t[k]["URI"]
+                    if k == "p":
+                        t[k] = "wdt:" + t[k]["URI"]
+        lines = ""
         for triple in triples:
-            lines = line + triple['s'] + " " + triple['p'] + " " + triple['o'] + ".\n"     
+            lines = lines + triple['s'] + " " + triple['p'] + " " + triple['o'] + ".\n"     
         query = sub('triples', lines, query)
         query = sub('what', what, query)
         sparql = SparqlQuery()
         results = sparql.query(query)['results']['bindings']
-        results = list(set([r['subject']['value'].split("/")[-1] for r in results]))
+        results = list(set([r[what[1:]]['value'].split("/")[-1] for r in results]))
         return results 
+
+    def fetch(self, result):
+        return ItemPage(self.repo, result).get()
 
     def search(self, query, verbose=False):
         pattern = 'https://www.wikidata.org/w/index.php?search='
