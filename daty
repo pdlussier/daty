@@ -27,13 +27,17 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
 from gi.repository.Gdk import Event
-from gi.repository.Gtk import main, main_quit, Button, HBox, IconSize, HeaderBar, Label, ListBox, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StyleContext, TextView, VBox, Window, WindowPosition, STYLE_CLASS_SUGGESTED_ACTION
+from gi.repository.Gtk import main, main_quit, Button, HBox, HPaned, IconSize, HeaderBar, Label, ListBox, Revealer, RevealerTransitionType, ScrolledWindow, SearchBar, SearchEntry, Stack, StackSwitcher, StackTransitionType, StyleContext, TextView, VBox, Window, WindowPosition, STYLE_CLASS_SUGGESTED_ACTION
 from gi.repository.GLib import unix_signal_add, PRIORITY_DEFAULT
 from pprint import pprint
+from setproctitle import setproctitle
 from signal import SIGINT
 from util import gtk_style, import_translations
-from widgets import BetterPopover, ButtonWithPopover, EditableListBox, EditableListBoxRow, ExtendedModelButton, ItemResults, ItemSearchBox, NameDescriptionLabel, Result, ResultsBox, Sidebar, TripleBox, WelcomePage
+from widgets import BetterPopover, ButtonWithPopover, CommonEditor, EditableListBox, EditableListBoxRow, ExtendedModelButton, ItemResults, ItemSearchBox, NameDescriptionLabel, Result, ResultsBox, Sidebar, TripleBox, WelcomePage
 from wikidata import Wikidata
+
+name = "daty"
+setproctitle(name)
 
 class WelcomeWindow(Window):
 
@@ -339,14 +343,19 @@ class SparqlPage(VBox):
 
 class Editor(Window):
 
-    def __init__(self, items=['Q156282', 'Q167983', 'Q24']):
+    def __init__(self, items=['Q156282']):#, 'Q167983', 'Q24']):
 
-        items = [{"URI":item,"Content":wikidata.fetch(item)} for item in items]
+        self.items = [{"URI":item,"Content":wikidata.fetch(item)} for item in items]
+        self.properties = {P:wikidata.fetch(P) for P in set.union(*[set(item["Content"]['claims'].keys()) for item in self.items])}
+        self.common_properties = set.intersection(*[set(item["Content"]['claims'].keys()) for item in self.items])
+
+        pprint(self.common_properties)
+        pprint(len(self.properties))
 
         # Window properties
         Window.__init__(self, title="Daty")
         self.set_border_width(0)
-        self.set_default_size(1024, 600)
+        self.set_default_size(1000, 600)
         self.set_position(WindowPosition(1))
         self.set_title ("Daty")
         #self.set_icon_from_file('icon.png')
@@ -368,16 +377,25 @@ class Editor(Window):
         open.set_label ("Apri")
         hb.pack_start(open)
 
-        # Stack
-        stack = Stack()
+        # Page
+        single_editor = Stack()
+        sidebar = Sidebar(self.items, self.properties, single_editor)
+        common_editor = CommonEditor(self.items)
 
-        sidebar = Sidebar(items, stack)
+        # Sidepaned
+        paned = HPaned()
+        paned.set_position(100)
+        paned.add1(sidebar)
+        self.add(paned)
 
-        # Hbox
-        hbox = HBox()
-        hbox.pack_start(sidebar, False, False, 0)
-        hbox.pack_start(stack, True, True, 0)
-        self.add(hbox)
+        # Editor paned
+        editor_paned = HPaned()
+        editor_paned.set_position(450)
+        editor_paned.add1(single_editor)
+        editor_paned.add2(common_editor)
+        paned.add2(editor_paned)
+
+
 
 class WikidataEditor():
     def __init__(self):
@@ -388,6 +406,7 @@ class WikidataEditor():
         main()
 
 if __name__ == "__main__":
-    lang = import_translations('it')
+    code = 'it'
+    lang = import_translations(code)
     wikidata = Wikidata(verbose=False)
     editor = WikidataEditor()

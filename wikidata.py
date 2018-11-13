@@ -27,7 +27,7 @@ from bs4 import BeautifulSoup
 from copy import deepcopy as copy
 from os import mkdir
 from pprint import pprint
-from pywikibot import ItemPage, Site
+from pywikibot import ItemPage, PropertyPage, Site
 from pywikibot.data.sparql import SparqlQuery
 from re import sub
 from requests import get
@@ -96,7 +96,10 @@ class Wikidata:
         return results 
 
     def fetch(self, result):
-        return ItemPage(self.repo, result).get()
+        if result.startswith("P"):
+            return PropertyPage(self.repo, result).get()
+        if result.startswith("Q"):
+            return ItemPage(self.repo, result).get()
 
     def search(self, query, verbose=False):
         pattern = 'https://www.wikidata.org/w/index.php?search='

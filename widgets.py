@@ -1,9 +1,10 @@
 from gi.repository.Gdk import Event
-from gi.repository.Gtk import Align, Button, CheckButton, EventBox, HBox, IconSize, Image, Label, ListBox, ListBoxRow, ModelButton, Overlay, PolicyType, PopoverMenu, Revealer, RevealerTransitionType, ScrolledWindow, SearchEntry, SelectionMode, StyleContext, TextView, VBox, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
+from gi.repository.Gtk import Align, Button, CheckButton, EventBox, HBox, IconSize, Image, Label, ListBox, ListBoxRow, ModelButton, Overlay, PolicyType, PopoverMenu, ReliefStyle, Revealer, RevealerTransitionType, ScrolledWindow, SearchEntry, SelectionMode, StyleContext, TextView, VBox, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from util import import_translations, gtk_style
 from wikidata import Wikidata
 
-lang = import_translations('it')
+code = 'it'
+lang = import_translations(code)
 wikidata = Wikidata(verbose=False)
 
 class WelcomePage(HBox):
@@ -356,10 +357,11 @@ class Result(EditableListBoxRow):
         self.show_all()
 
 class Sidebar(EditableListBox):
-    def __init__(self, items= [], stack=None,
+    def __init__(self, items= [], properties={}, stack=None,
                        horizontal_padding=0, new_row_height=14, selectable=1, css="sidebar",
-                       size=(150,100)):
+                       size=(100,100)):
         self.items = []
+        self.properties = properties
         sb_args = {"new_row":False,
                    "new_row_callback":self.add_items,
                    "new_row_callback_arguments":[items, stack],
@@ -384,9 +386,11 @@ class Sidebar(EditableListBox):
                        'delete_row_callback':self.close_item,
                        'delete_row_callback_arguments':[]}
            self.on_new_row(self.new_row, Event(), self.new_row, **onr_args)
-           editor_page = EditorPage(item)
+           editor_page = EditorPage(item, self.properties)
+           scrolled = ScrolledWindow()
+           scrolled.add(editor_page)
            result = self.from_item_to_ND(item["Content"])
-           stack.add_titled(editor_page, item["URI"], result["Label"])
+           stack.add_titled(scrolled, item["URI"], result["Label"])
 
     def from_item_to_ND(self, item):
         result = {}
@@ -412,11 +416,9 @@ class Sidebar(EditableListBox):
 
     def close_item(self, row, widget, event):
         self.items.remove(row.item)
-        print(len(self.items))
 
     def on_item_activated(self, listbox, row, stack):
         stack.set_visible_child_name(row.item["URI"])
-        print(stack)
 
 class ItemSearchBox(VBox):
     def __init__(self, parent, 
@@ -586,13 +588,47 @@ class ItemSearchBox(VBox):
             k['results'].listbox.show_all()
             k['results'].set_visible(True)
 
-class EditorPage(HBox):
-    def __init__(self, item):
-        HBox.__init__(self)
-        label = Label()
-        label.set_label(item["URI"])
-        self.add(label)
+class EditorPage(VBox):
+    def __init__(self, item, properties, size=(450, 600)):
+        VBox.__init__(self)
+        self.set_size_request(*size)
 
+        hpadding = 10
+        vpadding = 10
+
+        # Label and description
+        title_des_hbox = HBox()
+        title_des_vbox = VBox()
+        title_des_hbox.pack_start(title_des_vbox, False, False, vpadding)
+        self.pack_start(title_des_hbox, False, False, vpadding)
+
+        # Title
+        title = Button(halign=Align.START)
+        title.set_label(item["Content"]['labels']['en'] + " (" + item["URI"] + ")")
+        title.get_style_context().add_class("title")
+        title.set_relief(ReliefStyle.NONE)
+        title_des_vbox.pack_start(title, False, False, 0)
+
+        # Description
+        description = Button(halign=Align.START)
+        description.set_label(item['Content']['descriptions']['en'])
+        description.set_relief(ReliefStyle.NONE)
+        title_des_vbox.pack_start(description, False, False, 0)
+
+        item_properties = set(item['Content']['claims'].keys())
+        print(item_properties)
+       
+class Claim(VBox):
+    def __init__(self, claim):
+        VBox.__init__(self)
+        hbox = HBox()
+ 
+class CommonEditor(VBox):
+    def __init__(self, items):
+        VBox.__init__(self)
+        label = Label()
+        label.set_label(str([i["URI"] for i in items]))
+        self.add(label)
 
 class TripleBox(VBox):
     def __init__(self, item_changed_callback=None, css="unselected", first=lang['subject'], second=lang['property'], third=lang['object'], vertical_padding=8):
