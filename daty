@@ -349,8 +349,7 @@ class Editor(Window):
         self.properties = {P:wikidata.fetch(P) for P in set.union(*[set(item["Content"]['claims'].keys()) for item in self.items])}
         self.common_properties = set.intersection(*[set(item["Content"]['claims'].keys()) for item in self.items])
 
-        pprint(self.common_properties)
-        pprint(len(self.properties))
+        pprint(self.properties['P373'])
 
         # Window properties
         Window.__init__(self, title="Daty")
