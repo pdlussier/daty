@@ -18,7 +18,7 @@ You have to install `Gobject` python bindings and install `pywikibot` library on
     # pip install pywikibot
 
 #### Ubuntu/Debian
-    # apt install python3-gi gir1.2-gtk3.0 pip3
+    # apt install python3-gi gir1.2-gtk3.0 python3-pip
     # pip3 install pywikibot
 
 At the moment, you need to manually configure your wikimedia account to use *Daty*. Actually, you just need to create bot credentials at [this page](https://www.wikidata.org/wiki/Special:BotPasswords) and include them in the `user-config.py` and `user-password.py` files in the `daty/example` directory and put them in the directory you want to run daty.
