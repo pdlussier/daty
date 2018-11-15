@@ -395,12 +395,11 @@ class Editor(Window):
         paned.add2(editor_paned)
 
 
-
 class WikidataEditor():
     def __init__(self):
         gtk_style()
-        #win = WelcomeWindow()
-        win = Editor()
+        win = WelcomeWindow()
+        #win = Editor()
         win.show_all()
         main()
 

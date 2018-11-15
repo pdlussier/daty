@@ -1,3 +1,25 @@
+#    widgets.py
+#
+#    ----------------------------------------------------------------------
+#    Copyright © 2018  Pellegrino Prevete
+#
+#    All rights reserved
+#    ----------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
 from gi.repository.Gdk import Event
 from gi.repository.Gtk import Align, Button, CheckButton, EventBox, HBox, IconSize, Image, Label, ListBox, ListBoxRow, ModelButton, Overlay, PolicyType, PopoverMenu, ReliefStyle, Revealer, RevealerTransitionType, ScrolledWindow, SearchEntry, SelectionMode, StyleContext, TextView, VBox, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
 from util import import_translations, gtk_style
@@ -186,7 +208,8 @@ class ButtonWithPopover(EventBox):
         self.label.set_tooltip_text(self.tooltip)
         context = self.label.get_style_context()
         context.add_class(css)
-        self.label.set_css_name(css)
+        print(context.list_classes())
+        #self.label.set_css_name(css)
         gtk_style()
         self.label.show_all()
 
