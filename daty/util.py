@@ -23,6 +23,7 @@
 from ast import literal_eval
 from gi.repository.Gdk import Screen
 from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION
+from os.path import dirname, realpath
 
 def import_translations(lang):
     with open('po/'+lang+'.po', 'r') as g:
@@ -31,7 +32,8 @@ def import_translations(lang):
     return content
 
 def gtk_style():
-    with open('style.css', 'rb') as f:
+    path = dirname(realpath(__file__))
+    with open(path + '/style.css', 'rb') as f:
         css = f.read()
         f.close()
     style_provider = CssProvider()

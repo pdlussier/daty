@@ -22,7 +22,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-
+from argparse import ArgumentParser
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
@@ -396,15 +396,26 @@ class Editor(Window):
 
 
 class WikidataEditor():
-    def __init__(self):
+    def __init__(self, editor):
         gtk_style()
-        win = WelcomeWindow()
-        #win = Editor()
+        if editor:
+            win = Editor()
+        else:
+            win = WelcomeWindow()
         win.show_all()
         main()
 
 if __name__ == "__main__":
-    code = 'it'
-    lang = import_translations(code)
-    wikidata = Wikidata(verbose=False)
-    editor = WikidataEditor()
+    # Argument parser
+    parser = ArgumentParser(description="the Wikidata editor")
+    parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='extended output')
+    parser.add_argument('--editor', dest='editor', action='store_true', default=False, help="skip the welcome window")
+    parser.add_argument('--language', dest='language', nargs=1, action='store', default=['it'], help="start daty in language different from system's")
+    args = parser.parse_args()
+
+    #Namespace(editor=False, language=['it'], verbose=False)
+
+    # Start
+    lang = import_translations(args.language[0])
+    wikidata = Wikidata(args.verbose)
+    editor = WikidataEditor(editor=args.editor)
