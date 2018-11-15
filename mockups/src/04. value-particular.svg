@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="600px"
+   height="400px"
+   viewBox="0 0 600 400"
+   version="1.1"
+   id="SVGRoot"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="value-particular.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="361.64523"
+     inkscape:cy="298.11782"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="741"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:measure-start="68.5452,179.34"
+     inkscape:measure-end="73.053,178.765" />
+  <defs
+     id="defs2290" />
+  <metadata
+     id="metadata2293">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="root">
+    <rect
+       style="fill:#eaeaea;fill-opacity:0.96862745;stroke:#4a90d9;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.01176471"
+       id="rect2849"
+       width="600.00446"
+       height="400.00177"
+       x="-0.00390625"
+       y="0"
+       inkscape:label="background" />
+    <g
+       id="g12306"
+       transform="translate(-195.3144,-202.3694)"
+       inkscape:label="record-label">
+      <g
+         id="g5985"
+         inkscape:label="property button">
+        <rect
+           inkscape:label="button box"
+           style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#dbdbdb;fill-opacity:1;fill-rule:nonzero;stroke:#a7a7a7;stroke-width:1.00647855;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+           id="rect4321"
+           width="107.33828"
+           height="36.956146"
+           x="305.95364"
+           y="233.64049"
+           rx="2.533581"
+           ry="3.382906"
+           inkscape:export-filename="/home/lapo.fedora/SparkleShare/gnome-mockups/content selection/content-selection.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90" />
+        <text
+           inkscape:label="button label"
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="316.30292"
+           y="256.34659"
+           id="text6838-6-1"><tspan
+             sodipodi:role="line"
+             id="tspan6836-7-8"
+             x="316.30292"
+             y="256.34659"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-align:start;text-anchor:start;fill:#000000;stroke-width:0.99999994">record label</tspan></text>
+      </g>
+      <g
+         id="g6083"
+         inkscape:label="search entry">
+        <rect
+           inkscape:label="box"
+           style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#a7a7a7;stroke-width:1.00298905;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect6830-3"
+           width="280.97403"
+           height="37.032444"
+           x="405.34381"
+           y="233.56409" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 532.7144,243.86945 c 0,19 0.0309,19.08874 0.0309,19.08874 v 0 0"
+           id="path6264"
+           inkscape:connector-curvature="0"
+           inkscape:label="line cursor" />
+        <text
+           inkscape:label="query"
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="440.99542"
+           y="257.29663"
+           id="text6838-6"><tspan
+             sodipodi:role="line"
+             id="tspan6836-7"
+             x="440.99542"
+             y="257.29663"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;stroke-width:0.99999994">Warner Music</tspan></text>
+        <g
+           inkscape:label="search icon"
+           id="g15759"
+           transform="translate(416.56772,244.52175)"
+           style="fill:#2e3436"
+           inkscape:export-filename="/home/aday/checkout/gnome-devel-docs/hig3/C/figures/text-fields.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <g
+             style="display:inline;fill:#2e3436"
+             id="g15761"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="status" />
+          <g
+             id="g15763"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="devices"
+             style="fill:#2e3436" />
+          <g
+             id="g15765"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="apps"
+             style="fill:#2e3436" />
+          <g
+             id="g15767"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="actions"
+             style="fill:#2e3436">
+            <path
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#2e3436;fill-opacity:1;stroke:none;stroke-width:1.55467153;marker:none;enable-background:new"
+               id="path15769"
+               d="m 146.50761,646.99554 c -3.02886,0 -5.51073,2.47905 -5.51073,5.50447 0,3.02541 2.48187,5.50446 5.51073,5.50446 3.02885,0 5.51072,-2.47905 5.51072,-5.50446 0,-3.02542 -2.48187,-5.50447 -5.51072,-5.50447 z m 0,2.00893 c 1.94735,0 3.49951,1.55039 3.49951,3.49554 0,1.94514 -1.55216,3.49553 -3.49951,3.49553 -1.94736,0 -3.49952,-1.55039 -3.49952,-3.49553 0,-1.94515 1.55216,-3.49554 3.49952,-3.49554 z"
+               inkscape:connector-curvature="0" />
+            <path
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#2e3436;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:new"
+               id="path15771"
+               d="m 149.8125,655 a 1.0001,1.0001 0 0 0 -0.5,1.71875 l 4,4 a 1.0054782,1.0054782 0 1 0 1.40625,-1.4375 l -4,-4 A 1.0001,1.0001 0 0 0 149.8125,655 Z"
+               inkscape:connector-curvature="0" />
+          </g>
+          <g
+             id="g15773"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="places"
+             style="fill:#2e3436" />
+          <g
+             id="g15775"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="mimetypes"
+             style="fill:#2e3436" />
+          <g
+             style="display:inline;fill:#2e3436"
+             id="g15777"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="emblems" />
+          <g
+             style="display:inline;fill:#2e3436"
+             id="g15779"
+             transform="translate(-140.0002,-645.96875)"
+             inkscape:label="categories" />
+        </g>
+      </g>
+      <g
+         transform="translate(658.86554,243.31394)"
+         id="g18299"
+         inkscape:label="reset">
+        <g
+           transform="translate(-120,-538)"
+           id="g18281"
+           inkscape:label="status"
+           style="display:inline" />
+        <g
+           transform="translate(-120,-538)"
+           id="g18283"
+           inkscape:label="devices" />
+        <g
+           transform="translate(-120,-538)"
+           id="g18285"
+           inkscape:label="apps" />
+        <g
+           transform="translate(-120,-538)"
+           id="g18291"
+           inkscape:label="actions">
+          <g
+             transform="translate(79,-222)"
+             id="g18289"
+             style="display:inline">
+            <path
+               inkscape:connector-curvature="0"
+               transform="translate(-79,222)"
+               d="m 126,540 -6,6 6,6 h 9.0353 C 135.56563,551.9779 136,551.50823 136,551 v -10 c 0,-0.53079 -0.34561,-1 -1.0089,-1 z m 1,3 h 1 c 0.0104,-1.2e-4 0.0208,-4.6e-4 0.0313,0 0.25495,0.0112 0.50987,0.12858 0.6875,0.3125 l 1.2812,1.28125 1.3125,-1.28125 C 131.57812,543.082 131.75917,543.007 132,543 h 1 v 1 c 0,0.28647 -0.0343,0.55065 -0.25,0.75 l -1.28125,1.28125 1.25,1.25 C 132.90694,547.46942 132.99999,547.7347 133,548 v 1 h -1 c -0.2653,-10e-6 -0.53059,-0.0931 -0.71875,-0.28125 L 130,547.4375 l -1.28125,1.28125 C 128.53059,548.90694 128.26529,549 128,549 h -1 v -1 c 0,-0.26529 0.0931,-0.53058 0.28125,-0.71875 l 1.28125,-1.25 -1.28125,-1.28125 C 127.07051,544.55537 126.97809,544.28075 127,544 Z"
+               id="path18287"
+               sodipodi:nodetypes="ccccccccccsccccccccccccccccccccccc"
+               style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate" />
+          </g>
+        </g>
+        <g
+           transform="translate(-120,-538)"
+           id="g18293"
+           inkscape:label="places" />
+        <g
+           transform="translate(-120,-538)"
+           id="g18295"
+           inkscape:label="mimetypes" />
+        <g
+           transform="translate(-120,-538)"
+           id="g18297"
+           inkscape:label="emblems" />
+      </g>
+    </g>
+    <g
+       id="g19447"
+       inkscape:label="popupmenu"
+       transform="translate(165.80036,-34.8)">
+      <path
+         inkscape:label="popup"
+         sodipodi:nodetypes="scccssssssss"
+         inkscape:connector-curvature="0"
+         id="path19935"
+         d="m 321.37364,120.75539 h -125.2732 l -14.1986,-13.99974 -14.1985,13.99974 H 41.37264 c -4.9859,0 -9,4.01424 -9,9.00019 V 389.225 c 0,4.98595 4.0141,9.005 9,9.005 h 280.001 c 4.986,0 8.999,-4.01905 8.999,-9.005 V 129.75558 c 0,-4.98595 -4.013,-9.00019 -8.999,-9.00019 z"
+         style="display:inline;fill:#f2f2f2;fill-opacity:1;stroke:#a7aba7;stroke-width:0.99999994;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <g
+         transform="matrix(0.99436702,0,0,6.6743848,-359.14275,-1420.4052)"
+         id="g6083-2"
+         inkscape:label="search entry" />
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#a7aba7;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect6262"
+         width="273.65033"
+         height="254.2049"
+         x="43.728374"
+         y="132.51184"
+         ry="2.8284326"
+         rx="3.5355339"
+         inkscape:label="result box" />
+      <g
+         transform="translate(6.076519,60.049316)"
+         inkscape:label="warner music group"
+         id="g1438">
+        <rect
+           style="display:inline;fill:#4a90d9;fill-opacity:1;stroke:#4a90d9;stroke-width:1.37460268;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect7134"
+           width="271.32239"
+           height="50.603531"
+           x="38.850422"
+           y="73.660866"
+           inkscape:label="box"
+           ry="1.3438807"
+           rx="1.9598575" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#fafafa;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="53.998791"
+           y="97.005333"
+           id="text7138"
+           inkscape:label="label"><tspan
+             sodipodi:role="line"
+             id="tspan7136"
+             x="53.998791"
+             y="97.005333"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#fafafa;fill-opacity:1;stroke-width:0.99999994">Warner Music Group <tspan
+   style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Cantarell;-inkscape-font-specification:'Cantarell Light'"
+   id="tspan9487">(Q21077)</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#fafafa;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="54.415211"
+           y="111.37067"
+           id="text7138-3"
+           inkscape:label="description"><tspan
+             sodipodi:role="line"
+             id="tspan7136-6"
+             x="54.415211"
+             y="111.37067"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#fafafa;fill-opacity:1;stroke-width:0.99999994">American major global music conglomerate</tspan></text>
+        <rect
+           style="fill:#4a90d9;fill-opacity:1;stroke:#a7aba7;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect9298"
+           width="272.71149"
+           height="2.6914062"
+           x="38.149029"
+           y="122.25906"
+           inkscape:label="bottom-border" />
+      </g>
+      <g
+         transform="translate(5.3751259,111.33892)"
+         inkscape:label="bon jovi"
+         id="g1438-7">
+        <rect
+           style="display:inline;fill:#4a90d9;fill-opacity:0;stroke:#4a90d9;stroke-width:1.37460268;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
+           id="rect7134-6"
+           width="271.32239"
+           height="50.603531"
+           x="38.850422"
+           y="73.660866"
+           inkscape:label="box" />
+        <path
+           style="display:inline;fill:none;stroke:#e7e7e7;stroke-width:0.9993692;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 318.82163,124.2644 H 38.850514"
+           id="path6840-5-1-5"
+           inkscape:connector-curvature="0"
+           inkscape:label="separator" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="54.70018"
+           y="97.005333"
+           id="text7138-5"
+           inkscape:label="label"><tspan
+             sodipodi:role="line"
+             id="tspan7136-69"
+             x="54.70018"
+             y="97.005333"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Warner Music Japan <tspan
+   style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Cantarell;-inkscape-font-specification:'Cantarell Light'"
+   id="tspan9489">(Q874433)</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="55.11618"
+           y="111.37067"
+           id="text7138-3-3"
+           inkscape:label="description"><tspan
+             sodipodi:role="line"
+             id="tspan7136-6-7"
+             x="55.11618"
+             y="111.37067"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Japanese record label</tspan></text>
+      </g>
+      <g
+         transform="translate(5.3751259,161.94245)"
+         inkscape:label="bon jovi"
+         id="g1438-7-7">
+        <rect
+           style="display:inline;fill:#4a90d9;fill-opacity:0;stroke:#4a90d9;stroke-width:1.37460268;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
+           id="rect7134-6-4"
+           width="271.32239"
+           height="50.603531"
+           x="38.850422"
+           y="73.660866"
+           inkscape:label="box" />
+        <path
+           style="display:inline;fill:none;stroke:#e7e7e7;stroke-width:0.9993692;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 318.82163,124.2644 H 38.850514"
+           id="path6840-5-1-5-4"
+           inkscape:connector-curvature="0"
+           inkscape:label="separator" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="54.70018"
+           y="97.005333"
+           id="text7138-5-3"
+           inkscape:label="label"><tspan
+             sodipodi:role="line"
+             id="tspan7136-69-0"
+             x="54.70018"
+             y="97.005333"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Warner Music Canada <tspan
+   style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Cantarell;-inkscape-font-specification:'Cantarell Light'"
+   id="tspan9489-7">(Q4354637)</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="55.11618"
+           y="111.37067"
+           id="text7138-3-3-8"
+           inkscape:label="description"><tspan
+             sodipodi:role="line"
+             id="tspan7136-6-7-6"
+             x="55.11618"
+             y="111.37067"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Canadian record label</tspan></text>
+      </g>
+      <g
+         transform="translate(5.3751259,212.54598)"
+         inkscape:label="bon jovi"
+         id="g1438-7-8">
+        <rect
+           style="display:inline;fill:#4a90d9;fill-opacity:0;stroke:#4a90d9;stroke-width:1.37460268;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
+           id="rect7134-6-8"
+           width="271.32239"
+           height="50.603531"
+           x="38.850422"
+           y="73.660866"
+           inkscape:label="box" />
+        <path
+           style="display:inline;fill:none;stroke:#e7e7e7;stroke-width:0.9993692;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 318.82163,124.2644 H 38.850514"
+           id="path6840-5-1-5-43"
+           inkscape:connector-curvature="0"
+           inkscape:label="separator" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="54.70018"
+           y="97.005333"
+           id="text7138-5-1"
+           inkscape:label="label"><tspan
+             sodipodi:role="line"
+             id="tspan7136-69-4"
+             x="54.70018"
+             y="97.005333"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Warner Music Finland <tspan
+   style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Cantarell;-inkscape-font-specification:'Cantarell Light'"
+   id="tspan9489-9">(Q10831860)</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="55.11618"
+           y="111.37067"
+           id="text7138-3-3-2"
+           inkscape:label="description"><tspan
+             sodipodi:role="line"
+             id="tspan7136-6-7-0"
+             x="55.11618"
+             y="111.37067"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Japanese record label</tspan></text>
+      </g>
+      <g
+         transform="translate(5.375218,263.14951)"
+         inkscape:label="bon jovi"
+         id="g1438-7-6">
+        <rect
+           style="display:inline;fill:#4a90d9;fill-opacity:0;stroke:#4a90d9;stroke-width:1.37460268;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0"
+           id="rect7134-6-89"
+           width="271.32239"
+           height="50.603531"
+           x="38.850422"
+           y="73.660866"
+           inkscape:label="box" />
+        <path
+           style="display:inline;fill:none;stroke:#e7e7e7;stroke-width:0.9993692;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 318.82163,124.2644 H 38.850514"
+           id="path6840-5-1-5-2"
+           inkscape:connector-curvature="0"
+           inkscape:label="separator" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="54.70018"
+           y="97.005333"
+           id="text7138-5-6"
+           inkscape:label="label"><tspan
+             sodipodi:role="line"
+             id="tspan7136-69-6"
+             x="54.70018"
+             y="97.005333"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Warner Music Italy <tspan
+   style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-family:Cantarell;-inkscape-font-specification:'Cantarell Light'"
+   id="tspan9489-4">(Q4018224)</tspan></tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:0%;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+           x="55.11618"
+           y="111.37067"
+           id="text7138-3-3-9"
+           inkscape:label="description"><tspan
+             sodipodi:role="line"
+             id="tspan7136-6-7-5"
+             x="55.11618"
+             y="111.37067"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.66666698px;line-height:1.25;font-family:Cantarell;-inkscape-font-specification:Cantarell;text-align:start;text-anchor:start;fill:#000000;fill-opacity:1;stroke-width:0.99999994">Japanese record label</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
