@@ -3,7 +3,7 @@
 [![Python 3.x Support](https://img.shields.io/pypi/pyversions/Django.svg)](https://python.org)
 [![License: GPL v3+](https://img.shields.io/badge/license-GPL%20v3%2B-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-![Daty welcome screen](mockups/editor.svg)
+![Daty welcome screen](mockups/editor.png)
 
 *Daty* is a free cross-platform advanced Wikidata editor adhering to [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/stable/), intended to enable simpler editing workflows and faster deployment of requested user features. You can use *Daty* to search, select, read, batch edit items, script actions, share and visualize proposed changes and bots.
 
