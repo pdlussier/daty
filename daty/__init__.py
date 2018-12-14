@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 #    Daty
 #

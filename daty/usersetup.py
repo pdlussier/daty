@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 from gi.repository.Gtk import Assistant, Template, main_quit
 
