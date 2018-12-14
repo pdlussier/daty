@@ -36,7 +36,13 @@ class Config:
         """Set user dirs for daty"""
         for type,d in self.dirs.items():
             if not exists(d):
-                mkdir(d)
+                path = ""
+                for d in d.split("/"):
+                    path = join(path, d)
+                    try:
+                        mkdir(path)
+                    except:
+                        pass
             if type == 'config' and not exists(join(d, 'pywikibot')):
                 mkdir(join(d, 'pywikibot'))
 
