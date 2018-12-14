@@ -34,17 +34,17 @@ class Config:
 
     def set_dirs(self):
         """Set user dirs for daty"""
-        for type,d in self.dirs.items():
-            if not exists(d):
+        for type,p in self.dirs.items():
+            if not exists(p):
                 path = ""
-                for d in d.split("/"):
+                for d in p.split("/"):
                     path = join(path, d)
                     try:
                         mkdir(path)
                     except:
                         pass
-            if type == 'config' and not exists(join(d, 'pywikibot')):
-                mkdir(join(d, 'pywikibot'))
+            if type == 'config' and not exists(join(p, 'pywikibot')):
+                mkdir(join(p, 'pywikibot'))
 
         # Set pywikibot environment variable
         environ['PYWIKIBOT_DIR'] = join(self.dirs['config'], 'pywikibot')
