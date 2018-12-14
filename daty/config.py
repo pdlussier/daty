@@ -41,8 +41,8 @@ class Config:
                     path = join(path, d)
                     try:
                         mkdir(path)
-                    except:
-                        pass
+                    except Exception as e:
+                        print(e)
             if type == 'config' and not exists(join(p, 'pywikibot')):
                 mkdir(join(p, 'pywikibot'))
 
