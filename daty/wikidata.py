@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+# -*- coding: iso-8859-15 -*-
 
-#    Wikidata Editor: wikidata library
+#    Daty: wikidata library
 #
 #    ----------------------------------------------------------------------
 #    Copyright © 2018  Pellegrino Prevete
@@ -31,32 +32,6 @@ from pywikibot import ItemPage, PropertyPage, Site
 from pywikibot.data.sparql import SparqlQuery
 from re import sub
 from requests import get
-import pickle
-
-def save(variable, path):
-    """Save variable on given path using Pickle
-    
-    Args:
-        variable: what to save
-        path (str): path of the output
-    """
-    with open(path, 'wb') as f:
-        pickle.dump(variable, f)
-    f.close()
-
-def load(path):
-    """Load variable from Pickle file
-    
-    Args:
-        path (str): path of the file to load
-
-    Returns:
-        variable read from path
-    """
-    with open(path, 'rb') as f:
-        variable = pickle.load(f)
-    f.close()
-    return variable
 
 class Wikidata:
     def __init__(self, verbose=True):
@@ -65,37 +40,63 @@ class Wikidata:
         self.repo = site.data_repository()
         self.vars = []
 
-    def select(self, what, triples):
-        query = """SELECT what WHERE {
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-          triples
+    def select(self, var, statements, keep_data=False):
+        """Return (select) the set of var that satisfy the statements.
+
+        Args:
+            var (dict): its keys can be 'URI' and 'Label';
+            statements (list): of double dictionaries of the form:
+                role ('s','p','o')
+                  var
+
+        Returns:
+            (list) of results URI, or query sparql response if "keep_data" is True.
+        """
+        # We will transform them
+        var = copy(var)
+        statements = copy(statements)
+
+        # Template
+        template = """SELECT var WHERE {
+          statements
         }
         """
-        if not what in [t[k] for t in triples for k in t.keys()]:
-            print("warning: selected variable not included in constraints!")
-        what = copy(what)
-        what = "?" + what["Label"]
-        triples = copy(triples)
-        for t in triples:
-            for k in t.keys():
-                if not "URI" in t[k].keys() or t[k]["URI"] == "":
-                    t[k] = "?" + t[k]["Label"]
-                else:
-                    if k == "o":
-                        t[k] = "wd:" + t[k]["URI"]
-                    if k == "p":
-                        t[k] = "wdt:" + t[k]["URI"]
-        lines = ""
-        for triple in triples:
-            lines = lines + triple['s'] + " " + triple['p'] + " " + triple['o'] + ".\n"     
-        query = sub('triples', lines, query)
-        query = sub('what', what, query)
+
+        # Check that var is in the statements
+        if not var in (var for s in statements for role,var in s.items()):
+            print("WARNING: var not contained in constraints!")
+
+        # Convert var and statements vars to SPARQL
+        var = "?" + var["Label"]
+
+        for s in statements:
+            for role in s:
+                x = s[role]
+                if not "URI" in x.keys() or x["URI"] == "":
+                    s[role] = "?" + x["Label"]
+                elif role == "o":
+                    s[role] = "wd:" + x["URI"]
+                elif role == "p":
+                    s[role] = "wdt:" + x["URI"]
+
+        # Form the SPARQL statements
+        expr = ""
+        for s in statements:
+            expr = expr.join([s['s'], " ", s['p'], " ", s['o'], ".\n"])
+
+        # Do the query
+        query = sub('statements', expr, template)
+        query = sub('var', var, query)
         sparql = SparqlQuery()
+
+        # Return results
+        if keep_data:
+            return sparql.query(query)
         results = sparql.query(query)['results']['bindings']
-        results = list(set([r[what[1:]]['value'].split("/")[-1] for r in results]))
+        results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def fetch(self, result):
+    def download(self, result):
         if result.startswith("P"):
             return PropertyPage(self.repo, result).get()
         if result.startswith("Q"):

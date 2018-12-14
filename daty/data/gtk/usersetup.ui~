@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <template class="UserSetup" parent="GtkAssistant">
+    <property name="can_focus">False</property>
+    <property name="use_header_bar">1</property>
+    <child>
+      <object class="GtkLabel" id="intro">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Setup Introduction</property>
+      </object>
+      <packing>
+        <property name="title" translatable="yes">Introduction</property>
+        <property name="complete">True</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="margin_left">18</property>
+        <property name="margin_right">18</property>
+        <property name="margin_top">18</property>
+        <property name="margin_bottom">18</property>
+        <property name="row_spacing">6</property>
+        <property name="column_spacing">12</property>
+        <child>
+          <object class="GtkLabel" id="username_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Username</property>
+            <property name="justify">right</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell Bold 10"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="bot_username_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Bot username</property>
+            <property name="justify">right</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell Bold 10"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="bot_password_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Bot password</property>
+            <property name="justify">right</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell Bold 10"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="username">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">start</property>
+            <property name="placeholder_text" translatable="yes">es. Ogoorcs</property>
+            <signal name="changed" handler="on_field_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="bot_username">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">start</property>
+            <property name="placeholder_text" translatable="yes">es. Daty</property>
+            <signal name="changed" handler="on_field_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="bot_password">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">start</property>
+            <property name="visibility">False</property>
+            <property name="placeholder_text" translatable="yes">es. dAt14rEc00L</property>
+            <property name="input_purpose">password</property>
+            <signal name="activate" handler="on_field_activate" swapped="no"/>
+            <signal name="changed" handler="on_field_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="title" translatable="yes">Sign in</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="margin_top">18</property>
+        <property name="margin_bottom">18</property>
+        <property name="row_spacing">6</property>
+        <property name="column_spacing">12</property>
+        <child>
+          <object class="GtkLabel" id="username_label1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Username</property>
+            <property name="justify">right</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell Bold 10"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="bot_username_label1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">Bot username</property>
+            <property name="justify">right</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell Bold 10"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="username_label2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">start</property>
+            <property name="label" translatable="yes">Username</property>
+            <property name="justify">right</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="bot_username_label2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_markup" translatable="yes">_("Wikimedia username description")</property>
+            <property name="halign">start</property>
+            <property name="label" translatable="yes">Bot username</property>
+            <property name="justify">right</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="page_type">summary</property>
+        <property name="title" translatable="yes">Confirm</property>
+        <property name="complete">True</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+  </template>
+</interface>

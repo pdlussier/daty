@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+xgettext --language=Python --keyword=_ --output=daty.pot ../*.py
+msginit --input=daty.pot --locale=it_IT --output-file=it_IT.po
+msgfmt --output-file=it_IT/LC_MESSAGES/daty.mo it_IT.po
