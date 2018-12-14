@@ -2,7 +2,7 @@ from appdirs import *
 from gettext import bindtextdomain, textdomain, translation
 from gi.repository.Gio import Resource, resource_load
 from locale import getdefaultlocale
-from os import environ, mkdir
+from os import environ, mkdir, sep
 from os.path import abspath, dirname, exists, join
 from re import sub
 from util import load, save
@@ -36,14 +36,14 @@ class Config:
         """Set user dirs for daty"""
         for type,p in self.dirs.items():
             if not exists(p):
-                path = ""
-                for d in p.split("/"):
+                split = p.split("/")
+                path = split[0] + sep
+                for d in split[1:]:
                     path = join(path, d)
-                    print(path)
                     try:
                         mkdir(path)
-                    except Exception as e:
-                        print(e)
+                    except FileExistsError as e:
+                        pass
             if type == 'config' and not exists(join(p, 'pywikibot')):
                 mkdir(join(p, 'pywikibot'))
 
