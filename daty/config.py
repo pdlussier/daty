@@ -39,6 +39,7 @@ class Config:
                 path = ""
                 for d in p.split("/"):
                     path = join(path, d)
+                    print(path)
                     try:
                         mkdir(path)
                     except Exception as e:
