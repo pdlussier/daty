@@ -76,8 +76,8 @@ class Config:
         """
 
         # Paths
-        config_file = join(self.exec_path, 'data', 'user-config.py')
-        password_file = join(self.exec_path, 'data', 'user-password.py')
+        config_file = join(self.exec_path, 'resources', 'user-config.py')
+        password_file = join(self.exec_path, 'resources', 'user-password.py')
         config_save_file = join(self.dirs['config'], 'pywikibot', 'user-config.py')
         password_save_file = join(self.dirs['config'], 'pywikibot', 'user-password.py')
 
@@ -113,7 +113,7 @@ class Config:
 
     def set_resources(self):
         """Sets application resource file."""
-        path = join(self.exec_path, 'data', 'gtk', 'daty.gresource')
+        path = join(self.exec_path, 'resources', 'gtk', 'daty.gresource')
         resource = resource_load(path)
         #print(Resource.lookup_data(path))
         Resource._register(resource)

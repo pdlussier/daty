@@ -1,7 +1,5 @@
 __pycache__
-apicache-py3
-example-item
-logs
-pywikibot.lwp
+dist
+build
+*.egg-info
 test
-throttle.ctrl
