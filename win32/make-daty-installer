@@ -150,17 +150,26 @@ create_chroot_system() {
 }
 
 install_daty_packages() {
-  pacman -S mingw-w64-${_arch}-librsvg mingw-w64-${_arch}-adwaita-icon-theme --noconfirm --root "${_newdaty}"
-  pacman -U mingw-w64-${_arch}-daty
+  
+  #pacman -S daty-git --noconfirm --root "${_newdaty}"
+
+  # Temp
+  pacman -U daty-git --noconfirm --root "${_newdaty}"
+
+  #pacman -S mingw-w64-${_arch}-librsvg mingw-w64-${_arch}-adwaita-icon-theme --noconfirm --root "${_newdaty}"
+
   _result=$?
   if [ "$_result" -ne "0" ]; then
     exit_cleanly "1" "failed to create newdaty via command 'pacman -S daty --noconfirm --root ${_newdaty}'"
   fi
 
   # some packages are pulled by the deps but we do not need them like python2
+
   pacman -Rdd mingw-w64-${_arch}-python2 --noconfirm --root "${_newdaty}"
   pacman -Rdd mingw-w64-${_arch}-gtk2 --noconfirm --root "${_newdaty}"
 }
+
+# Main
 
 if [ "${_stage}" = "stage1" ]; then
   echo "Creating daty chroot system ${_newdaty}"

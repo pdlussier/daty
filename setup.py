@@ -37,8 +37,8 @@ setup(
     'beautifulsoup4',
     'pygobject',
     'pywikibot',
-    'setproctitle',
     'requests',
+    'setproctitle',
     ],
     classifiers = [
         "Programming Language :: Python :: 3",
