@@ -57,7 +57,7 @@ class Daty(Application):
 
     def do_activate(self):
         if not self.window:
-            from editor import Editor
+            from .editor import Editor
             self.window = Editor(application=self, title="Main Window")
         self.window.present()
 
