@@ -1,0 +1,134 @@
+/*
+   style.css
+ 
+   ----------------------------------------------------------------------
+   Copyright © 2018  Pellegrino Prevete
+ 
+   All rights reserved
+   ----------------------------------------------------------------------
+ 
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+ 
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+ 
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+
+list {
+    border-style: solid;
+    border-width: 0px 0px 0px 0px;
+}
+
+row {
+    border-bottom-color: rgb(192,192,189);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+.itemResultsListBox {
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+}
+
+.sidebar {
+    background-color: #f4f4f3;
+}
+
+row.sidebarRow {
+    border-width: 0px 0px 0px 0px;
+}
+
+button.title {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.empty { 
+    background-color: rgb(255,255,255);
+    border-top-width: 5px;
+    border-top-style: solid;
+    border-top-color: rgb(255,255,255);
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: rgb(255,255,255);
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(255,255,255);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(255,255,255);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: white;
+}
+
+.unselected { 
+    background-image: linear-gradient(180deg, #c2c0be, #c2c0be);
+    border-bottom-width:1px;
+    border-color: #5d5d64;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
+    color: white;
+    padding: 4.5px;
+    text-shadow: 1px 1px #5d5d64;
+}
+
+.variable { 
+    background-image: linear-gradient(180deg, #fb7d40, #fb7d40);
+    border-bottom-width:1px;
+    border-color: #a04127;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
+    color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #a04127;
+}
+
+.property { 
+    background-image: linear-gradient(180deg, #b783cb, #b783cb);
+    border-bottom-width:1px;
+    border-color: #8864ac;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
+    color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #8864ac;
+}
+
+.item { 
+    background-image: linear-gradient(180deg, #b58261, #b58261);
+    border-bottom-width:1px;
+    border-color: #865c41;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:0.5px;
+    color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #865c41;
+}
+
+.target { 
+    background-image: linear-gradient(180deg, #5bc17a, #52b47d);
+    border-bottom-width:1.5px;
+    border-color: #439768;
+    border-radius: 7px;
+    border-style: solid;
+    border-width:1px;
+    color: white;
+    padding: 4.5px;
+    text-shadow: 0px -1px #2d6445;
+}
+

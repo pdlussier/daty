@@ -1,0 +1,14 @@
+<Include>
+  <?if $(sys.BUILDARCH) = x64 ?>
+    <?define ProductName = "Daty Wikidata Editor (64 bit)" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+  <?else ?>
+    <?define ProductName = "Daty Wikidata Editor" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?endif ?>
+  <?define ProductVersion = "@VERSION@"?>
+  <?define Manufacturer = "Pellegrino Prevete"?>
+  <?define TopDir = "..\..\"?>
+  <?define LicenseFile = "$(var.TopDir)\win32\installer\COPYING.rtf"?>
+  <?define UpgradeCode = "{090D042C-A0F7-A6BD-A4FA-A1783P491F5P}"?>
+</Include>
