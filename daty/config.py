@@ -1,3 +1,5 @@
+from .util import load, save
+
 from appdirs import *
 from gettext import bindtextdomain, textdomain, translation
 from gi.repository.Gio import Resource, resource_load
@@ -5,7 +7,6 @@ from locale import getdefaultlocale
 from os import environ, mkdir, sep
 from os.path import abspath, dirname, exists, join
 from re import sub
-from util import load, save
 
 class Config:
     """Daty configuration class.

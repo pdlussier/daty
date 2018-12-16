@@ -23,24 +23,26 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from .application import Daty
+from .config import Config
+
 from argparse import ArgumentParser
-from config import Config
-from daty import Daty
 from gi import require_version
 from gi.repository.GObject import type_ensure
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
-from gi.repository.Gtk import main
+from gi.repository.Gtk import main as gtk_main
 from gi.repository.Handy import TitleBar
 from setproctitle import setproctitle
 from sys import argv
 
 name = "daty"
+version = "0.0.1"
 setproctitle(name)
 
-if __name__ == "__main__":
+def main():
     # Argument parser
-    parser = ArgumentParser(description="the Wikidata editor")
+    parser = ArgumentParser(description="Daty: the Wikidata editor")
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='extended output')
     parser.add_argument('--editor', dest='editor', action='store_true', default=False, help="skip the welcome window")
     #parser.add_argument('--language', dest='language', nargs=1, action='store', default=['it'], help="start daty in language different from system's")
@@ -52,9 +54,9 @@ if __name__ == "__main__":
     config = Config()
     _ = config.lang.gettext
     if not config.data:
-        from usersetup import UserSetup
+        from .usersetup import UserSetup
         UserSetup(config)
-        main()
+        gtk_main()
     if config.data:
         #type_ensure(TitleBar)
         app = Daty()
