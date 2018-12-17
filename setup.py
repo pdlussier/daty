@@ -16,7 +16,7 @@ daty_files = explore('daty/po') + explore('daty/resources')
 
 setup(
     name = "daty",
-    version = "0.0.1",
+    version = "0.1",
     author = "Pellegrino Prevete",
     author_email = "pellegrinoprevete@gmail.com",
     description = "Advanced Wikidata editor",
