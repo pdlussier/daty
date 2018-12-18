@@ -28,7 +28,7 @@ setup(
         '': ['*.sh'],
         'daty':daty_files
     },
-    entry_points = {'console_scripts': ['daty = daty:main']} if platform != 'win32' else {'gui_scripts': ['daty = daty:main']]},
+    entry_points = {'console_scripts': ['daty = daty:main']} if platform != 'win32' else {'gui_scripts': ['daty = daty:main']},
     install_requires = [
     'appdirs',
     'bleach',
