@@ -1,6 +1,7 @@
 from os import walk
 from os.path import join
 from setuptools import setup, find_packages
+from sys import platform
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
