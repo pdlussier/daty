@@ -167,6 +167,8 @@ install_daty_packages() {
 
   # some packages are pulled by the deps but we do not need them like python2
 
+  #pacman -R mingw-w64-${_arch}-python3-setuptools
+
   #pacman -Rdd mingw-w64-${_arch}-python2 --noconfirm --root "${_newdaty}"
   #pacman -Rdd mingw-w64-${_arch}-gtk2 --noconfirm --root "${_newdaty}"
 }

@@ -64,7 +64,7 @@
   <!-- Components -->
   <Fragment>
     <ComponentGroup Id="startMenuShortcuts">
-      <Component Id="programShortcuts" Guid="{A071C7AE-C657-4FAD-B0CC-11P6D794D0P3}" Directory="ProgramMenuDir">
+      <Component Id="programShortcuts" Guid="{EF014CA3-375C-46DB-AE44-AE3569238CA6}" Directory="ProgramMenuDir">
         <RegistryValue Key="Software\[Manufacturer]\[ProductName]" Root="HKCU" Type="string" Value="[INSTALLDIR]" Name="InstallPath" />
         <Shortcut Id="datyExec" Name="Daty Wikidata Editor" Description="Daty Wikidata Editor" Target="[INSTALLDIR]\bin\daty.exe" />
         <Shortcut Id="uninstallProduct" Name="Uninstall Daty Wikidata Editor" Arguments="/x [ProductCode]" Description="Uninstall Daty Wikidata Editor" Target="[System64Folder]msiexec.exe" />

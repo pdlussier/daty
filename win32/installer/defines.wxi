@@ -10,5 +10,5 @@
   <?define Manufacturer = "Pellegrino Prevete"?>
   <?define TopDir = "..\..\"?>
   <?define LicenseFile = "$(var.TopDir)\win32\installer\COPYING.rtf"?>
-  <?define UpgradeCode = "{090D042C-A0F7-A6BD-A4FA-A1783P491F5P}"?>
+  <?define UpgradeCode = "{939E8554-23EE-47F1-BC29-3BB375A0F906}"?>
 </Include>
