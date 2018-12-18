@@ -66,8 +66,9 @@ _newdaty=/tmp/daty
 remove_useless_stuff() {
   # remove .a files not needed for the installer
   find installer/SourceDir -name "*.a" -exec rm -f {} \;
-  # remove unneeded binaries
+  # remove __pycaches__
   find installer/SourceDir -name "__pycache__" -exec rm -rf {} \;
+  # remove binaries
   #find installer/SourceDir -not -name "g*.exe" -not -name "d*.exe" -name "*.exe" -exec rm -f {} \;
   rm -rf installer/SourceDir/bin/gtk3-demo*.exe
   rm -rf installer/SourceDir/bin/gdbm*.exe
