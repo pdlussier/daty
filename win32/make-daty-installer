@@ -161,7 +161,7 @@ install_daty_packages() {
   # pacman -S mingw-w64-${_arch}-python3-pywikibot mingw-w64-${_arch}-libhandy-git mingw-w64-${_arch}-daty-git \
   #  --noconfirm --root "${_newdaty}"
 
-  makepkg
+  makepkg -f
   pacman -U mingw-w64-${_arch}-python3-daty-git-0.1-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
 
   _result=$?
