@@ -29,7 +29,7 @@ setup(
         '': ['*.sh'],
         'daty':daty_files
     },
-    entry_points = {'console_scripts': ['daty = daty:main']},
+    entry_points = {'gui_scripts': ['daty = daty:main']},
     install_requires = [
     'appdirs',
     'bleach',
