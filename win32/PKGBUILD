@@ -29,6 +29,8 @@ package_python3-daty-git() {
     MSYS2_ARG_CONV_EXCL="--prefix=;--install-scripts=;--install-platlib=" \
     ${MINGW_PREFIX}/bin/python3 setup.py install --prefix=${MINGW_PREFIX} \
     --root=${pkgdir} --optimize=1
+    # To hide console window when executing the program
+    sed -i -e 's/python3.exe/python3w.exe/g' ${pkgdir}${MINGW_PREFIX}/bin/daty-script.pyw
 }
 
 package_mingw-w64-i686-python3-daty-git() {
