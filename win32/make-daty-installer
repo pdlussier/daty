@@ -151,12 +151,14 @@ create_chroot_system() {
 
 install_daty_packages() {
   
-  #pacman -S daty-git --noconfirm --root "${_newdaty}"
+  # Temp until MinGW accepts packages
+  pacman -U temp/mingw-w64-${_arch}-python3-pywikibot-3.0.20181203-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
+  pacman -U temp/mingw-w64-${_arch}-libhandy-git-0.0.5-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
+  pacman -U temp/mingw-w64-${_arch}-python3-daty-git-0.1-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
 
-  # Temp
-  pacman -U daty-git --noconfirm --root "${_newdaty}"
-
-  #pacman -S mingw-w64-${_arch}-librsvg mingw-w64-${_arch}-adwaita-icon-theme --noconfirm --root "${_newdaty}"
+  # When the packages will be accepted
+  # pacman -S mingw-w64-${_arch}-python3-pywikibot mingw-w64-${_arch}-libhandy-git mingw-w64-${_arch}-daty-git \
+  #  --noconfirm --root "${_newdaty}"
 
   _result=$?
   if [ "$_result" -ne "0" ]; then
@@ -165,8 +167,8 @@ install_daty_packages() {
 
   # some packages are pulled by the deps but we do not need them like python2
 
-  pacman -Rdd mingw-w64-${_arch}-python2 --noconfirm --root "${_newdaty}"
-  pacman -Rdd mingw-w64-${_arch}-gtk2 --noconfirm --root "${_newdaty}"
+  #pacman -Rdd mingw-w64-${_arch}-python2 --noconfirm --root "${_newdaty}"
+  #pacman -Rdd mingw-w64-${_arch}-gtk2 --noconfirm --root "${_newdaty}"
 }
 
 # Main
