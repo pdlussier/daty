@@ -109,7 +109,7 @@ remove_useless_stuff() {
 }
 
 setup_source_dir() {
-  cp -R "${_newdaty}/mingw${_bitness}" "installer/SourceDir"
+  rsync -a "${_newdaty}/mingw${_bitness}" "installer/SourceDir"
   remove_useless_stuff
 }
 
