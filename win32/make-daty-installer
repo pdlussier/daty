@@ -172,6 +172,7 @@ install_daty_packages() {
 
   pacman -Rdd mingw-w64-${_arch}-tk \
               mingw-w64-${_arch}-tcl \
+              mingw-w64-${_arch}-xz \
               --noconfirm --root "${_newdaty}"
 }
 
