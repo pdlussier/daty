@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/prevete/Daty">
+    <file preprocess="to-pixdata">../pixmaps/daty-logo.png</file>
     <file compressed="true">editor.ui</file>
     <file compressed="true">menus.ui</file>
+    <file compressed="true">page.ui</file>
     <file compressed="true">usersetup.ui</file>
   </gresource>
 </gresources>

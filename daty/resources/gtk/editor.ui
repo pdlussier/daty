@@ -26,6 +26,7 @@
   <template class="Editor" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="title">Test</property>
+    <property name="icon_name">daty</property>
     <property name="show_menubar">False</property>
     <child type="titlebar">
       <object class="HdyTitleBar">
@@ -152,7 +153,43 @@
           </object>
         </child>
         <child>
-          <object class="HdyLeaflet" id="editor">
+          <object class="GtkScrolledWindow" id="single">
+            <property name="width_request">200</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Prima colonna</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Cantarell 32"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">sidebar</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <style>
+              <class name="sidebar"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="HdyLeaflet" id="editor-test">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="hexpand">True</property>
@@ -161,6 +198,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
+                <property name="hscrollbar_policy">never</property>
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
@@ -169,7 +207,10 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">NON ANDARE A CAPO AFFATTO PORCA MISERIA</property>
+                        <property name="label" translatable="yes">seconda colonna</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Cantarell 20"/>
+                        </attributes>
                       </object>
                     </child>
                   </object>
@@ -190,8 +231,19 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
+                <property name="hscrollbar_policy">never</property>
                 <child>
-                  <placeholder/>
+                  <object class="GtkViewport">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">terza colonna</property>
+                      </object>
+                    </child>
+                  </object>
                 </child>
               </object>
             </child>
@@ -203,7 +255,7 @@
   <object class="GtkSizeGroup" id="end_pane_size_group">
     <widgets>
       <widget name="sub_header_bar"/>
-      <widget name="editor"/>
+      <widget name="editor-test"/>
     </widgets>
   </object>
   <object class="HdyHeaderGroup" id="header_group">
