@@ -73,10 +73,19 @@ remove_useless_stuff() {
 
   # remove in /bin
   rm -rf installer/SourceDir/bin/*-config
+  rm -rf installer/SourceDir/bin/a*.exe
+  rm -rf installer/SourceDir/bin/b*.exe
+  rm -rf installer/SourceDir/bin/e*.exe
+  rm -rf installer/SourceDir/bin/f*.exe
   rm -rf installer/SourceDir/bin/gtk3-demo*.exe
   rm -rf installer/SourceDir/bin/gtk3-widget-factory.exe
   rm -rf installer/SourceDir/bin/gdbm*.exe
+  rm -rf installer/SourceDir/bin/i*.exe
+  rm -rf installer/SourceDir/bin/m*.exe
   rm -rf installer/SourceDir/bin/sqlite3.exe
+  rm -rf installer/SourceDir/bin/t*.exe
+  rm -rf installer/SourceDir/bin/x*.exe
+  rm -rf installer/SourceDir/bin/z*.exe
 
   # remove other useless folders
   rm -rf installer/SourceDir/var
@@ -105,6 +114,9 @@ remove_useless_stuff() {
   rm -rf installer/SourceDir/lib/terminfo
   rm -rf installer/SourceDir/lib/python2*
   rm -rf installer/SourceDir/lib/python3.7/distutils
+  rm -rf installer/SourceDir/lib/python3.7/ensurepip
+  rm -rf installer/SourceDir/lib/python3.7/lib2to3
+  rm -rf installer/SourceDir/lib/python3.7/unittest
   rm -rf installer/SourceDir/lib/python3.7/test
   rm -rf installer/SourceDir/lib/pkgconfig
   rm -rf installer/SourceDir/lib/peas-demo
