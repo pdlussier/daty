@@ -64,41 +64,48 @@ undo_seds() {
 _newdaty=/tmp/daty
 
 remove_useless_stuff() {
-  # remove .a files not needed for the installer
+
+  # remove .a files
   find installer/SourceDir -name "*.a" -exec rm -f {} \;
-  # remove __pycaches__
+
+  # remove pycaches
   find installer/SourceDir -name "__pycache__" -exec rm -rf {} \;
-  # remove binaries
-  #find installer/SourceDir -not -name "g*.exe" -not -name "d*.exe" -name "*.exe" -exec rm -f {} \;
-  rm -rf installer/SourceDir/bin/gtk3-demo*.exe
-  rm -rf installer/SourceDir/bin/gdbm*.exe
-  #rm -rf installer/SourceDir/bin/py*
+
+  # remove in /bin
   rm -rf installer/SourceDir/bin/*-config
+  rm -rf installer/SourceDir/bin/gtk3-demo*.exe
+  rm -rf installer/SourceDir/bin/gtk3-widget-factory.exe
+  rm -rf installer/SourceDir/bin/gdbm*.exe
+  rm -rf installer/SourceDir/bin/sqlite3.exe
+
   # remove other useless folders
   rm -rf installer/SourceDir/var
   rm -rf installer/SourceDir/ssl
   rm -rf installer/SourceDir/include
-  rm -rf installer/SourceDir/share/applications
-  rm -rf installer/SourceDir/share/man
-  rm -rf installer/SourceDir/share/readline
-  rm -rf installer/SourceDir/share/info
   rm -rf installer/SourceDir/share/aclocal
+  rm -rf installer/SourceDir/share/appdata
+  rm -rf installer/SourceDir/share/applications
+  rm -rf installer/SourceDir/share/bash-completion
+  rm -rf installer/SourceDir/share/doc
+  rm -rf installer/SourceDir/share/gdb
   rm -rf installer/SourceDir/share/gnome-common
   rm -rf installer/SourceDir/share/glade
   rm -rf installer/SourceDir/share/gettext
+  rm -rf installer/SourceDir/share/gtk-doc
+  rm -rf installer/SourceDir/share/help
+  rm -rf installer/SourceDir/share/info
+  rm -rf installer/SourceDir/share/man
+  rm -rf installer/SourceDir/share/mime
+  rm -rf installer/SourceDir/share/pkgconfig
+  rm -rf installer/SourceDir/share/readline
   rm -rf installer/SourceDir/share/terminfo
   rm -rf installer/SourceDir/share/tabset
-  rm -rf installer/SourceDir/share/pkgconfig
-  rm -rf installer/SourceDir/share/bash-completion
-  rm -rf installer/SourceDir/share/appdata
-  rm -rf installer/SourceDir/share/gdb
-  # on windows we show the online help
-  rm -rf installer/SourceDir/share/help
-  rm -rf installer/SourceDir/share/gtk-doc
-  rm -rf installer/SourceDir/share/doc
+
   # remove on the lib folder
   rm -rf installer/SourceDir/lib/terminfo
   rm -rf installer/SourceDir/lib/python2*
+  rm -rf installer/SourceDir/lib/python3.7/distutils
+  rm -rf installer/SourceDir/lib/python3.7/test
   rm -rf installer/SourceDir/lib/pkgconfig
   rm -rf installer/SourceDir/lib/peas-demo
 
