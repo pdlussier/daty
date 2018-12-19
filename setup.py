@@ -1,7 +1,6 @@
 from os import walk
 from os.path import join
 from setuptools import setup, find_packages
-from sys import platform
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -14,6 +13,8 @@ def explore(path):
     return result
 
 daty_files = explore('daty/po') + explore('daty/resources')
+
+print(daty_files)
 
 setup(
     name = "daty",
