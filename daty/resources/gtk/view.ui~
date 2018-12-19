@@ -36,65 +36,36 @@
           <object class="HdyLeaflet" id="header_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="visible_child">sub_header_bar</property>
             <child>
-              <object class="HdyLeaflet" id="header_bar">
+              <object class="GtkHeaderBar" id="header_bar">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can_focus">False</property>
+                <property name="title" translatable="yes">Daty</property>
+                <property name="show_close_button">True</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="non rido più">
+                  <object class="GtkButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <child>
-                      <object class="GtkViewport">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">seconda colonna</property>
-                            <attributes>
-                              <attribute name="font-desc" value="Cantarell 20"/>
-                            </attributes>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
+                    <property name="receives_default">True</property>
+                    <property name="image">image1</property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkSeparator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <style>
-                      <class name="sidebar"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow" id="sub_header_bar_with_item">
+                  <object class="GtkButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <child>
-                      <object class="GtkViewport">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">terza colonna</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
+                    <property name="receives_default">True</property>
+                    <property name="image">image2</property>
                   </object>
+                  <packing>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
+              <packing>
+                <property name="name">sidebar</property>
+              </packing>
             </child>
             <child>
               <object class="GtkSeparator">
@@ -106,75 +77,6 @@
               </object>
             </child>
             <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <style>
-                  <class name="sidebar"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="HdyLeaflet" id="sub_header_bar">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <child>
-                  <object class="GtkScrolledWindow" id="rido">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <child>
-                      <object class="GtkViewport">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">seconda colonna</property>
-                            <attributes>
-                              <attribute name="font-desc" value="Cantarell 20"/>
-                            </attributes>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <style>
-                      <class name="sidebar"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow" id="senza_headerbar">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <child>
-                      <object class="GtkViewport">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">terza colonna</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-            <!-- <child>
               <object class="GtkHeaderBar" id="sub_header_bar">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -199,7 +101,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image4</property>
+                    <property name="image">image3</property>
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
@@ -211,7 +113,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image3</property>
+                    <property name="image">image4</property>
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
@@ -220,7 +122,6 @@
                 </child>
               </object>
             </child>
-            -->
           </object>
         </child>
       </object>
@@ -229,10 +130,31 @@
       <object class="HdyLeaflet" id="content_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="visible_child">editor-test</property>
-        <property name="interpolate_size">True</property>
         <child>
           <object class="GtkScrolledWindow" id="sidebar">
+            <property name="width_request">200</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="name">sidebar</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <style>
+              <class name="sidebar"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="single">
+            <property name="width_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="hscrollbar_policy">never</property>
@@ -244,10 +166,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Sidebar</property>
-                    <attributes>
-                      <attribute name="font-desc" value="Cantarell 40"/>
-                    </attributes>
+                    <property name="label" translatable="yes">meno lunga</property>
                   </object>
                 </child>
               </object>
@@ -267,13 +186,15 @@
           </object>
         </child>
         <child>
-          <object class="HdyLeaflet" id="editor-test">
+          <object class="HdyLeaflet" id="editor">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
             <child>
               <object class="GtkScrolledWindow" id="specific">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="hexpand">True</property>
                 <property name="hscrollbar_policy">never</property>
                 <child>
                   <object class="GtkViewport">
@@ -283,10 +204,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">seconda colonna</property>
-                        <attributes>
-                          <attribute name="font-desc" value="Cantarell 20"/>
-                        </attributes>
+                        <property name="label" translatable="yes">laousohau nsoauh asnou sanouhe aou aou </property>
                       </object>
                     </child>
                   </object>
@@ -307,29 +225,12 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="hscrollbar_policy">never</property>
                 <child>
-                  <object class="GtkViewport">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">terza colonna</property>
-                      </object>
-                    </child>
-                  </object>
+                  <placeholder/>
                 </child>
               </object>
             </child>
           </object>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>
@@ -337,7 +238,7 @@
   <object class="GtkSizeGroup" id="end_pane_size_group">
     <widgets>
       <widget name="sub_header_bar"/>
-      <widget name="editor-test"/>
+      <widget name="editor"/>
     </widgets>
   </object>
   <object class="HdyHeaderGroup" id="header_group">
