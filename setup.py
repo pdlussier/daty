@@ -1,6 +1,7 @@
 from os import walk
 from os.path import join
 from setuptools import setup, find_packages
+from subprocess import check_output as sh
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -14,7 +15,7 @@ def explore(path):
 
 daty_files = explore('daty/po') + explore('daty/resources')
 
-print(daty_files)
+sh(['daty/compile-resources.sh'])
 
 setup(
     name = "daty",
