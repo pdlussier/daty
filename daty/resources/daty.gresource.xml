@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/prevete/Daty">
+    <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
+    <!-- <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file> -->
+    <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/usersetup.ui</file>
+  </gresource>
+  <gresource prefix="/org/prevete/Daty/icons">
+  <file compressed="true" alias="daty.svg">icons/scalable/apps/daty.svg</file>
+  </gresource>
+</gresources>

@@ -2,7 +2,7 @@
 
 from gi.repository.Gtk import Assistant, Template, main_quit
 
-@Template.from_resource("/org/prevete/Daty/usersetup.ui")
+@Template.from_resource("/org/prevete/Daty/gtk/usersetup.ui")
 class UserSetup(Assistant):
     __gtype_name__ = "UserSetup"
 

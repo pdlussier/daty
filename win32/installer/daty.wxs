@@ -3,7 +3,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
     <Package Id="*" Description="$(var.ProductName)" Comments="Contact: your local administrator" InstallerVersion="405" Compressed="yes" Keywords="WIKIDATA,EDITOR,GNOME,PELLEGRINOPREVETE" Languages="1033" Manufacturer="$(var.Manufacturer)" InstallScope="perMachine"/>
-    <Icon Id="icon.ico" SourceFile="$(var.TopDir)\daty\resources\pixmaps\daty.ico"/>
+    <Icon Id="icon.ico" SourceFile="$(var.TopDir)\daty\resources\icons\daty.ico"/>
     <Property Id="ARPPRODUCTICON" Value="icon.ico" />
     <Media Id="1" Cabinet="data.cab" EmbedCab="yes" />
 

@@ -32,7 +32,7 @@ from sys import argv
 
 class Daty(Application):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, application_id="org.prevete.daty",
+        super().__init__(*args, application_id="org.prevete.Daty",
                          flags=ApplicationFlags.HANDLES_COMMAND_LINE,
                          **kwargs)
         self.window = None
@@ -52,13 +52,13 @@ class Daty(Application):
         #self.add_action(action)
 
         #builder = Builder()
-        #builder.add_from_resource("/org/prevete/Daty/menus.ui")
+        #builder.add_from_resource("/org/prevete/Daty/gtk/menus.ui")
         #self.set_app_menu(builder.get_object("app-menu"))
 
     def do_activate(self):
         if not self.window:
             from .editor import Editor
-            self.window = Editor(application=self, title="Main Window")
+            self.window = Editor(application=self, title="Daty")
         self.window.present()
 
     def do_command_line(self, command_line):

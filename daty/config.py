@@ -114,7 +114,7 @@ class Config:
 
     def set_resources(self):
         """Sets application resource file."""
-        path = join(self.exec_path, 'resources', 'gtk', 'daty.gresource')
+        path = join(self.exec_path, 'resources', 'daty.gresource')
         resource = resource_load(path)
         #print(Resource.lookup_data(path))
         Resource._register(resource)

@@ -32,7 +32,7 @@ from gi.repository.GObject import type_ensure
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.Gtk import main as gtk_main
-from gi.repository.Handy import TitleBar
+#from gi.repository.Handy import TitleBar
 from setproctitle import setproctitle
 from sys import argv
 

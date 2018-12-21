@@ -3,40 +3,45 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <requires lib="libhandy" version="0.0"/>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">list-add-symbolic</property>
-  </object>
-  <object class="GtkImage" id="image2">
+  <object class="GtkImage" id="app-menu-icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">open-menu-symbolic</property>
   </object>
-  <object class="GtkImage" id="image3">
+  <object class="GtkImage" id="back-icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">view-more-symbolic</property>
+    <property name="icon_name">go-previous-symbolic</property>
   </object>
-  <object class="GtkImage" id="image4">
+  <object class="GtkImage" id="editor-search-icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">system-search-symbolic</property>
   </object>
+  <object class="GtkImage" id="item-menu-icon">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-more-symbolic</property>
+  </object>
+  <object class="GtkImage" id="new-item-icon">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
   <template class="Editor" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="title">Test</property>
-    <property name="icon_name">daty</property>
+    <property name="icon_name">abiword</property>
     <property name="show_menubar">False</property>
     <child type="titlebar">
-      <object class="HdyTitleBar">
+      <object class="HdyTitleBar" id="titlebar1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
           <object class="HdyLeaflet" id="header_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="visible_child">sub_header_bar</property>
+            <property name="visible_child">header_bar</property>
             <child>
               <object class="GtkHeaderBar" id="header_bar">
                 <property name="visible">True</property>
@@ -44,19 +49,20 @@
                 <property name="title" translatable="yes">Daty</property>
                 <property name="show_close_button">True</property>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="new_item">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image1</property>
+                    <property name="image">new-item-icon</property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="app_menu">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image2</property>
+                    <property name="image">app-menu-icon</property>
+                    <signal name="clicked" handler="app_menu_clicked_cb" object="app_menu_popover" swapped="no"/>
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
@@ -64,9 +70,6 @@
                   </packing>
                 </child>
               </object>
-              <packing>
-                <property name="name">sidebar</property>
-              </packing>
             </child>
             <child>
               <object class="GtkSeparator">
@@ -86,23 +89,20 @@
                 <property name="subtitle" translatable="yes">Description</property>
                 <property name="show_close_button">True</property>
                 <child>
-                  <object class="GtkButton" id="back">
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="valign">center</property>
-                    <property name="use_underline">True</property>
-                    <signal name="clicked" handler="back_clicked_cb" swapped="no"/>
-                    <style>
-                      <class name="image-button"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="item_back">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image4</property>
+                    <property name="image">back-icon</property>
+                    <property name="always_show_image">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="item_menu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">item-menu-icon</property>
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
@@ -110,11 +110,11 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="item_search">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="image">image3</property>
+                    <property name="image">editor-search-icon</property>
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
@@ -131,49 +131,14 @@
       <object class="HdyLeaflet" id="content_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="visible_child">editor-test</property>
+        <property name="visible_child">single_column</property>
         <property name="interpolate_size">True</property>
         <child>
-          <object class="GtkScrolledWindow" id="sidebar">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
-            <child>
-              <object class="GtkViewport">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Sidebar</property>
-                    <attributes>
-                      <attribute name="font-desc" value="Cantarell 40"/>
-                    </attributes>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="name">sidebar</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <style>
-              <class name="sidebar"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="HdyLeaflet" id="editor-test">
+          <object class="HdyLeaflet" id="single_column">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkScrolledWindow" id="specific">
+              <object class="GtkScrolledWindow" id="sidebar">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">never</property>
@@ -185,9 +150,9 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">seconda colonna</property>
+                        <property name="label" translatable="yes">Sidebar</property>
                         <attributes>
-                          <attribute name="font-desc" value="Cantarell 20"/>
+                          <attribute name="font-desc" value="Cantarell 40"/>
                         </attributes>
                       </object>
                     </child>
@@ -205,7 +170,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="common">
+              <object class="GtkScrolledWindow" id="specific">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
@@ -218,7 +183,11 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">terza colonna</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">specifica</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Cantarell 30"/>
+                        </attributes>
                       </object>
                     </child>
                   </object>
@@ -228,18 +197,93 @@
           </object>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <style>
+              <class name="sidebar"/>
+            </style>
+          </object>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkScrolledWindow" id="common">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">comune</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Cantarell 20"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">sidebar</property>
+          </packing>
         </child>
       </object>
     </child>
   </template>
+  <object class="GtkPopoverMenu" id="app_menu_popover">
+    <property name="can_focus">False</property>
+    <property name="relative_to">app_menu</property>
+    <property name="constrain_to">none</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="about">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">about</property>
+            <property name="text" translatable="yes">About</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="quit">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">quit</property>
+            <property name="text" translatable="yes">Quit</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
   <object class="GtkSizeGroup" id="end_pane_size_group">
     <widgets>
       <widget name="sub_header_bar"/>
-      <widget name="editor-test"/>
+      <widget name="specific"/>
+      <widget name="common"/>
     </widgets>
   </object>
   <object class="HdyHeaderGroup" id="header_group">
