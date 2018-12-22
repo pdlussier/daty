@@ -31,8 +31,11 @@
   <template class="Editor" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="title">Test</property>
+    <property name="default_width">800</property>
+    <property name="default_height">600</property>
     <property name="icon_name">daty</property>
     <property name="show_menubar">False</property>
+    <signal name="check-resize" handler="check_resize_cb" swapped="no"/>
     <child type="titlebar">
       <object class="HdyTitleBar" id="titlebar1">
         <property name="visible">True</property>
@@ -85,8 +88,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
-                <property name="title" translatable="yes">Item</property>
-                <property name="subtitle" translatable="yes">Description</property>
                 <property name="show_close_button">True</property>
                 <child>
                   <object class="GtkButton" id="item_back">
@@ -95,6 +96,37 @@
                     <property name="receives_default">True</property>
                     <property name="image">back-icon</property>
                     <property name="always_show_image">True</property>
+                  </object>
+                </child>
+                <child type="title">
+                  <object class="GtkStack" id="item_stack">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Item</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                      </object>
+                      <packing>
+                        <property name="name">item_button</property>
+                        <property name="title" translatable="yes">item_button</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkStackSwitcher">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="stack">content_stack</property>
+                      </object>
+                      <packing>
+                        <property name="name">column_switcher</property>
+                        <property name="title" translatable="yes">column_switcher</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
                 <child>
@@ -170,27 +202,37 @@
               </object>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="specific">
+              <object class="GtkStack" id="content_stack">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="hscrollbar_policy">never</property>
+                <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkScrolledWindow" id="specific">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="hscrollbar_policy">never</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkViewport">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">specifica</property>
-                        <attributes>
-                          <attribute name="font-desc" value="Cantarell 30"/>
-                        </attributes>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="label" translatable="yes">specifica</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Cantarell 30"/>
+                            </attributes>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
+                  <packing>
+                    <property name="name">specific</property>
+                    <property name="title" translatable="yes">Specific</property>
+                  </packing>
                 </child>
               </object>
             </child>
@@ -216,7 +258,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="label-test">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">comune</property>
@@ -282,7 +324,7 @@
   <object class="GtkSizeGroup" id="end_pane_size_group">
     <widgets>
       <widget name="sub_header_bar"/>
-      <widget name="specific"/>
+      <widget name="content_stack"/>
       <widget name="common"/>
     </widgets>
   </object>
@@ -291,6 +333,50 @@
       <headerbar name="header_bar"/>
       <headerbar name="sub_header_bar"/>
     </headerbars>
+  </object>
+  <object class="GtkPopoverMenu" id="item_menu_popover">
+    <property name="can_focus">False</property>
+    <property name="relative_to">new_item</property>
+    <property name="constrain_to">none</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="about1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">about</property>
+            <property name="text" translatable="yes">About</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="quit1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">quit</property>
+            <property name="text" translatable="yes">Quit</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
   </object>
   <object class="GtkSizeGroup" id="start_pane_size_group">
     <widgets>
