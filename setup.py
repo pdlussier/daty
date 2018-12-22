@@ -6,10 +6,19 @@ from subprocess import check_output as sh
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-def explore(path):
+def explore(path, ):
+    """Return all paths of files in a given path
+
+    Args:
+        path (str)
+
+    Returns:
+        (list) containing the paths of the files in input path
+    """
     result = []
     for (path, dirname, files) in walk(path):
-        for f in files: 
+        for f in files:
+            print(join(path, f))
             result.append(join(path, f)[5:])
     return result
 
@@ -31,6 +40,11 @@ setup(
         '': ['*.sh'],
         'daty':daty_files
     },
+    data_files = [
+        ('share/applications', ['daty/resources/daty.desktop']),
+        ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/daty.svg']),
+        ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/daty.png'])
+    ],
     entry_points = {'gui_scripts': ['daty = daty:main']},
     install_requires = [
     'appdirs',

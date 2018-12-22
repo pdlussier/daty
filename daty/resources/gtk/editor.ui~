@@ -31,7 +31,7 @@
   <template class="Editor" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="title">Test</property>
-    <property name="icon_name">abiword</property>
+    <property name="icon_name">daty</property>
     <property name="show_menubar">False</property>
     <child type="titlebar">
       <object class="HdyTitleBar" id="titlebar1">
