@@ -13,10 +13,11 @@ class Editor(ApplicationWindow):
 
     app_menu = Template.Child("app_menu_popover")
     item_stack = Template.Child("item_stack")
-    common = Template.Child("common-viewport")
-    label_test = Template.Child("label-test")
     content_box = Template.Child("content_box")
     content_stack = Template.Child("content_stack")
+    specific_viewport = Template.Child("specific_viewport")
+    common = Template.Child("common-viewport")
+    label_test = Template.Child("label-test")
 
     def __init__(self, *args, **kwargs):
         ApplicationWindow.__init__(self, *args, **kwargs)
@@ -26,9 +27,9 @@ class Editor(ApplicationWindow):
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
 
-        #self.content_box.add(Page())
+        self.specific_viewport.add(Page())
 
-        self.show_all()
+        #self.show_all()
 
     @Template.Callback()
     def app_menu_clicked_cb(self, widget):
