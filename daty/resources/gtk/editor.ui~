@@ -216,6 +216,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="image">new-item-icon</property>
+                    <signal name="clicked" handler="new_item_clicked_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="position">2</property>

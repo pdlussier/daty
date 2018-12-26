@@ -10,111 +10,12 @@
   </object>
   <template class="Open" parent="GtkWindow">
     <property name="can_focus">False</property>
+    <property name="gravity">center</property>
     <signal name="key-press-event" handler="key_press_event_cb" object="content_stack" swapped="no"/>
     <child>
       <object class="GtkStack" id="content_stack">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <child>
-          <object class="HdyColumn" id="search_placeholder">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="vexpand">False</property>
-            <property name="maximum_width">400</property>
-            <property name="linear_growth_width">10</property>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkImage" id="placeholder-search">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="pixel_size">128</property>
-                    <property name="icon_name">system-search-symbolic</property>
-                    <property name="icon_size">3</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Daty let you easily read and edit Wikidata.</property>
-                    <attributes>
-                      <attribute name="font-desc" value="Cantarell 14"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">
-&lt;b&gt;Start writing on the keyboard&lt;/b&gt;
-to start searching in free text mode or click on the button below to use constraints</property>
-                    <property name="use_markup">True</property>
-                    <property name="justify">center</property>
-                    <property name="wrap">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="height_request">64</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="vexpand">True</property>
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label" translatable="yes">Add constraint</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="valign">center</property>
-                        <style>
-                          <class name="suggested-action"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="name">placeholder</property>
-            <property name="title" translatable="yes">Search Placeholder</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkStack" id="search_stack">
             <property name="can_focus">False</property>
@@ -266,7 +167,7 @@ to start searching in free text mode or click on the button below to use constra
                             <property name="label_yalign">1</property>
                             <property name="shadow_type">etched-out</property>
                             <child>
-                              <object class="GtkListBox">
+                              <object class="GtkListBox" id="constraint_listbox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -308,6 +209,107 @@ to start searching in free text mode or click on the button below to use constra
           <packing>
             <property name="name">search</property>
             <property name="title" translatable="yes">Search</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HdyColumn" id="search_placeholder">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="vexpand">False</property>
+            <property name="maximum_width">400</property>
+            <property name="linear_growth_width">10</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkImage" id="placeholder-search">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="pixel_size">128</property>
+                    <property name="icon_name">system-search-symbolic</property>
+                    <property name="icon_size">3</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Daty let you easily read and edit Wikidata.</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Cantarell 14"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">
+&lt;b&gt;Start writing on the keyboard&lt;/b&gt;
+to start searching in free text mode or click on the button below to use constraints</property>
+                    <property name="use_markup">True</property>
+                    <property name="justify">center</property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="height_request">64</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="vexpand">True</property>
+                    <child>
+                      <object class="GtkButton" id="placeholder_add_constraint">
+                        <property name="label" translatable="yes">Add constraint</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="valign">center</property>
+                        <signal name="clicked" handler="placeholder_add_constraint_clicked_cb" swapped="no"/>
+                        <style>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">placeholder</property>
+            <property name="title" translatable="yes">Search Placeholder</property>
             <property name="position">1</property>
           </packing>
         </child>
