@@ -6,6 +6,7 @@ require_version('Gtk', '3.0')
 from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template
 
 from .page import Page
+from .open import Open
 
 @Template.from_resource("/org/prevete/Daty/gtk/editor.ui")
 class Editor(ApplicationWindow):
@@ -30,6 +31,11 @@ class Editor(ApplicationWindow):
         self.specific_viewport.add(Page())
 
         #self.show_all()
+
+    @Template.Callback()
+    def new_item_clicked_cb(self, widget):
+        print("clicked")
+        Open()
 
     @Template.Callback()
     def app_menu_clicked_cb(self, widget):

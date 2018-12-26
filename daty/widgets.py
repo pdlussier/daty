@@ -24,8 +24,10 @@
 
 from gi.repository.Gdk import Event
 from gi.repository.Gtk import Align, Button, CheckButton, EventBox, HBox, IconSize, Image, Label, ListBox, ListBoxRow, ModelButton, Overlay, PolicyType, PopoverMenu, ReliefStyle, Revealer, RevealerTransitionType, ScrolledWindow, SearchEntry, SelectionMode, StyleContext, TextView, VBox, STYLE_CLASS_SUGGESTED_ACTION, STYLE_PROVIDER_PRIORITY_APPLICATION
-from util import import_translations, gtk_style
-from wikidata import Wikidata
+
+# Local imports
+from .util import gtk_style #import import_translations
+from .wikidata import Wikidata
 
 code = 'it'
 lang = import_translations(code)

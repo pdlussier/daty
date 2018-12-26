@@ -33,9 +33,11 @@ from gi.repository.GLib import unix_signal_add, PRIORITY_DEFAULT
 from pprint import pprint
 from setproctitle import setproctitle
 from signal import SIGINT
-from util import gtk_style, import_translations
-from widgets import BetterPopover, ButtonWithPopover, CommonEditor, EditableListBox, EditableListBoxRow, ExtendedModelButton, ItemResults, ItemSearchBox, NameDescriptionLabel, Result, ResultsBox, Sidebar, TripleBox, WelcomePage
-from wikidata import Wikidata
+
+# Local modules
+from .util import gtk_style # import_translations
+from .widgets import BetterPopover, ButtonWithPopover, CommonEditor, EditableListBox, EditableListBoxRow, ExtendedModelButton, ItemResults, ItemSearchBox, NameDescriptionLabel, Result, ResultsBox, Sidebar, TripleBox, WelcomePage
+from .wikidata import Wikidata
 
 name = "daty"
 setproctitle(name)
@@ -406,6 +408,7 @@ class WikidataEditor():
         win.show_all()
         main()
 
+
 if __name__ == "__main__":
     # Argument parser
     parser = ArgumentParser(description="the Wikidata editor")
@@ -417,6 +420,6 @@ if __name__ == "__main__":
     #Namespace(editor=False, language=['it'], verbose=False)
 
     # Start
-    lang = import_translations(args.language[0])
+    #lang = import_translations(args.language[0])
     wikidata = Wikidata(args.verbose)
     editor = WikidataEditor(editor=args.editor)

@@ -271,7 +271,6 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="item_back">
-                    <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="image">back-icon</property>

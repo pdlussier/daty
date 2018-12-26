@@ -57,6 +57,8 @@ class Daty(Application):
 
     def do_activate(self):
         if not self.window:
+            #from .refactor import WikidataEditor
+            #editor = WikidataEditor(editor=args.editor)
             from .editor import Editor
             self.window = Editor(application=self, title="Daty")
         self.window.present()
