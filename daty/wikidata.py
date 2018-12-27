@@ -28,13 +28,16 @@ from bs4 import BeautifulSoup
 from copy import deepcopy as copy
 from os import mkdir
 from pprint import pprint
-from pywikibot import ItemPage, PropertyPage, Site
-from pywikibot.data.sparql import SparqlQuery
 from re import sub
 from requests import get
 
+from .config import Config
+
 class Wikidata:
-    def __init__(self, verbose=True):
+    def __init__(self, verbose=False):
+        config = Config()
+        from pywikibot import ItemPage, PropertyPage, Site
+        from pywikibot.data.sparql import SparqlQuery
         self.verbose = verbose
         site = Site('wikidata', 'wikidata')
         self.repo = site.data_repository()
@@ -104,15 +107,15 @@ class Wikidata:
 
     def search(self, query, verbose=False):
         pattern = 'https://www.wikidata.org/w/index.php?search='
-        page = get(pattern + query).content
+        page = get(pattern + query, timeout=10).content
         soup = BeautifulSoup(page, 'html.parser')
         results = []
         try:
             results = soup.find(name='ul', attrs={'class':'mw-search-results'})
             results = results.find_all(name='li', attrs={'class':'mw-search-result'})
-            results = [{"URI":r.find(name="span", attrs={'class':'wb-itemlink-id'}).text.split("(")[1].split(")")[0],
+            results = ({"URI":r.find(name="span", attrs={'class':'wb-itemlink-id'}).text.split("(")[1].split(")")[0],
                         "Label":clean(r.find(name="span", attrs={'class':'wb-itemlink-label'}).text),
-                        "Description":clean(r.find(name='span', attrs={'class':'wb-itemlink-description'}).text)} for r in results]
+                        "Description":clean(r.find(name='span', attrs={'class':'wb-itemlink-description'}).text)} for r in results)
         except Exception as e:
             results = []
             if verbose:

@@ -56,15 +56,10 @@ class Daty(Application):
         #self.set_app_menu(builder.get_object("app-menu"))
 
     def do_activate(self, new_session=True, **kwargs):
-        if not new_session:
-            if not self.window:
-                from .editor import Editor
-                self.window = Editor(application=self, title="Daty")
-            self.window.present()
-        else:
-            from .open import Open
-            open_entities = Open(**kwargs)
-            open_entities.show_all() 
+        if not self.window:
+            from .editor import Editor
+            self.window = Editor(application=self, title="Daty")
+        self.window.present()
 
     def do_command_line(self, command_line):
         options = command_line.get_options_dict()

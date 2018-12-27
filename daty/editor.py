@@ -35,7 +35,7 @@ class Editor(ApplicationWindow):
     @Template.Callback()
     def new_item_clicked_cb(self, widget):
         print("clicked")
-        Open()
+        Open(new_session=False)
 
     @Template.Callback()
     def app_menu_clicked_cb(self, widget):

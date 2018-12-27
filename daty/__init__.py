@@ -32,7 +32,6 @@ from gi.repository.GObject import type_ensure
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.Gtk import main as gtk_main
-#from gi.repository.Handy import TitleBar
 from setproctitle import setproctitle
 from sys import argv
 
@@ -58,6 +57,11 @@ def main():
         UserSetup(config)
         gtk_main()
     if config.data:
+        if args.editor:
         #type_ensure(TitleBar)
-        app = Daty()
-        app.run(argv)
+            app = Daty()
+            app.run()#argv)
+        else:
+            from .open import Open
+            open_entities = Open()
+            gtk_main()
