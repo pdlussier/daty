@@ -11,6 +11,7 @@ from gi.repository.Handy import Column
 class Entity(CheckButton):
     __gtype_name__ = "Entity"
 
+    widget = Template.Child("widget")
     label = Template.Child("label")
     description = Template.Child("description")
 
@@ -30,4 +31,3 @@ class Entity(CheckButton):
                 self.parent.objects.append(self.entity) 
             else:
                 self.parent.objects.remove(self.entity)
-        print(self.parent.objects)

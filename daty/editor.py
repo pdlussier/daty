@@ -3,20 +3,24 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template
+from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, ListBoxRow, Template
 
+from .entity import Entity
 from .page import Page
 from .open import Open
+from .sidebarrow import SidebarEntity
 
 @Template.from_resource("/org/prevete/Daty/gtk/editor.ui")
 class Editor(ApplicationWindow):
     __gtype_name__ = "Editor"
 
     app_menu = Template.Child("app_menu_popover")
+    entities = Template.Child("entities")
     item_stack = Template.Child("item_stack")
     content_box = Template.Child("content_box")
     content_stack = Template.Child("content_stack")
     specific_viewport = Template.Child("specific_viewport")
+    pages = Template.Child("pages")
     common = Template.Child("common-viewport")
     label_test = Template.Child("label-test")
 
@@ -30,6 +34,18 @@ class Editor(ApplicationWindow):
 
         if entities == []:
             Open(new_session=True)
+        else:
+            for e in entities:
+
+                # Sidebar
+                entity = SidebarEntity(e, parent=self.entities, description=False)
+                row = ListBoxRow()
+                row.add(entity)
+                self.entities.add(row)
+
+                # Page
+                page = Page(entity=e)
+            self.entities.show_all()
 
         self.specific_viewport.add(Page())
 
@@ -46,6 +62,11 @@ class Editor(ApplicationWindow):
             self.app_menu.hide()
         else:
             self.app_menu.set_visible(True)
+
+    @Template.Callback()
+    def entities_row_activated_cb(self, widget, row):
+        
+        print(row)
 
     @Template.Callback()
     def check_resize_cb(self, widget):

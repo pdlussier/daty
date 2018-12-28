@@ -3,6 +3,7 @@
   <gresource prefix="/org/prevete/Daty">
     <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entity.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarrow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <!-- <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file> -->
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>

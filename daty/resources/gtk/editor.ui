@@ -67,9 +67,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkListBox">
+                          <object class="GtkListBox" id="entities">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <signal name="row-activated" handler="entities_row_activated_cb" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -102,19 +103,29 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkScrolledWindow" id="specific_scrolled_window">
+                      <object class="GtkStack" id="pages">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="hscrollbar_policy">never</property>
+                        <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkViewport" id="specific_viewport">
+                          <object class="GtkScrolledWindow" id="specific_scrolled_window">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="hexpand">True</property>
+                            <property name="hscrollbar_policy">never</property>
                             <child>
-                              <placeholder/>
+                              <object class="GtkViewport" id="specific_viewport">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </object>
                             </child>
                           </object>
+                          <packing>
+                            <property name="name">page0</property>
+                            <property name="title" translatable="yes">page0</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
@@ -246,7 +257,7 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton">
-                        <property name="label" translatable="yes">Item</property>
+                        <property name="label" translatable="yes">Entity</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>

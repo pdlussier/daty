@@ -100,6 +100,8 @@ class Wikidata:
         return results 
 
     def download(self, result):
+
+        from pywikibot import ItemPage, PropertyPage
         if result.startswith("P"):
             return PropertyPage(self.repo, result).get()
         if result.startswith("Q"):
