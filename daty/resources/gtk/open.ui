@@ -363,10 +363,11 @@ to start searching in free text mode or click on the button below to use constra
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="open-button">
+          <object class="GtkButton" id="open_button">
             <property name="label" translatable="yes">Open</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <signal name="clicked" handler="open_button_clicked_cb" swapped="no"/>
             <style>
               <class name="suggested-action"/>
             </style>

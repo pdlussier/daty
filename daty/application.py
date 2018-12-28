@@ -31,10 +31,11 @@ from gi.repository.Gtk import AboutDialog, Application, Builder
 from sys import argv
 
 class Daty(Application):
-    def __init__(self, *args, new_session=True, **kwargs):
+    def __init__(self, *args, new_session=True, entities=[], **kwargs):
         super().__init__(*args, application_id="org.prevete.Daty",
                          flags=ApplicationFlags.HANDLES_COMMAND_LINE,
                          **kwargs)
+        self.entities=entities
         self.window = None
         self.add_main_option("test", ord("t"), OptionFlags.NONE,
                              OptionArg.NONE, "Command line test", None)
@@ -58,8 +59,8 @@ class Daty(Application):
     def do_activate(self, new_session=True, **kwargs):
         if not self.window:
             from .editor import Editor
-            self.window = Editor(application=self, title="Daty")
-        self.window.present()
+            self.window = Editor(application=self, title="Daty", entities=self.entities)
+        #self.window.present()
 
     def do_command_line(self, command_line):
         options = command_line.get_options_dict()

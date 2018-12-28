@@ -20,13 +20,16 @@ class Editor(ApplicationWindow):
     common = Template.Child("common-viewport")
     label_test = Template.Child("label-test")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, entities=[], **kwargs):
         ApplicationWindow.__init__(self, *args, **kwargs)
 
         # Set window icon
         icon = lambda x: IconTheme.get_default().load_icon(("daty"), x, 0)
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
+
+        if entities == []:
+            Open(new_session=True)
 
         self.specific_viewport.add(Page())
 

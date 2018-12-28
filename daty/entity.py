@@ -14,18 +14,20 @@ class Entity(CheckButton):
     label = Template.Child("label")
     description = Template.Child("description")
 
-    def __init__(self, *args, label="Entity", description="Description"):
+    def __init__(self, entity, *args, parent=None):
         CheckButton.__init__(self, *args)
-        
-        self.label.set_text(label)
-        self.description.set_text(description)
+       
+        self.parent = parent 
+        self.entity = entity 
+        self.label.set_text(entity['Label'])
+        self.description.set_text(entity['Description'])
         self.show_all()
 
-    #@Template.Callback()
-    #def search_entry_search_changed_cb(self, entry):
-    #    self.query = entry.get_text()
-    #    thread = Thread(target=self.search)
-    #    thread.daemon = True
-    #    thread.start() 
-    #    results = self.wikidata.search(entry.get_text())
-    #    #print(results)
+    @Template.Callback()
+    def toggled_cb(self, widget):
+        if self.parent:
+            if widget.get_active():
+                self.parent.objects.append(self.entity) 
+            else:
+                self.parent.objects.remove(self.entity)
+        print(self.parent.objects)

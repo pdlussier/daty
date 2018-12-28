@@ -30,10 +30,12 @@ class Open(Window):
     open_session = Template.Child("open_session")
     placeholder_back = Template.Child("placeholder_back")
     label_listbox = Template.Child("label_listbox")
-    open_button = Template.Child("open-button")
+    open_button = Template.Child("open_button")
 
     def __init__(self, *args, new_session=True):
         Window.__init__(self, *args)
+
+        self.new_session = new_session
 
         self.show_all()
 
@@ -42,9 +44,12 @@ class Open(Window):
         self.constraint_listbox.add(constraint)
         self.constraint_listbox.show_all()
 
+        self.label_listbox.objects = []
+        self.objects = self.label_listbox.objects
 
         if new_session:
             self.set_search_placeholder(True)
+
         else:
             self.set_search_placeholder(False, search_stack="label_search")
 
@@ -67,6 +72,14 @@ class Open(Window):
                 self.header_bar.set_show_close_button(False)
 
     @Template.Callback()
+    def open_button_clicked_cb(self, widget):
+        if self.new_session:
+            from .editor import Editor
+            editor = Editor(entities=self.objects)
+            editor.present()
+        self.destroy()
+
+    @Template.Callback()
     def placeholder_back_clicked_cb(self, widget):
         self.set_search_placeholder(True)
 
@@ -84,8 +97,7 @@ class Open(Window):
     def on_search_done(self, results, error):
         self.label_listbox.foreach(self.label_listbox.remove)
         for r in results:
-            print(r['Label'])
-            entity = Entity(label=r['Label'], description=r["Description"])
+            entity = Entity(r, parent=self.label_listbox)
             row = ListBoxRow()
             row.add(entity)
             self.label_listbox.add(row)

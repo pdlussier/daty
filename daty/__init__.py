@@ -57,11 +57,5 @@ def main():
         UserSetup(config)
         gtk_main()
     if config.data:
-        if args.editor:
-        #type_ensure(TitleBar)
             app = Daty()
-            app.run()#argv)
-        else:
-            from .open import Open
-            open_entities = Open()
-            gtk_main()
+            app.run()
