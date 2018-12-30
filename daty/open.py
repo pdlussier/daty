@@ -32,9 +32,10 @@ class Open(Window):
     label_listbox = Template.Child("label_listbox")
     open_button = Template.Child("open_button")
 
-    def __init__(self, *args, new_session=True):
+    def __init__(self, *args, new_session=True, parent=None):
         Window.__init__(self, *args)
 
+        self.parent = parent
         self.new_session = new_session
 
         self.show_all()
@@ -44,14 +45,15 @@ class Open(Window):
         self.constraint_listbox.add(constraint)
         self.constraint_listbox.show_all()
 
-        self.label_listbox.objects = []
-        self.objects = self.label_listbox.objects
-
         if new_session:
+            self.label_listbox.objects = []
             self.set_search_placeholder(True)
-
+              
         else:
             self.set_search_placeholder(False, search_stack="label_search")
+
+        self.entities = self.label_listbox.objects
+
 
     def set_search_placeholder(self, value, search_stack="label_search"):
        if value:
@@ -73,10 +75,12 @@ class Open(Window):
 
     @Template.Callback()
     def open_button_clicked_cb(self, widget):
-        if self.new_session:
-            from .editor import Editor
-            editor = Editor(entities=self.objects)
-            editor.present()
+        if self.new_session and self.entities != []:
+            self.parent.entities = self.entities
+            self.parent.load_content(self.entities)
+            #from .editor import Editor
+            #editor = Editor(entities=self.entities)
+            #editor.present()
         self.destroy()
 
     @Template.Callback()

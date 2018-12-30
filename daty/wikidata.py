@@ -99,15 +99,32 @@ class Wikidata:
         results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def download(self, result):
+    def download(self, uri):
+        """
 
+        Args:
+            id (str): LQP id
+        Returns:
+            
+        """
         from pywikibot import ItemPage, PropertyPage
-        if result.startswith("P"):
-            return PropertyPage(self.repo, result).get()
-        if result.startswith("Q"):
-            return ItemPage(self.repo, result).get()
+        if uri.startswith("P"):
+            return PropertyPage(self.repo, uri).get()
+        if uri.startswith("Q"):
+            return ItemPage(self.repo, uri).get()
+
+    def get_claim(self, claim):
+        from pywikibot.page import Claim
+        return claim.toJSON()
 
     def search(self, query, verbose=False):
+        """
+        
+        Args:
+            query (str): what to search
+        Returns:
+            ({"URI":, "Label":, "Description":} in results)
+        """
         pattern = 'https://www.wikidata.org/w/index.php?search='
         page = get(pattern + query, timeout=10).content
         soup = BeautifulSoup(page, 'html.parser')

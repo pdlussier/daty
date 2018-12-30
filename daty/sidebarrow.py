@@ -14,7 +14,7 @@ class SidebarEntity(Box):
     label = Template.Child("label")
     description = Template.Child("description")
 
-    def __init__(self, entity, *args, parent=None, description=False):
+    def __init__(self, entity, *args, description=False):
         Box.__init__(self, *args)
        
         self.entity = entity 
@@ -27,6 +27,8 @@ class SidebarEntity(Box):
             print('When I am present, sidebar description should not be visible')
             self.set_visible(False)
         self.show_all()
+
+    #def get_label
 
     #@Template.Callback()
     #def clicked_cb(self, widget):
