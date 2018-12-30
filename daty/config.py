@@ -2,7 +2,7 @@ from .util import load, save
 
 from appdirs import *
 from gettext import bindtextdomain, textdomain, translation
-from gi.repository.Gio import Resource, resource_load
+from gi.repository.Gio import Resource, ResourceLookupFlags, resource_load
 from locale import getdefaultlocale
 from os import environ, mkdir, sep
 from os.path import abspath, dirname, exists, join
@@ -116,5 +116,5 @@ class Config:
         """Sets application resource file."""
         path = join(self.exec_path, 'resources', 'daty.gresource')
         resource = resource_load(path)
-        #print(Resource.lookup_data(path))
         Resource._register(resource)
+        print(resource.lookup_data("/org/prevete/Daty/gtk/usersetup.ui", ResourceLookupFlags(0)))
