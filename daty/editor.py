@@ -57,10 +57,7 @@ class Editor(ApplicationWindow):
             self.pages.add_titled(page, e['URI'], e['Label'])
         self.pages.show_all()
         self.entities.show_all()
-
-        #self.specific_viewport.add(Page())
-
-        #self.show_all()
+        self.show()
 
     @Template.Callback()
     def new_item_clicked_cb(self, widget):

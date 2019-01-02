@@ -97,6 +97,7 @@
               <object class="GtkStack" id="content_stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
                 <child>
                   <object class="GtkBox" id="specific">
                     <property name="visible">True</property>

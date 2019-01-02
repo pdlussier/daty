@@ -67,6 +67,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="selection_mode">multiple</property>
+                            <signal name="row-activated" handler="label_listbox_row_activated_cb" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -363,14 +364,25 @@ to start searching in free text mode or click on the button below to use constra
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="open_button">
-            <property name="label" translatable="yes">Open</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="open_button_clicked_cb" swapped="no"/>
-            <style>
-              <class name="suggested-action"/>
-            </style>
+          <object class="GtkStack">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkButton" id="open_button">
+                <property name="label" translatable="yes">Open</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="open_button_clicked_cb" swapped="no"/>
+                <accelerator key="Return" signal="clicked"/>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+              <packing>
+                <property name="name">Open</property>
+                <property name="title" translatable="yes">Open</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="pack_type">end</property>
@@ -382,6 +394,8 @@ to start searching in free text mode or click on the button below to use constra
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Open a pre-existing session</property>
+            <accelerator key="o" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
           </object>
           <packing>
             <property name="position">1</property>

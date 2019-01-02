@@ -32,9 +32,10 @@ class Open(Window):
     label_listbox = Template.Child("label_listbox")
     open_button = Template.Child("open_button")
 
-    def __init__(self, *args, new_session=True, parent=None):
+    def __init__(self, *args, new_session=True, parent=None, verbose=True):
         Window.__init__(self, *args)
 
+        self.verbose = verbose
         self.parent = parent
         self.new_session = new_session
 
@@ -76,11 +77,7 @@ class Open(Window):
     @Template.Callback()
     def open_button_clicked_cb(self, widget):
         if self.new_session and self.entities != []:
-            self.parent.entities = self.entities
             self.parent.load_content(self.entities)
-            #from .editor import Editor
-            #editor = Editor(entities=self.entities)
-            #editor.present()
         self.destroy()
 
     @Template.Callback()
@@ -93,10 +90,16 @@ class Open(Window):
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):
-        if not event.keyval == 65307:
-            self.set_search_placeholder(False)
-        else:
+        if self.verbose:
+            print("Keyval of key pressed:", event.keyval)
+        #if Esc, set placeholder ot [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
+        if event.keyval == 65307:
             self.set_search_placeholder(True)
+        # else if key is [Right Alt, Tab, Maiusc, Control, Bloc Maiusc, Left Alt]
+        elif event.keyval in [65027, 65289, 65505, 65509, 65513]:
+            pass
+        else:
+            self.set_search_placeholder(False)
 
     def on_search_done(self, results, error):
         self.label_listbox.foreach(self.label_listbox.remove)
@@ -128,8 +131,8 @@ class Open(Window):
     def search_entry_search_changed_cb(self, entry):
         self.query = entry.get_text()
         self.search()
-        #thread = Thread(target=self.search)
-        #thread.daemon = True
-        #thread.start() 
-        #results = self.wikidata.search(entry.get_text())
-        #print(results)
+
+    @Template.Callback()
+    def label_listbox_row_activated_cb(self, widget, row):
+        toggle = row.get_children()[0]
+        toggle.set_active(False) if toggle.get_active() else toggle.set_active(True)

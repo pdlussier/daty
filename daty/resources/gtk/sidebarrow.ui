@@ -15,10 +15,10 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
-            <property name="margin_left">18</property>
-            <property name="margin_start">18</property>
+            <property name="margin_start">8</property>
             <property name="hexpand">False</property>
             <property name="label" translatable="yes">Item</property>
+            <property name="justify">fill</property>
             <property name="wrap">True</property>
             <attributes>
               <attribute name="font-desc" value="Cantarell Bold 10"/>
@@ -35,9 +35,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">3</property>
-            <property name="margin_right">18</property>
             <property name="margin_start">3</property>
-            <property name="margin_end">18</property>
+            <property name="margin_end">8</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -56,8 +55,8 @@
       <object class="GtkLabel" id="description">
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="margin_start">18</property>
-        <property name="margin_end">18</property>
+        <property name="margin_start">8</property>
+        <property name="margin_end">8</property>
         <property name="justify">fill</property>
         <property name="wrap">True</property>
         <attributes>

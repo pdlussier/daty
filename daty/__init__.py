@@ -43,11 +43,13 @@ def main():
     # Argument parser
     parser = ArgumentParser(description="Daty: the Wikidata editor")
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='extended output')
+    parser.add_argument('entities', nargs='*', action='store', default=[], help='entities to open')
     parser.add_argument('--editor', dest='editor', action='store_true', default=False, help="skip the welcome window")
     #parser.add_argument('--language', dest='language', nargs=1, action='store', default=['it'], help="start daty in language different from system's")
     args = parser.parse_args()
 
     #Namespace(editor=False, language=['it'], verbose=False)
+    print(args)
 
     # Start
     config = Config()
@@ -57,5 +59,5 @@ def main():
         UserSetup(config)
         gtk_main()
     if config.data:
-            app = Daty()
+            app = Daty(entities=[{"URI":entity} for entity in args.entities])
             app.run()
