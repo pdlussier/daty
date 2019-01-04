@@ -3,17 +3,21 @@
   <gresource prefix="/org/prevete/Daty">
     <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entity.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarrow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <!-- <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file> -->
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/property.ui</file>
     <file compressed="true">gtk/property.css</file>
-    <file compressed="true" preprocess="xml-stripblanks">gtk/usersetup.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarentity.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarlist.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/statements.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/triplet.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/usersetup.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/value.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/values.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/widgets.glade</file>
   </gresource>
+
   <gresource prefix="/org/prevete/Daty/icons">
   <file compressed="true" alias="daty.svg">icons/scalable/apps/daty.svg</file>
   </gresource>

@@ -1,48 +1,55 @@
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import ApplicationWindow, Frame, IconTheme, Label, ListBox, Template
-from gi.repository.Handy import Column
-from pprint import pprint
+from gi.repository.GLib import idle_add
+from gi.repository.Gtk import Label, ScrolledWindow, Template
+from threading import Thread
 
 from .property import Property
 from .value import Value
-#from .statement import Statement
+from .values import Values
 from .wikidata import Wikidata
 
 @Template.from_resource("/org/prevete/Daty/gtk/page.ui")
-class Page(Column):
+class Page(ScrolledWindow):
     __gtype_name__ = "Page"
 
-    wikidata = Wikidata()
     statements = Template.Child("statements")
+    wikidata = Wikidata()   
+ 
+    def __init__(self, entity, *args, **kwargs):
+        ScrolledWindow.__init__(self, *args, **kwargs)
+       
+        claims = entity['claims']
+        self.property_button = {}
+        for i,P in enumerate(claims.keys()):
+            # Property buttons
+            self.property_button[P] = Property(label=P)
+            self.download_property(P) 
+            self.statements.attach(self.property_button[P], 0, i+1, 1, 1)
+            # Values Listbox
+            values = Values()
+            values.set_hexpand(True)
+            values.props.expand = True
+            self.statements.attach(values, 1, i+1, 2, 1)
+            for claim in claims[P]:
+                claim = self.wikidata.get_claim(claim)
+                value = Value(claim=claim) 
+                values.add(value)
 
-    def __init__(self, *args, entity=None, **kwargs):
-        Column.__init__(self, *args, **kwargs)
-        
-        if entity:
-            print(entity)
-            data = self.wikidata.download(entity['URI'])
-            claims = data['claims']
-            for i,P in enumerate(claims.keys()):
-                p = self.wikidata.download(P)
-                property_button = Property(P=p['labels']['en'])
-                #print(property_button.get_hexpand())
-                self.statements.attach(property_button, 0, i, 1, 1)
-                frame = Frame()
-                values = ListBox()
-                frame.add(values)
-                print(frame.get_hexpand())
-                frame.set_hexpand(True)
-                frame.props.expand = True
-                self.statements.attach(frame, 1, i, 1, 1)
-                #pprint(p)
-                for claim in claims[P]:
-                    claim = self.wikidata.get_claim(claim)
-                    #pprint(claim)
-                    value = Value(claim=claim)#claim['maisnak']['datavalue']) 
-                    values.add(value)
-                    #prop = Label(label=claim['mainsnak']['property'])
-                    #prop = Property(P=claim['mainsnak']['property'])
-            #self.statements.add(Label(label=''.join(["test ", entity['Label']])))
+    def download_property(self, URI):
+        f = lambda : URI
+        def do_call():
+            URI, prop, error = None, None, None
+            try:
+                URI, prop = f(), deepcopy(self.wikidata).download(f())
+            except Exception as err:
+                error = err
+            idle_add(lambda: self.on_download_property_done(URI, prop, error))
+        thread = Thread(target = do_call)
+        thread.start()
+
+    def on_download_property_done(self, URI, prop, error):
+        self.property_button[URI].set_label(self.wikidata.get_label(prop))

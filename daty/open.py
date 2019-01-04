@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #import asyncio
+from copy import deepcopy
 from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.GLib import idle_add
@@ -108,29 +109,26 @@ class Open(Window):
             row = ListBoxRow()
             row.add(entity)
             self.label_listbox.add(row)
-        self.label_listbox.show_all()
+            self.label_listbox.show_all()
 
-    def search(self):
-        f = lambda : self.wikidata.search(self.query)
-        
+    def search(self, query):
+        query = deepcopy(query)
+        wikidata = deepcopy(self.wikidata)
+        f = lambda : wikidata.search(query)
         def do_call():
-            results = None
-            error = None
-
+            results, error = None, None
             try:
                 results = f()
             except Exception as err:
                 error = err
 
             idle_add(lambda: self.on_search_done(results, error))
-
         thread = Thread(target = do_call)
         thread.start()
 
     @Template.Callback()
     def search_entry_search_changed_cb(self, entry):
-        self.query = entry.get_text()
-        self.search()
+        self.search(entry.get_text())
 
     @Template.Callback()
     def label_listbox_row_activated_cb(self, widget, row):

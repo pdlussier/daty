@@ -110,12 +110,31 @@ class Wikidata:
         from pywikibot import ItemPage, PropertyPage
         if uri.startswith("P"):
             return PropertyPage(self.repo, uri).get()
-        if uri.startswith("Q"):
+        if uri.startswith("Q") or uri.startswith("L"):
             return ItemPage(self.repo, uri).get()
 
     def get_claim(self, claim):
         from pywikibot.page import Claim
         return claim.toJSON()
+
+    def get_label(self, entity, language='en'):
+        return entity['labels'][language]
+
+    def parse_claim(self, claim):
+        try:
+            if 'datatype' in claim.keys():
+                datatype = claim['datatype']
+                if datatype == 'wikibase-item':
+                    value = claim['mainsnak']['datavalue']['value']
+                    if value['entity-type'] == 'item':
+                        return "Q" + str(value['numeric-id'])
+            else:
+                pprint(claim)
+        except Exception as e:
+            pprint(claim)
+            pprint(e)
+            print("WARNING: Claim containing not supported type")
+            return None
 
     def search(self, query, verbose=False):
         """

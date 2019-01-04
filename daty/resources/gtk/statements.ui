@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
+<interface>
+  <requires lib="gtk+" version="3.22"/>
+  <object class="GtkListStore" id="list_store">
+    <columns>
+      <!-- column-name property -->
+      <column type="GObject"/>
+      <!-- column-name values -->
+      <column type="GObject"/>
+    </columns>
+  </object>
+  <template class="Statements" parent="GtkTreeView">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="model">list_store</property>
+    <child internal-child="selection">
+      <object class="GtkTreeSelection"/>
+    </child>
+  </template>
+</interface>
