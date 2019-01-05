@@ -78,7 +78,7 @@ class Open(Window):
     @Template.Callback()
     def open_button_clicked_cb(self, widget):
         if self.new_session and self.entities != []:
-            self.parent.load_content(self.entities)
+            self.parent.load(self.entities)
         self.destroy()
 
     @Template.Callback()

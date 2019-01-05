@@ -14,21 +14,28 @@ class SidebarList(ListBox):
         ListBox.__init__(self, *args, **kwargs)
         self.set_header_func(self.update_header)
 
-        self.stack = stack
+        self.connect("row-selected", self.sidebar_row_selected_cb, stack)
 
     def update_header(self, row, before, *args):
         if before:
             row.set_header(Separator())
  
     def add(self, widget):
+        if self.get_children():
+            last_row = self.get_children()[-1]
+            if not last_row.get_children():
+                self.remove(last_row)
         row = ListBoxRow()
         row.add(widget)
         super(SidebarList, self).add(row)
+        row = ListBoxRow()
+        row.props.activatable = False
+        row.props.selectable = False
+        super(SidebarList, self).add(row)
       
-    @Template.Callback() 
-    def sidebar_row_activated_cb(self, widget, row):
+    def sidebar_row_selected_cb(self, widget, row, stack):
         entity = row.get_children()[0].entity
-        if not self.stack.get_child_by_name(entity['URI']):
-            self.stack.add_titled(Page(entity['Data']), entity['URI'], entity['Label'])
-        self.stack.set_visible_child_name(entity['URI'])
-        self.stack.show_all() 
+        if not stack.get_child_by_name(entity['URI']):
+            stack.add_titled(Page(entity['Data']), entity['URI'], entity['Label'])
+        stack.set_visible_child_name(entity['URI'])
+        stack.show_all() 

@@ -10,12 +10,14 @@
   <template class="Value" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="vexpand">True</property>
     <property name="orientation">vertical</property>
     <property name="homogeneous">True</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="vexpand">True</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -32,6 +34,7 @@
                     <property name="halign">start</property>
                     <property name="margin_start">8</property>
                     <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
                     <property name="label" translatable="yes">Label</property>
                     <property name="wrap">True</property>
                   </object>
@@ -55,7 +58,7 @@
                 </child>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>

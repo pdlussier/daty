@@ -31,8 +31,10 @@ class Page(ScrolledWindow):
             self.statements.attach(self.property_button[P], 0, i+1, 1, 1)
             # Values Listbox
             values = Values()
-            values.set_hexpand(True)
+            #values.set_hexpand(True)
             values.props.expand = True
+            values.props.hexpand = True
+            values.props.vexpand = True
             self.statements.attach(values, 1, i+1, 2, 1)
             for claim in claims[P]:
                 claim = self.wikidata.get_claim(claim)

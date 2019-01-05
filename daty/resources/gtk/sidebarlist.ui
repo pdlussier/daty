@@ -5,6 +5,5 @@
   <template class="SidebarList" parent="GtkListBox">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <signal name="row-activated" handler="sidebar_row_activated_cb" swapped="no"/>
   </template>
 </interface>
