@@ -103,7 +103,7 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkStack" id="entities">
+                      <object class="GtkStack" id="pages">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="transition_duration">0</property>
@@ -181,6 +181,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="title" translatable="yes">Daty</property>
+                <property name="has_subtitle">False</property>
                 <property name="show_close_button">True</property>
                 <child>
                   <object class="GtkButton" id="app_menu">
@@ -253,19 +254,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkButton" id="item_button">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="relief">none</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">item_button</property>
-                        <property name="title" translatable="yes">item_button</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <object class="GtkStackSwitcher">
@@ -277,6 +266,24 @@
                         <property name="name">column_switcher</property>
                         <property name="title" translatable="yes">column_switcher</property>
                         <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="item_button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="name">item_button</property>
+                        <property name="title" translatable="yes">Item Button</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>

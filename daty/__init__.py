@@ -28,7 +28,6 @@ from .config import Config
 
 from argparse import ArgumentParser
 from gi import require_version
-from gi.repository.GObject import type_ensure
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.Gtk import main as gtk_main
@@ -40,24 +39,47 @@ version = "0.0.1"
 setproctitle(name)
 
 def main():
+    """Daty entry point"""
     # Argument parser
     parser = ArgumentParser(description="Daty: the Wikidata editor")
-    parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='extended output')
-    parser.add_argument('entities', nargs='*', action='store', default=[], help='entities to open')
-    parser.add_argument('--editor', dest='editor', action='store_true', default=False, help="skip the welcome window")
-    #parser.add_argument('--language', dest='language', nargs=1, action='store', default=['it'], help="start daty in language different from system's")
+    parser.add_argument('entities',
+                        nargs='*',
+                        action='store',
+                        default=[],
+                        help='entities to open')
+    parser.add_argument('--language',
+                        dest='language',
+                        nargs=1,
+                        action='store',
+                        default=['en'],
+                        help="start daty in a given language (stub)")
+    parser.add_argument('--verbose', 
+                        dest='verbose', 
+                        action='store_true', 
+                        default=False, 
+                        help='extended output')
+
     args = parser.parse_args()
 
-    #Namespace(editor=False, language=['it'], verbose=False)
-    print(args)
-
-    # Start
+    if args.verbose:
+        print(args)
+        # Namespace(entities=['Q1', 'Q2'], language=['en'])
+    
+    # Set config
     config = Config()
+
+    # Set gettext
     _ = config.lang.gettext
+
+    # User setup
     if not config.data:
         from .usersetup import UserSetup
         UserSetup(config)
         gtk_main()
+
+    # Editor
     if config.data:
-            app = Daty(entities=[{"URI":entity} for entity in args.entities])
+            app = Daty(entities=[{"URI":entity,
+                                  "Label":"", 
+                                  "Description":""} for entity in args.entities])
             app.run()

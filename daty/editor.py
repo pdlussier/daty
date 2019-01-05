@@ -8,8 +8,9 @@ from gi.repository.Gtk import ApplicationWindow, IconTheme, Template
 from pprint import pprint
 from threading import Thread
 
-from .page import Page
+from .entity import Entity
 from .open import Open
+from .page import Page
 from .sidebarentity import SidebarEntity
 from .sidebarlist import SidebarList
 
@@ -29,7 +30,9 @@ class Editor(ApplicationWindow):
     app_menu_popover = Template.Child("app_menu_popover")
 
     # Sub header bar
+    sub_header_bar = Template.Child("sub_header_bar")
     item_stack = Template.Child("item_stack")
+    item_button = Template.Child("item_button")
 
     # Sidebar 
     sidebar_viewport = Template.Child("sidebar_viewport")
@@ -92,6 +95,10 @@ class Editor(ApplicationWindow):
         wikidata = cp(self.wikidata)
         def do_call():
             entity['Data'] = wikidata.download(entity['URI'])
+            if not entity['Label']:
+                entity['Label'] = wikidata.get_label(entity['Data'])
+            if not entity['Description']:
+                entity['Description'] = wikidata.get_description(entity['Data'])
             idle_add(lambda: self.on_download_done(entity))
         thread = Thread(target = do_call)
         thread.start()
@@ -109,6 +116,12 @@ class Editor(ApplicationWindow):
         sidebar_entity = SidebarEntity(entity, description=False)
         self.sidebar_list.add(sidebar_entity)
         self.sidebar_list.show_all()
+
+        # Label
+        #self.item_button.add(Entity(entity, ))#parent=self.label_listbox))
+
+        #self.item_button.add()
+        # Description
 
         # Page
         #page = Page(entity)
@@ -191,11 +204,13 @@ class Editor(ApplicationWindow):
                 widget (Gtk.Widget): the clicked widget.
         """
         if self.content_box.props.folded and self.titlebar.get_selection_mode():
+            #self.sub_header_bar.set_custom_titlebar(self.item_stack)
             self.item_stack.set_visible_child_name("column_switcher")
             if self.label_test in self.common:
                 self.common.remove(self.label_test)
                 self.content_stack.add_titled(self.label_test, "common", "Common")
         else:
+            self.sub_header_bar.set_title("test")
             self.item_stack.set_visible_child_name("item_button")
             if self.label_test in self.content_stack.get_children():
                 self.content_stack.remove(self.label_test)

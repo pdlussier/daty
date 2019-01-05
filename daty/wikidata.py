@@ -118,7 +118,16 @@ class Wikidata:
         return claim.toJSON()
 
     def get_label(self, entity, language='en'):
-        return entity['labels'][language]
+        if language in entity['labels'].keys():
+            return entity['labels'][language]
+        else:
+            return ""
+
+    def get_description(self, entity, language='en'):
+        if language in entity['descriptions'].keys():
+            return entity['descriptions'][language]
+        else:
+            return ""
 
     def parse_claim(self, claim):
         try:

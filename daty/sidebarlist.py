@@ -11,6 +11,11 @@ class SidebarList(ListBox):
     __gtype_name__ = "SidebarList"
 
     def __init__(self, stack, *args, **kwargs):
+        """Sidebar ListBox
+        
+        Args:
+            stack (Gtk.Stack): entities stack;
+        """
         ListBox.__init__(self, *args, **kwargs)
         self.set_header_func(self.update_header)
 

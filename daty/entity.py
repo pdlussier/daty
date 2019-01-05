@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from gi import require_version
-require_version('Gtk', '3.0')
-from gi.repository.Gtk import CheckButton, ListBoxRow, Template, Window
-from gi.repository.Gdk import unicode_to_keyval
-require_version('Handy', '0.0')
-from gi.repository.Handy import Column
+from gi.repository.Gtk import CheckButton, Template
 
 @Template.from_resource("/org/prevete/Daty/gtk/entity.ui")
 class Entity(CheckButton):
