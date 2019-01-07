@@ -25,6 +25,7 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
+require_version('Handy', '0.0')
 from gi.repository.GLib import OptionArg, OptionFlags
 from gi.repository.Gio import ApplicationFlags, SimpleAction
 from gi.repository.Gtk import AboutDialog, Application, Builder

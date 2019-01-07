@@ -3,8 +3,10 @@
 from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
+require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add
 from gi.repository.Gtk import ApplicationWindow, IconTheme, Template
+from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
 
@@ -44,11 +46,12 @@ class Editor(ApplicationWindow):
     # Specific
     pages = Template.Child("pages")
 
+    # Separator
+    edit_column_separator = Template.Child("edit_column_separator")
+
     # Common
     common = Template.Child("common-viewport")
-
-    # Test
-    label_test = Template.Child("label-test")
+    common_page = Template.Child("common_page")
 
     wikidata = Wikidata()
 
@@ -64,6 +67,8 @@ class Editor(ApplicationWindow):
         icon = lambda x: IconTheme.get_default().load_icon(("daty"), x, 0)
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
+
+        #self.common.set_visible(False)
 
         # Init sidebar
         self.sidebar_list = SidebarList(self.pages)
@@ -168,16 +173,27 @@ class Editor(ApplicationWindow):
             Args:
                 value (bool): if True, activates selection mode.
         """
+        # Titlebar
+        self.titlebar.set_selection_mode(value)
+        # App menu
+        self.app_menu.set_visible(not value)
+        # Select button
+        self.select_entities.set_visible(not value)
+        # Cancel selection button
+        self.cancel_entities_selection.set_visible(value)
+        # Sidebar
+        self.sidebar_list.set_selection_mode(value)
         if value:
-            self.titlebar.set_selection_mode(True)
-            self.app_menu.set_visible(False)
-            self.select_entities.set_visible(False)
-            self.cancel_entities_selection.set_visible(True)
+            self.edit_column_separator.set_visible(True)
+            self.common.set_visible(True)
+            self.content_box.show_all()
+ 
         else:
-            self.titlebar.set_selection_mode(False)
-            self.cancel_entities_selection.set_visible(False)
-            self.app_menu.set_visible(True)
-            self.select_entities.set_visible(True)
+            self.item_stack.set_visible_child_name('item_button')
+            self.edit_column_separator.set_visible(False)
+            self.common.set_visible(False)
+            self.content_box.set_visible_child_name("single_column")
+            #self.content_box.show_all()
 
     @Template.Callback()
     def app_menu_clicked_cb(self, widget):
@@ -193,25 +209,70 @@ class Editor(ApplicationWindow):
         else:
             self.app_menu_popover.set_visible(True)
 
-    @Template.Callback()
-    def check_resize_cb(self, window):
-        """Window resizing callback
+#    @Template.Callback()
+#    def check_resize_cb(self, window):
+#        """Window resizing callback
+#
+#            Puts window in single/double column editing mode depending on
+#            Handy.Leaflet folded status (waiting for libhandy:#6).
+#
+#            Args:
+#                widget (Gtk.Widget): the clicked widget.
+#        """
+#        if self.content_box.props.folded and self.titlebar.get_selection_mode():
+#            #self.sub_header_bar.set_custom_titlebar(self.item_stack)
+#            self.item_stack.set_visible_child_name("column_switcher")
+#            if self.label_test in self.common:
+#                self.common.remove(self.label_test)
+#                self.content_stack.add_titled(self.label_test, "common", "Common")
+#        else:
+#            self.sub_header_bar.set_title("test")
+#            self.item_stack.set_visible_child_name("item_button")
+#            if self.label_test in self.content_stack.get_children():
+#                self.content_stack.remove(self.label_test)
+#                self.common.add(self.label_test)
 
-            Puts window in single/double column editing mode depending on
-            Handy.Leaflet folded status (waiting for libhandy:#6).
+    @Template.Callback()
+    def on_content_box_folded_changed(self, leaflet, folded):
+        """Third column folding signal
+
+            If in selection/multi-editing mode, set stack switcher
+            depending on window size
 
             Args:
-                widget (Gtk.Widget): the clicked widget.
+                leaflet (Handy.Leaflet): the leaflet emitting the signal;
+                folded (GParamBoolean): whether it is folded or not.
         """
-        if self.content_box.props.folded and self.titlebar.get_selection_mode():
-            #self.sub_header_bar.set_custom_titlebar(self.item_stack)
-            self.item_stack.set_visible_child_name("column_switcher")
-            if self.label_test in self.common:
-                self.common.remove(self.label_test)
-                self.content_stack.add_titled(self.label_test, "common", "Common")
-        else:
-            self.sub_header_bar.set_title("test")
-            self.item_stack.set_visible_child_name("item_button")
-            if self.label_test in self.content_stack.get_children():
-                self.content_stack.remove(self.label_test)
-                self.common.add(self.label_test)
+        # If we are in selection mode
+        if self.titlebar.get_selection_mode():
+            print(self.item_stack.get_visible_child_name())
+            # If the title is displayed
+            print(self.content_box.props.folded)
+            if self.content_box.props.folded:
+                #self.item_stack.get_visible_child_name() == 'item_button': #folded:
+                # Set switcher in the titlebar
+                self.item_stack.set_visible_child_name("column_switcher")
+
+                # Move common page from third column to content_stack
+                #if self.common_page in self.common: # Remove check 
+                self.common.set_visible(False)
+                self.common.remove(self.common_page)
+                self.content_stack.add_titled(self.common_page, "common", "Common")
+                
+
+            else: 
+                # WIP: self.sub_header_bar.set_title("test")
+                # Set the switcher to something else
+                self.item_stack.set_visible_child_name("item_button")
+
+                print("Move common page from content stack to third column")
+                # Move common page from content stack to third column
+                #if self.common_page in self.content_stack.get_children():
+                self.content_stack.remove(self.common_page)
+                self.common.add(self.common_page)
+                self.common.set_visible(True)
+            #print("not folded")
+        #print("out" if not folded else "in")
+        #print(id(folded))
+        #print("in" if bool(folded) else "out")
+

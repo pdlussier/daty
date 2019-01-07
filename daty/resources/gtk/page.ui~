@@ -25,8 +25,7 @@
           <object class="HdyColumn">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="maximum_width">800</property>
-            <property name="linear_growth_width">100</property>
+            <property name="maximum_width">1000</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -52,6 +51,7 @@
                             <property name="receives_default">True</property>
                             <property name="halign">center</property>
                             <property name="image">image1</property>
+                            <property name="relief">none</property>
                             <property name="always_show_image">True</property>
                           </object>
                           <packing>
@@ -74,6 +74,15 @@
                         <property name="orientation">vertical</property>
                         <property name="row_spacing">6</property>
                         <property name="column_homogeneous">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
                         <child>
                           <placeholder/>
                         </child>

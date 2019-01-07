@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
 #import asyncio
-from copy import deepcopy
+from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
+require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add
 from gi.repository.Gtk import ListBox, ListBoxRow, Template, Window
-from gi.repository.Gdk import unicode_to_keyval
-require_version('Handy', '0.0')
-from gi.repository.Handy import Column
 from threading import Thread
 
 from .entity import Entity
@@ -47,14 +45,15 @@ class Open(Window):
         self.constraint_listbox.add(constraint)
         self.constraint_listbox.show_all()
 
+        self.label_listbox.selected = []
+
         if new_session:
-            self.label_listbox.objects = []
             self.set_search_placeholder(True)
               
         else:
             self.set_search_placeholder(False, search_stack="label_search")
 
-        self.entities = self.label_listbox.objects
+        self.entities = self.label_listbox.selected
 
 
     def set_search_placeholder(self, value, search_stack="label_search"):
@@ -105,15 +104,15 @@ class Open(Window):
     def on_search_done(self, results, error):
         self.label_listbox.foreach(self.label_listbox.remove)
         for r in results:
-            entity = Entity(r, parent=self.label_listbox)
+            entity = Entity(r, selected=self.label_listbox.selected)
             row = ListBoxRow()
             row.add(entity)
             self.label_listbox.add(row)
             self.label_listbox.show_all()
 
     def search(self, query):
-        query = deepcopy(query)
-        wikidata = deepcopy(self.wikidata)
+        query = cp(query)
+        wikidata = cp(self.wikidata)
         f = lambda : wikidata.search(query)
         def do_call():
             results, error = None, None
