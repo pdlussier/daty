@@ -5,6 +5,7 @@
   <template class="Entity" parent="GtkCheckButton">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="focus_on_click">False</property>
     <property name="receives_default">False</property>
     <property name="draw_indicator">True</property>
     <child>

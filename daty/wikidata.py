@@ -38,6 +38,7 @@ class Wikidata:
         config = Config()
         from pywikibot import ItemPage, PropertyPage, Site
         from pywikibot.data.sparql import SparqlQuery
+        from pywikibot.page import Claim
         self.verbose = verbose
         site = Site('wikidata', 'wikidata')
         self.repo = site.data_repository()
@@ -114,7 +115,7 @@ class Wikidata:
             return ItemPage(self.repo, uri).get()
 
     def get_claim(self, claim):
-        from pywikibot.page import Claim
+        #from pywikibot.page import Claim
         return claim.toJSON()
 
     def get_label(self, entity, language='en'):

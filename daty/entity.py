@@ -11,7 +11,7 @@ class Entity(CheckButton):
     description = Template.Child("description")
     URI = Template.Child("URI")
 
-    def __init__(self, entity, *args, selected=None):
+    def __init__(self, entity, *args, widget=True, selected=None):
         """Search result widget in 'open new entity' dialog
 
             Args:
@@ -20,10 +20,16 @@ class Entity(CheckButton):
         """
         CheckButton.__init__(self, *args)
         
-        self.entity = entity 
-        self.label.set_text(entity['Label'])
-        self.description.set_text(entity['Description'])
-        self.URI.set_text('(' + entity['URI'] + ')')
+        self.entity = entity
+
+        if widget:
+            self.label.set_text(entity['Label'])
+            self.description.set_text(entity['Description'])
+            self.URI.set_text('(' + entity['URI'] + ')')
+        else:
+            self.label.destroy()
+            self.description.destroy()
+            self.URI.destroy()
 
         if selected != None:
             self.connect("toggled", self.toggled_cb, selected)
@@ -35,7 +41,7 @@ class Entity(CheckButton):
             Args:
                 widget (Gtk.Widget): toggled widget (so self);
                 selected (list): add self's entity attribute to it to 
-                    keep track of parent listbox selected toggles.
+                keep track of parent listbox selected toggles.
         """
         if widget.get_active():
             selected.append(self.entity)

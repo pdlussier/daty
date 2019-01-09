@@ -28,16 +28,16 @@ class Page(ScrolledWindow):
             # Property buttons
             self.property_button[P] = Property(label=P)
             self.download_property(P) 
-            self.statements.attach(self.property_button[P], 0, i+1, 1, 1)
+            self.statements.attach(self.property_button[P], 0, i, 1, 1)
             # Values Listbox
             values = Values()
-            #values.set_hexpand(True)
             values.props.expand = True
             values.props.hexpand = True
             values.props.vexpand = True
-            self.statements.attach(values, 1, i+1, 2, 1)
+            self.statements.attach(values, 1, i, 2, 1)
             for claim in claims[P]:
-                claim = self.wikidata.get_claim(claim)
+                claim = claim.toJSON()
+                #claim = self.wikidata.get_claim(claim)
                 value = Value(claim=claim) 
                 values.add(value)
 

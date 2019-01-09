@@ -12,6 +12,7 @@ from .wikidata import Wikidata
 
 @Template.from_resource("/org/prevete/Daty/gtk/value.ui")
 class Value(Box):
+    
     __gtype_name__ = "Value"
 
     entry = Template.Child("entry")
@@ -20,14 +21,18 @@ class Value(Box):
 
     def __init__(self, claim, *args, **kwargs):
         Box.__init__(self, *args, **kwargs)
-
-        #mainsnak = Wikidata().get_claim_type(claim)
-        #entity = self.download(claim_type)
-        #if claim_type and any(claim_type.startswith(t) for t in ('P','Q')):
-            # Download entity
-        #    self.entry.set_text(claim_type)
-        #    self.label.set_text(claim_type)
-
+        mainsnak = claim['mainsnak']
+        if mainsnak['snaktype'] == 'novalue':
+          self.label.set_text("No value")
+        if mainsnak['snaktype'] == 'value':
+          if mainsnak['datatype'] == 'wikibase-item':
+            if mainsnak['datavalue']['type'] == 'wikibase-entityid':
+              if mainsnak['datavalue']['value']['entity-type'] == 'item':
+                URI = 'Q' + str(mainsnak['datavalue']['value']['numeric-id'])
+                #entity = {'URI':URI, "Label":"", "Description":""}
+                entity = self.download(URI)
+                #self.label.set_text(self.wikidata.get_label(entity))
+                
     def download(self, entity):
         f = lambda : deepcopy(entity)
         def do_call():
@@ -41,6 +46,10 @@ class Value(Box):
         thread.start()
 
     def on_download_done(self, entity, error):
-        text = Wikidata().get_label(entity)
-        self.entry.set_text(text)
-        self.label.set_text(text)
+        if error:
+            print(error)
+        self.label.set_text(self.wikidata.get_label(entity))
+        #print("And now here")
+        #text = Wikidata().get_label(entity)
+        #self.entry.set_text(text)
+        #self.label.set_text(text)

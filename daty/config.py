@@ -1,4 +1,7 @@
-from .util import load, save
+try:
+    from .util import load, save
+except:
+    from util import load, save
 
 from appdirs import *
 from gettext import bindtextdomain, textdomain, translation
@@ -11,12 +14,14 @@ from re import sub
 class Config:
     """Daty configuration class.
 
-    It is responsible for:
-        - create user dirs
-        - set locales
-        - set gresource
+    Attributes:
+        exec_path (str): path where the class resides;
+        appname (str): name of the app (daty).
+        dirs (dict): paths of cache, data, config directories
     """
+
     exec_path = dirname(abspath(__file__))
+
     appname = "daty"
     appauthor = "Pellegrino Prevete"
     dirs = {'data':user_data_dir(appname, appauthor),
@@ -34,7 +39,12 @@ class Config:
             self.data = load(str(join(self.dirs['config'], "config.pkl")))
 
     def set_dirs(self):
-        """Set user dirs for daty"""
+        """Make user dirs for daty
+
+            It makes pywikibot dir in config and export
+            PYWIKIBOT_DIR.
+
+        """
         for type,p in self.dirs.items():
             if not exists(p):
                 split = p.split("/")
@@ -52,6 +62,7 @@ class Config:
         environ['PYWIKIBOT_DIR'] = join(self.dirs['config'], 'pywikibot')
 
     def set_locales(self):
+        """Set locales"""
         langs = []
         lc, encoding = getdefaultlocale()
         if (lc):

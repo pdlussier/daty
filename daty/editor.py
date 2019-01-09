@@ -5,7 +5,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add
-from gi.repository.Gtk import ApplicationWindow, IconTheme, Template
+from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template, Separator
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
@@ -33,8 +33,10 @@ class Editor(ApplicationWindow):
 
     # Sub header bar
     sub_header_bar = Template.Child("sub_header_bar")
-    item_stack = Template.Child("item_stack")
+    entity_stack = Template.Child("entity_stack")
     item_button = Template.Child("item_button")
+    entity = Template.Child("entity")
+    description = Template.Child("description")
 
     # Sidebar 
     sidebar_viewport = Template.Child("sidebar_viewport")
@@ -47,11 +49,11 @@ class Editor(ApplicationWindow):
     pages = Template.Child("pages")
 
     # Separator
-    edit_column_separator = Template.Child("edit_column_separator")
+#    edit_column_separator = Template.Child("edit_column_separator")
 
     # Common
-    common = Template.Child("common-viewport")
-    common_page = Template.Child("common_page")
+    #common = Template.Child("common-viewport")
+    #common_page = Template.Child("common_page")
 
     wikidata = Wikidata()
 
@@ -71,7 +73,7 @@ class Editor(ApplicationWindow):
         #self.common.set_visible(False)
 
         # Init sidebar
-        self.sidebar_list = SidebarList(self.pages)
+        self.sidebar_list = SidebarList(self.pages, self.entity, self.description)
         self.sidebar_viewport.add(self.sidebar_list)
 
         # Parse args
@@ -121,12 +123,6 @@ class Editor(ApplicationWindow):
         sidebar_entity = SidebarEntity(entity, description=False)
         self.sidebar_list.add(sidebar_entity)
         self.sidebar_list.show_all()
-
-        # Label
-        #self.item_button.add(Entity(entity, ))#parent=self.label_listbox))
-
-        #self.item_button.add()
-        # Description
 
         # Page
         #page = Page(entity)
@@ -184,16 +180,14 @@ class Editor(ApplicationWindow):
         # Sidebar
         self.sidebar_list.set_selection_mode(value)
         if value:
-            self.edit_column_separator.set_visible(True)
-            self.common.set_visible(True)
+            self.column_separator = Separator()
+            self.common = Label(label="common")
+            self.content_box.add(self.column_separator)
+            self.content_box.add(self.common)
             self.content_box.show_all()
- 
         else:
-            self.item_stack.set_visible_child_name('item_button')
-            self.edit_column_separator.set_visible(False)
-            self.common.set_visible(False)
-            self.content_box.set_visible_child_name("single_column")
-            #self.content_box.show_all()
+            self.content_box.remove(self.column_separator)
+            self.content_box.remove(self.common)
 
     @Template.Callback()
     def app_menu_clicked_cb(self, widget):
@@ -209,29 +203,6 @@ class Editor(ApplicationWindow):
         else:
             self.app_menu_popover.set_visible(True)
 
-#    @Template.Callback()
-#    def check_resize_cb(self, window):
-#        """Window resizing callback
-#
-#            Puts window in single/double column editing mode depending on
-#            Handy.Leaflet folded status (waiting for libhandy:#6).
-#
-#            Args:
-#                widget (Gtk.Widget): the clicked widget.
-#        """
-#        if self.content_box.props.folded and self.titlebar.get_selection_mode():
-#            #self.sub_header_bar.set_custom_titlebar(self.item_stack)
-#            self.item_stack.set_visible_child_name("column_switcher")
-#            if self.label_test in self.common:
-#                self.common.remove(self.label_test)
-#                self.content_stack.add_titled(self.label_test, "common", "Common")
-#        else:
-#            self.sub_header_bar.set_title("test")
-#            self.item_stack.set_visible_child_name("item_button")
-#            if self.label_test in self.content_stack.get_children():
-#                self.content_stack.remove(self.label_test)
-#                self.common.add(self.label_test)
-
     @Template.Callback()
     def on_content_box_folded_changed(self, leaflet, folded):
         """Third column folding signal
@@ -245,34 +216,26 @@ class Editor(ApplicationWindow):
         """
         # If we are in selection mode
         if self.titlebar.get_selection_mode():
-            print(self.item_stack.get_visible_child_name())
             # If the title is displayed
-            print(self.content_box.props.folded)
             if self.content_box.props.folded:
-                #self.item_stack.get_visible_child_name() == 'item_button': #folded:
                 # Set switcher in the titlebar
-                self.item_stack.set_visible_child_name("column_switcher")
+                self.entity_stack.set_visible_child_name("column_switcher")
 
                 # Move common page from third column to content_stack
-                #if self.common_page in self.common: # Remove check 
-                self.common.set_visible(False)
-                self.common.remove(self.common_page)
-                self.content_stack.add_titled(self.common_page, "common", "Common")
-                
+                self.content_box.remove(self.column_separator)
+                self.content_box.remove(self.common)
+                self.content_stack.add_titled(self.common, "common", "Common")
 
             else: 
                 # WIP: self.sub_header_bar.set_title("test")
                 # Set the switcher to something else
-                self.item_stack.set_visible_child_name("item_button")
+                self.entity_stack.set_visible_child_name("item_button")
 
-                print("Move common page from content stack to third column")
+                # Show sub header properties
+                #print(dir(self.sub_header_bar.props))
+                #.remove(self.entity_stack)
+
                 # Move common page from content stack to third column
-                #if self.common_page in self.content_stack.get_children():
-                self.content_stack.remove(self.common_page)
-                self.common.add(self.common_page)
-                self.common.set_visible(True)
-            #print("not folded")
-        #print("out" if not folded else "in")
-        #print(id(folded))
-        #print("in" if bool(folded) else "out")
-
+                self.content_stack.remove(self.common)
+                self.content_box.add(self.column_separator)
+                self.content_box.add(self.common)

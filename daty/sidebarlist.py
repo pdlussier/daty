@@ -2,7 +2,7 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import ListBox, ListBoxRow, Separator, Template
+from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
 
 from .entity import Entity
 from .page import Page
@@ -12,13 +12,20 @@ from .sidebarentity import SidebarEntity
 class SidebarList(ListBox):
     __gtype_name__ = "SidebarList"
 
-    def __init__(self, stack, autoselect=True, *args, **kwargs):
+    def __init__(self, 
+                 stack, 
+                 entity_label,
+                 entity_description, 
+                 autoselect=True, *args, **kwargs):
         """Sidebar ListBox
         
         Args:
             stack (Gtk.Stack): entities stack;
+            entity_label (Gtk.Label): title of the visible entity;
+            description_label (Gtk.Label): description of the visible entity;
             autoselect (bool): whether to select the first element
                 by default.
+           
         """
         ListBox.__init__(self, *args, **kwargs)
 
@@ -27,7 +34,10 @@ class SidebarList(ListBox):
         # Set separator as row header
         self.set_header_func(self.update_header)
 
-        self.connect("row-selected", self.sidebar_row_selected_cb, stack)
+        self.connect("row-selected", self.sidebar_row_selected_cb,
+                                     stack,
+                                     entity_label,
+                                     entity_description)
 
     def update_header(self, row, before, *args):
         """See GTK+ Documentation"""
@@ -50,15 +60,19 @@ class SidebarList(ListBox):
                 row (Gtk.ListBoxRow): selected row;
                 value (bool): whether to add or remove checkbutton.
         """
-        children = row.get_children()
-        if children:
-            child = children[0]
+        if row.get_children():
+            child = row.box.child
             entity = child.entity
-            row.remove(child)
             if value:
-                row.add(Entity(entity, selected=self.selected))
+                row.box.remove(child)
+                row.check = Entity(entity, widget=False, selected=self.selected)
+                row.box.add(row.check)
+                row.box.add(child)
             else:
-                row.add(SidebarEntity(entity))
+                row.box.remove(row.check)
+                row.check.destroy()
+                del row.check
+                #row.add(SidebarEntity(entity))
  
     def add(self, widget):
         """Add widget to a new row
@@ -80,7 +94,11 @@ class SidebarList(ListBox):
 
         # Create new row and add to self
         row = ListBoxRow()
-        row.add(widget)
+        row.box = Box()
+        row.add(row.box)
+        row.box.child = widget
+        row.box.add(row.box.child)
+        
         super(SidebarList, self).add(row)
 
         # Select if 'autoselect'
@@ -93,7 +111,12 @@ class SidebarList(ListBox):
         row.props.selectable = False
         super(SidebarList, self).add(row)
       
-    def sidebar_row_selected_cb(self, listbox, row, stack):
+    def sidebar_row_selected_cb(self,
+                                listbox, 
+                                row, 
+                                stack, 
+                                entity_label,
+                                entity_description):
         """Sidebar row selected callback
 
             If not existing, creates entity page and then
@@ -102,13 +125,19 @@ class SidebarList(ListBox):
             Args:
                 listbox (Gtk.ListBox): the listbox class, so self;
                 row (Gtk.ListBoxRow): the selected row, which has 
-                    for only child a SidebarEntity object;
+                for only child a SidebarEntity object;
                 stack (Gtk.Stack): the stack which has to switch
-                    visible child.
+                visible child.
+                entity_label (Gtk.Label): widget of entity title
+                entity_description(Gtk.Label)
         """
         # Get entity from SidebarEntity child
-        sidebar_entity = row.get_children()[0]
+        sidebar_entity = row.box.child
         entity = sidebar_entity.entity
+
+        # Set titlebar
+        entity_label.set_text(entity["Label"])
+        entity_description.set_text(entity["Description"])
 
         # If there is no corresponding child in stack, create one
         if not stack.get_child_by_name(entity['URI']):

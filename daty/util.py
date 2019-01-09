@@ -56,11 +56,12 @@ def load(path):
     f.close()
     return variable
 
-# Calls f on another thread
 def async_call(f, on_done):
-  """
+  """Calls f on another thread
+
   Starts a new thread that calls f and schedules on_done to be run (on the main
   thread) when GTK is not busy.
+
   Args:
     f (function): the function to call asynchronously. No arguments are passed
                   to it. f should not use any resources used by the main thread,
@@ -70,8 +71,10 @@ def async_call(f, on_done):
                         was thrown (if anything) as the second. on_done is
                         called on the main thread, so it can access resources
                         on the main thread.
+
   Returns:
     Nothing.
+
   Raises:
     Nothing.
   """
@@ -93,9 +96,9 @@ def async_call(f, on_done):
   thread = Thread(target = do_call)
   thread.start()
 
-# free function decorator
 def async_function(on_done = None):
-  """
+  """Free function async decorator
+
   A decorator that can be used on free functions so they will always be called
   asynchronously. The decorated function should not use any resources shared
   by the main thread.
@@ -103,6 +106,7 @@ def async_function(on_done = None):
   @async_function(on_done = do_whatever_done)
   def do_whatever(look, at, all, the, pretty, args):
     # ...
+
   Args:
     on_done (function): the function that is called when the decorated function
                         completes. If omitted or set to None this will default
@@ -110,8 +114,10 @@ def async_function(on_done = None):
                         thread.
                         on_done is called with the decorated function's result
                         and any raised exception.
+
   Returns:
     A wrapper function that calls the decorated function on a new thread.
+
   Raises:
     Nothing.
   """
@@ -124,25 +130,27 @@ def async_function(on_done = None):
 
 # method decorator
 def async_method(on_done = None):
-  """
-  A decorator that can be used on class methods so they will always be called
-  asynchronously. The decorated function should not use any resources shared
-  by the main thread.
-  Example:
-  @async_method(on_done = lambda self, result, error: self.on_whatever_done(result, error))
-  def do_whatever(self, look, at, all, the, pretty, args):
-    # ...
-  Args:
-    on_done (function): the function that is called when the decorated function
-                        completes. If omitted or set to None this will default
-                        to a no-op. This function will be called on the main
-                        thread.
-                        on_done is called with the class instance used, the
-                        decorated function's result and any raised exception.
-  Returns:
-    A wrapper function that calls the decorated function on a new thread.
-  Raises:
-    Nothing.
+  """Async method decorator
+
+     A decorator that can be used on class methods so they will always be called
+     asynchronously. The decorated function should not use any resources shared
+     by the main thread.
+     Example:
+     @async_method(on_done = lambda self, result, error: self.on_whatever_done(result, error))
+     def do_whatever(self, look, at, all, the, pretty, args):
+     
+     Args:
+         on_done (function): the function that is called when the decorated function
+                             completes. If omitted or set to None this will default
+                             to a no-op. This function will be called on the main
+                             thread.
+                             on_done is called with the class instance used, the
+                             decorated function's result and any raised exception.
+
+     Returns:
+         A wrapper function that calls the decorated function on a new thread.
+     Raises:
+         Nothing.
   """
 
   if not on_done:
