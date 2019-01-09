@@ -32,13 +32,14 @@ from re import sub
 from requests import get
 
 from .config import Config
+config = Config()
+from pywikibot import ItemPage, PropertyPage, Site
+from pywikibot.data.sparql import SparqlQuery
+from pywikibot.page import Claim
 
 class Wikidata:
     def __init__(self, verbose=False):
         config = Config()
-        from pywikibot import ItemPage, PropertyPage, Site
-        from pywikibot.data.sparql import SparqlQuery
-        from pywikibot.page import Claim
         self.verbose = verbose
         site = Site('wikidata', 'wikidata')
         self.repo = site.data_repository()
@@ -108,7 +109,6 @@ class Wikidata:
         Returns:
             
         """
-        from pywikibot import ItemPage, PropertyPage
         if uri.startswith("P"):
             return PropertyPage(self.repo, uri).get()
         if uri.startswith("Q") or uri.startswith("L"):

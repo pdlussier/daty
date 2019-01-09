@@ -25,7 +25,7 @@ def explore(path, ):
 daty_files = explore('daty/po') + explore('daty/resources')
 
 try:
-    sh(['daty/compile-resources.sh'])
+    sh(['daty/resources/compile-resources.sh'])
 except Exception as e:
     print("WARNING: to compile gresource be sure to have \"glib-compile-resources\" in your $PATH")
 

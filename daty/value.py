@@ -17,6 +17,7 @@ class Value(Box):
 
     entry = Template.Child("entry")
     label = Template.Child("label")
+    unit = Template.Child("unit")
     wikidata = Wikidata()
 
     def __init__(self, claim, *args, **kwargs):
@@ -25,31 +26,44 @@ class Value(Box):
         if mainsnak['snaktype'] == 'novalue':
           self.label.set_text("No value")
         if mainsnak['snaktype'] == 'value':
-          if mainsnak['datatype'] == 'wikibase-item':
-            if mainsnak['datavalue']['type'] == 'wikibase-entityid':
-              if mainsnak['datavalue']['value']['entity-type'] == 'item':
-                URI = 'Q' + str(mainsnak['datavalue']['value']['numeric-id'])
-                #entity = {'URI':URI, "Label":"", "Description":""}
-                entity = self.download(URI)
-                #self.label.set_text(self.wikidata.get_label(entity))
-                
-    def download(self, entity):
-        f = lambda : deepcopy(entity)
+          dv = mainsnak['datavalue']
+          dt = mainsnak['datatype']
+          if dt == 'wikibase-item' or dt == 'wikibase-property':
+            if dv['type'] == 'wikibase-entityid':
+              entity_type = dv['value']['entity-type']
+              numeric_id = dv['value']['numeric-id']
+              if entity_type == 'item':
+                URI = 'Q' + str(numeric_id)
+              if entity_type == 'property':
+                URI = 'P' + str(numeric_id)
+              entity = self.download(URI, self.on_download_done)
+          if dt == 'url':
+              url = dv['value']
+              label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
+              self.label.set_markup(label)
+          if dt == 'quantity':
+              amount = dv['value']['amount']
+              self.label.set_text(amount)
+              unit = dv['value']['unit'].split('/')[-1]
+              unit = self.download(unit, self.on_download_unit)
+              self.quantity_label = dv['value']
+          
+
+
+    def download(self, entity, callback):
+        f = lambda : entity
         def do_call():
             entity, error = None, None
-            try:
-                entity = deepcopy(self.wikidata).download(f())
-            except Exception as err:
-                error = err
-            idle_add(lambda: self.on_download_done(entity, error))
+            entity = self.wikidata.download(f())
+            idle_add(lambda: callback(entity, error))
         thread = Thread(target = do_call)
         thread.start()
+
+    def on_download_unit(self, unit, error):
+        label = self.wikidata.get_label(unit)
+        self.unit.set_text(label)
 
     def on_download_done(self, entity, error):
         if error:
             print(error)
         self.label.set_text(self.wikidata.get_label(entity))
-        #print("And now here")
-        #text = Wikidata().get_label(entity)
-        #self.entry.set_text(text)
-        #self.label.set_text(text)
