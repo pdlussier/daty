@@ -31,12 +31,10 @@ class Open(Window):
     label_listbox = Template.Child("label_listbox")
     open_button = Template.Child("open_button")
 
-    def __init__(self, *args, new_session=True, parent=None, verbose=True):
+    def __init__(self, load, *args, new_session=True, verbose=True):
         Window.__init__(self, *args)
 
         self.verbose = verbose
-        self.parent = parent
-        self.new_session = new_session
 
         self.show_all()
 
@@ -55,6 +53,7 @@ class Open(Window):
 
         self.entities = self.label_listbox.selected
 
+        self.open_button.connect('clicked', self.open_button_clicked_cb, load)
 
     def set_search_placeholder(self, value, search_stack="label_search"):
        if value:
@@ -74,10 +73,9 @@ class Open(Window):
                 self.open_button.set_visible(True)
                 self.header_bar.set_show_close_button(False)
 
-    @Template.Callback()
-    def open_button_clicked_cb(self, widget):
-        if self.new_session and self.entities != []:
-            self.parent.load(self.entities)
+    def open_button_clicked_cb(self, widget, load):
+        if self.entities != []:
+            load(self.entities)
         self.destroy()
 
     @Template.Callback()

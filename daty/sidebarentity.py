@@ -12,7 +12,7 @@ class SidebarEntity(Box):
     description = Template.Child("description")
     URI = Template.Child("URI")
 
-    def __init__(self, entity, *args, description=False, URI=True):
+    def __init__(self, entity, *args, description=True, URI=True):
         """Widget representing an entity in the sidebar
 
             Args:

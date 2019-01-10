@@ -37,6 +37,7 @@
   <template class="Editor" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="title">Test</property>
+    <property name="window_position">center</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="icon_name">daty</property>
@@ -230,9 +231,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
                       <object class="GtkGrid" id="item_button">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -279,7 +277,6 @@
                       <packing>
                         <property name="name">item_button</property>
                         <property name="title" translatable="yes">Title</property>
-                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -291,7 +288,7 @@
                       <packing>
                         <property name="name">column_switcher</property>
                         <property name="title" translatable="yes">column_switcher</property>
-                        <property name="position">2</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -316,6 +313,7 @@
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -327,6 +325,7 @@
                   </object>
                   <packing>
                     <property name="pack_type">end</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>

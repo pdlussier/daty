@@ -61,6 +61,7 @@
         <property name="label" translatable="yes">Description</property>
         <property name="justify">fill</property>
         <property name="wrap">True</property>
+        <property name="ellipsize">end</property>
         <attributes>
           <attribute name="font-desc" value="Cantarell 8"/>
         </attributes>

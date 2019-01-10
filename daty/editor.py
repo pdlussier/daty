@@ -80,7 +80,7 @@ class Editor(ApplicationWindow):
         if entities:
             self.load(entities)
         else:
-            Open(new_session=True, parent=self)
+            Open(self.load, new_session=True)
 
     def load(self, entities):
         """Open entities
@@ -120,7 +120,7 @@ class Editor(ApplicationWindow):
         """
 
         # Sidebar
-        sidebar_entity = SidebarEntity(entity, description=False)
+        sidebar_entity = SidebarEntity(entity, description=True)
         self.sidebar_list.add(sidebar_entity)
         self.sidebar_list.show_all()
 
@@ -138,7 +138,7 @@ class Editor(ApplicationWindow):
             Args:
                 widget (Gtk.Widget): the clicked widget.
         """
-        Open(new_session=False)
+        Open(self.load, new_session=False,)
 
     @Template.Callback()
     def select_entities_clicked_cb(self, widget):

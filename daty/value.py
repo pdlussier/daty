@@ -39,6 +39,7 @@ class Value(Box):
               entity = self.download(URI, self.on_download_done)
           if dt == 'url':
               url = dv['value']
+              print(url)
               label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
               self.label.set_markup(label)
           if dt == 'quantity':
