@@ -29,7 +29,18 @@ from gi.repository import GObject
 #from os.path import dirname, realpath
 from pickle import dump
 from pickle import load as pickle_load
-from threading import Thread
+from threading import BoundedSemaphore, Thread
+
+threadLimiter = BoundedSemaphore(1)
+
+class MyThread(Thread):
+
+    def run(self):
+        threadLimiter.acquire()
+        try:
+            super(MyThread, self).run()
+        finally:
+            threadLimiter.release()
 
 def save(variable, path):
     """Save variable on given path using Pickle
@@ -178,3 +189,6 @@ def async_method(on_done = None):
 #    StyleContext.add_provider_for_screen(Screen.get_default(),
 #                                         style_provider,
 #                                         STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+
+

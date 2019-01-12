@@ -2,11 +2,14 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
+from gi.repository.GLib import idle_add
 from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
+from threading import Thread
 
 from .entity import Entity
 from .page import Page
 from .sidebarentity import SidebarEntity
+from .util import MyThread
 
 @Template.from_resource("/org/prevete/Daty/gtk/sidebarlist.ui")
 class SidebarList(ListBox):
@@ -30,6 +33,7 @@ class SidebarList(ListBox):
         ListBox.__init__(self, *args, **kwargs)
 
         self.autoselect = autoselect
+        self.stack = stack
 
         # Set separator as row header
         self.set_header_func(self.update_header)
@@ -110,7 +114,30 @@ class SidebarList(ListBox):
         row.props.activatable = False
         row.props.selectable = False
         super(SidebarList, self).add(row)
-      
+     
+    def load_page_async(self, entity, callback):
+        f = lambda : entity
+        def do_call():
+            entity, error, page = f(), None, None
+            try:
+                page = Page(entity['Data'])
+                self.stack.add_titled(page, entity['URI'], entity['Label'])
+                self.stack.set_visible_child_name(entity['URI'])
+            except Exception as err:
+                error = err
+            idle_add(lambda: callback(page,
+                                      entity['URI'],
+                                      entity['Label'],
+                                      error))
+        thread = MyThread(target = do_call)
+        thread.start()
+
+    def on_page_complete(self, page, URI, label, error):
+        if error:
+            print(error)
+        self.stack.show_all()
+        pass
+
     def sidebar_row_selected_cb(self,
                                 listbox, 
                                 row, 
@@ -141,8 +168,8 @@ class SidebarList(ListBox):
 
         # If there is no corresponding child in stack, create one
         if not stack.get_child_by_name(entity['URI']):
-            stack.add_titled(Page(entity['Data']), entity['URI'], entity['Label'])
+            self.load_page_async(entity, self.on_page_complete)
+        else:
+            stack.set_visible_child_name(entity['URI'])
 
-        # Set corresponding child in stack
-        stack.set_visible_child_name(entity['URI'])
         stack.show_all() 

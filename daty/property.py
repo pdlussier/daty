@@ -20,6 +20,8 @@ class Property(Button):
         provider = CssProvider()
         provider.load_from_resource('/org/prevete/Daty/gtk/property.css')
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
+        
+        self.set_label(label)
 
     def set_label(self, label):
         self.property_label.set_text(label)
