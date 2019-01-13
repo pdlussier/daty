@@ -35,3 +35,7 @@ class SidebarEntity(Box):
             self.URI.set_text("".join(['(', entity['URI'], ')']))
         else:
             self.remove(self.URI)
+
+    def motion_notify_event(self, widget, event):
+        print(widget)
+        print(event)

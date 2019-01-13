@@ -12,16 +12,19 @@ class Property(Button):
 
     property_label = Template.Child("property_label")
     #values = Template.Child("values")
+    wikidata = Wikidata()
 
-    def __init__(self, *args, label="", **kwargs):
+    def __init__(self, prop, *args, **kwargs):
         Button.__init__(self, *args, **kwargs)
 
         context = self.get_style_context()      
         provider = CssProvider()
         provider.load_from_resource('/org/prevete/Daty/gtk/property.css')
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
-        
-        self.set_label(label)
+       
+        label, tooltip = self.wikidata.get_label(prop), self.wikidata.get_description(prop) 
+        self.set_label(label, tooltip)
 
-    def set_label(self, label):
+    def set_label(self, label, tooltip):
         self.property_label.set_text(label)
+        self.property_label.set_tooltip_text(tooltip)

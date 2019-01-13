@@ -31,7 +31,7 @@ from pickle import dump
 from pickle import load as pickle_load
 from threading import BoundedSemaphore, Thread
 
-threadLimiter = BoundedSemaphore(1)
+threadLimiter = BoundedSemaphore(10)
 
 class MyThread(Thread):
 

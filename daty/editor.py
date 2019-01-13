@@ -4,18 +4,18 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
-from gi.repository.GLib import idle_add
+from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template, Separator
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
 
 from .entity import Entity
+from .loadingpage import LoadingPage
 from .open import Open
-from .page import Page
 from .sidebarentity import SidebarEntity
 from .sidebarlist import SidebarList
-
+from .util import MyThread
 from .wikidata import Wikidata
 
 @Template.from_resource("/org/prevete/Daty/gtk/editor.ui")
@@ -57,11 +57,12 @@ class Editor(ApplicationWindow):
 
     wikidata = Wikidata()
 
-    def __init__(self, *args, entities=[], **kwargs):
+    def __init__(self, *args, entities=[], max_pages=10, **kwargs):
         """Editor class
 
             Args:
                 entities (list): of dict having keys"Label", "URI", "Description";
+                max_pages (int): maximum number of pages kept in RAM
         """
         ApplicationWindow.__init__(self, *args, **kwargs)
 
@@ -76,7 +77,12 @@ class Editor(ApplicationWindow):
         self.sidebar_list = SidebarList(self.pages, self.entity, self.description)
         self.sidebar_viewport.add(self.sidebar_list)
 
+        # Init pages
+        loading = LoadingPage()
+        self.pages.add_titled(loading, "loading", "Loading")
+
         # Parse args
+        self.max_pages = max_pages
         if entities:
             self.load(entities)
         else:
@@ -89,10 +95,10 @@ class Editor(ApplicationWindow):
                 entities (list): of dict having "URI", "Label", "Description" keys;
         """
         for entity in entities:
-            self.download(entity)
+            self.download(entity, self.load_row_async)
         self.show()
 
-    def download(self, entity):
+    def download(self, entity, callback):
         """Asynchronously download entity from wikidata
         
             Args:
@@ -106,28 +112,30 @@ class Editor(ApplicationWindow):
                 entity['Label'] = wikidata.get_label(entity['Data'])
             if not entity['Description']:
                 entity['Description'] = wikidata.get_description(entity['Data'])
-            idle_add(lambda: self.on_download_done(entity))
-        thread = Thread(target = do_call)
+            idle_add(lambda: callback(entity))
+        thread = MyThread(target = do_call)
         thread.start()
 
-    def on_download_done(self, entity):
-        """Gets executed when download method has finished its task
+    def load_row_async(self, entity):
+        """It creates sidebar passing downloaded data to its rows.
 
-            It creates sidebar passing downloaded data to its rows.
+            Gets executed when download method has finished its task
 
             Args:
                 entity (dict): have keys "URI", "Label", "Description", "Data"
         """
+        entity = cp(entity)
+        f = lambda : entity
+        def do_call():
+            entity = f()
+            idle_add(lambda: self.on_row_complete(entity))
+        thread = MyThread(target = do_call)
+        thread.start()
 
-        # Sidebar
+    def on_row_complete(self, entity):
         sidebar_entity = SidebarEntity(entity, description=True)
         self.sidebar_list.add(sidebar_entity)
         self.sidebar_list.show_all()
-
-        # Page
-        #page = Page(entity)
-        #self.pages.add_titled(page, e['URI'], label)
-        #self.pages.show_all()
 
     @Template.Callback()
     def new_item_clicked_cb(self, widget):

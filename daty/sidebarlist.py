@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.GLib import idle_add
+from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
 from threading import Thread
 
@@ -115,28 +116,18 @@ class SidebarList(ListBox):
         row.props.selectable = False
         super(SidebarList, self).add(row)
      
-    def load_page_async(self, entity, callback):
+    def load_page_async(self, entity):
+        entity = cp(entity)
         f = lambda : entity
         def do_call():
-            entity, error, page = f(), None, None
-            try:
-                page = Page(entity['Data'])
-                self.stack.add_titled(page, entity['URI'], entity['Label'])
-                self.stack.set_visible_child_name(entity['URI'])
-            except Exception as err:
-                error = err
-            idle_add(lambda: callback(page,
-                                      entity['URI'],
-                                      entity['Label'],
-                                      error))
+            idle_add(lambda: self.on_page_complete(entity))
         thread = MyThread(target = do_call)
         thread.start()
 
-    def on_page_complete(self, page, URI, label, error):
-        if error:
-            print(error)
-        self.stack.show_all()
-        pass
+    def on_page_complete(self, entity):
+        page = Page(entity['Data'])
+        self.stack.add_titled(page, entity['URI'], entity['Label'])
+        self.stack.set_visible_child_name(entity['URI'])
 
     def sidebar_row_selected_cb(self,
                                 listbox, 
@@ -168,8 +159,41 @@ class SidebarList(ListBox):
 
         # If there is no corresponding child in stack, create one
         if not stack.get_child_by_name(entity['URI']):
-            self.load_page_async(entity, self.on_page_complete)
+            stack.set_visible_child_name("loading")
+            children = stack.get_children()
+            if len(children) >= 10:
+                print("more than 5 children")
+                oldest = children[1]
+                children.remove(oldest)
+                oldest.destroy()
+                del oldest
+                print(len(children))
+            # To be replaced with a timeout that makes sure 
+            # that you are not just passing over the row with arrows.
+            #page = Page(entity['Data'])
+            #stack.add_titled(page, entity['URI'], entity['Label'])
+            #stack.set_visible_child_name(entity['URI'])
+            #stack.show_all()
+            self.load_page_async(entity)
         else:
             stack.set_visible_child_name(entity['URI'])
+        #def do_call():
+            #error = None
+            #try:
+                    #label = Label()
+                    #page = Page(entity['Data'])
+                    #stack.add_titled(page, entity['URI'], entity['Label'])
+                    #self.stack.set_visible_child_name(entity['URI'])
+                #self.stack.show_all()
 
-        stack.show_all() 
+                    #self.load_page_async(entity, self.on_page_complete)
+                #print("stai aprendo", entity['URI'])
+                #else:
+                #    stack.set_visible_child_name(entity['URI'])
+            #except Exception as err:
+         #       error = err
+         #   idle_add(lambda: error)
+        #thread = Thread(target = do_call)
+        #thread.start()
+
+        #stack.show_all() 

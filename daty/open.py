@@ -31,7 +31,7 @@ class Open(Window):
     label_listbox = Template.Child("label_listbox")
     open_button = Template.Child("open_button")
 
-    def __init__(self, load, *args, new_session=True, verbose=True):
+    def __init__(self, load, *args, new_session=True, verbose=False):
         Window.__init__(self, *args)
 
         self.verbose = verbose

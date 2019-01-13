@@ -119,32 +119,23 @@ class Wikidata:
         return claim.toJSON()
 
     def get_label(self, entity, language='en'):
-        if language in entity['labels'].keys():
-            return entity['labels'][language]
-        else:
-            return ""
+        try:
+            if language in entity['labels'].keys():
+                return entity['labels'][language]
+            else:
+                return ""
+        except Exception as e:
+            print(e)
 
     def get_description(self, entity, language='en'):
-        if language in entity['descriptions'].keys():
-            return entity['descriptions'][language]
-        else:
-            return ""
-
-    def parse_claim(self, claim):
         try:
-            if 'datatype' in claim.keys():
-                datatype = claim['datatype']
-                if datatype == 'wikibase-item':
-                    value = claim['mainsnak']['datavalue']['value']
-                    if value['entity-type'] == 'item':
-                        return "Q" + str(value['numeric-id'])
+            if language in entity['descriptions'].keys():
+                return entity['descriptions'][language]
             else:
-                pprint(claim)
+                return ""
         except Exception as e:
-            pprint(claim)
-            pprint(e)
-            print("WARNING: Claim containing not supported type")
-            return None
+            print(self.wikidata.get_description(entity))
+            print(e.traceback)
 
     def search(self, query, verbose=False):
         """

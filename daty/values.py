@@ -24,3 +24,4 @@ class Values(Frame):
         row.add(widget)
         self.list.add(row)
         
+        
