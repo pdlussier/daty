@@ -9,25 +9,57 @@
 Use *Daty* to search, select, read, batch edit items, script actions, share, visualize proposed changes and bots.
 
 *Daty* is written in Python 3 and it uses [GTK+ 3.0](https://developer.gnome.org/hig/stable/) python bindings for interface organization and drawing.
-It has a progressive layout thanks to [libhandy](https://source.puri.sm/Librem5/libhandy).
+
+It has a progressive layout thanks to [libhandy](https://source.puri.sm/Librem5/libhandy) and uses [pywikibot](https://phabricator.wikimedia.org/project/profile/87/) as a backend.
+
+## Currently implemented
+- [X] Search and open entities through elasting search and triplets;
+- [X] Read entities and follow their values;
+- [ ] Page and sidebar search;
+- [ ] Edit statements;
+- [ ] Mass-edit statements.
+
+## Installation
+
+### Windows
+I have to upload the exe.
+
+### Linux
+#### Archlinux
+The package `daty-git` has been published on [AUR](https://aur.archlinux.org/packages/daty-git/).
+
+### Ubuntu
+#### Ubuntu disco
+In progress.
+
+#### Fedora
+In progress.
+
+#### Flatpak
+In progress
+
+### Mac OS
+Hardware or contributors needed.
 
 ## Development
+In order to run `daty`, you need to install [PyGobject](https://pygobject.readthedocs.io/en/latest/getting_started.html), [pywikibot](https://pypi.org/project/pywikibot) and [libhandy](https://source.puri.sm/tallero/libhandy). If your distribution is not in the following, hopefully it should still have them available for you in their repositories.
 
-You have to install `Gobject` python bindings and install `pywikibot` library on your computer to run *Daty*. On the following distros, you can do that by running:
+### Archlinux
+Install `daty-git` from [AUR](https://aur.archlinux.org/packages/daty-git/) and skip to "Run".
 
-#### Archlinux
-    # pacman -S python-gi pip
-    # pip install pywikibot
+### Ubuntu disco / Debian Sid
+Run the following commands from your terminal:
 
-#### Ubuntu/Debian
-    # apt install python3-gi gir1.2-gtk3.0 python3-pip
+    # apt install python3-gi gir1.2-gtk-3.0 python3-pip libhandy-0.0-0
     # pip3 install pywikibot
 
-At the moment, you need to manually configure your wikimedia account to use *Daty*. Actually, you just need to create bot credentials at [this page](https://www.wikidata.org/wiki/Special:BotPasswords) and include them in the `user-config.py` and `user-password.py` files in the `daty/example` directory and put them in the directory you want to run daty.
+To run daty you just need to clone this repository and execute
 
-Now, to test the program, just run
+    $ python3 setup.py sdist bdist_wheel
+    $ sudo python3 setup.py install
+    $ daty
 
-    ./daty/__init__.py
+or you can just open the entry that should have appeared in your menu.
 
 ## About
 
