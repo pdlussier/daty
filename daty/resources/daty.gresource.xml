@@ -3,12 +3,15 @@
   <gresource prefix="/org/prevete/Daty">
     <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entity.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/entityselectable.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/loadingpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <!-- <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file> -->
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/property.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/qualifierproperty.ui</file>
     <file compressed="true">gtk/property.css</file>
+    <file compressed="true">gtk/qualifiersnak.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarentity.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/statements.ui</file>

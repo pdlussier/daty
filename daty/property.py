@@ -17,6 +17,7 @@ class Property(Button):
     def __init__(self, prop, *args, **kwargs):
         Button.__init__(self, *args, **kwargs)
 
+        # Styling
         context = self.get_style_context()      
         provider = CssProvider()
         provider.load_from_resource('/org/prevete/Daty/gtk/property.css')

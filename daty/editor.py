@@ -10,7 +10,7 @@ from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
 
-from .entity import Entity
+from .entityselectable import EntitySelectable
 from .loadingpage import LoadingPage
 from .open import Open
 from .sidebarentity import SidebarEntity

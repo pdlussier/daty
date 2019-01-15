@@ -3,114 +3,112 @@
 from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.GLib import idle_add
-from gi.repository.Gtk import Box, CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Template
+require_version('Gdk', '3.0')
+from gi.repository.GLib import idle_add, PRIORITY_LOW
+from gi.repository.Gdk import EventType
+from gi.repository.Gtk import Grid, Template
 from pprint import pprint
 from threading import Thread
 
+from .entity import Entity
+from .qualifierproperty import QualifierProperty
 from .util import MyThread
+from .values import Values
 from .wikidata import Wikidata
 
 @Template.from_resource("/org/prevete/Daty/gtk/value.ui")
-class Value(Box):
+class Value(Grid):
     
     __gtype_name__ = "Value"
 
-    entry = Template.Child("entry")
-    label = Template.Child("label")
-    unit = Template.Child("unit")
+    qualifiers = Template.Child("qualifiers")
+    mainsnak = Template.Child("mainsnak")
     wikidata = Wikidata()
 
     def __init__(self, claim, *args, **kwargs):
-        #self.unit.props.set_no_show_all = True
-        try:
-            Box.__init__(self, *args, **kwargs)
-            mainsnak = claim['mainsnak']
-            if mainsnak['snaktype'] == 'novalue':
-              self.label.set_text("No value")
-            if mainsnak['snaktype'] == 'value':
-              dv = mainsnak['datavalue']
-              dt = mainsnak['datatype']
-              if dt == 'wikibase-item' or dt == 'wikibase-property':
-                if dv['type'] == 'wikibase-entityid':
-                  entity_type = dv['value']['entity-type']
-                  numeric_id = dv['value']['numeric-id']
-                  if entity_type == 'item':
-                    URI = 'Q' + str(numeric_id)
-                  if entity_type == 'property':
-                    URI = 'P' + str(numeric_id)
-                  entity = self.download(URI, self.on_download_done)
-              if dt == 'url':
-                  url = dv['value']
-                  label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
-                  self.label.set_markup(label)
-              if dt == 'quantity':
-                  # Unit
-                  #self.unit.props.set_no_show_all = False
-                  unit = dv['value']['unit']
-                  if unit.startswith('http'):
-                      unit = dv['value']['unit'].split('/')[-1]
-                      self.download(unit, self.on_download_unit)
+        Grid.__init__(self, *args, **kwargs)
 
-                  amount = dv['value']['amount']
-                  ub = dv['value']['upperBound']
-                  lb = dv['value']['lowerBound']
-                  if float(amount) > 0:
-                      amount = str(round(float(amount)))
-                  if ub and lb:
-                      amount = amount + " ± " + str(round(float(ub) - float(amount)))
-                  if ub and not lb:
-                      amount = amount + " + " + str(round(float(ub) - float(amount)))
-                  if not ub and lb:
-                      amount = amount + " - " + str(round(float(amount) - float(lb)))
-                  self.label.set_text(amount)
-              if dt == 'string':
-                  self.label.set_text(dv['value'])
-                  self.label.set_tooltip_text("Text")
-              if dt == 'monolingualtext':
-                  print(dv['value'])
-              if dt == 'commonsMedia':
-                  self.label.set_text(dv['value'])
-                  self.label.set_tooltip_text("Picture")
-              if dt == 'external-id':
-                  self.label.set_text(dv['value'])
-                  self.label.set_tooltip_text("External ID")
-              if dt == 'geo-shape':
-                  print(dv['value'])
-              if dt == 'globe-coordinate':
-                  print(dv['value'])
-              if dt == 'monolingualtext':
-                  print(dv['value'])
-              if dt == 'tabular-data':
-                  print(dv['value'])
-              if dt == 'time':
-                  print(dv['value'])
+        self.extra = 0
+
+        try:
+            entity = Entity(claim['mainsnak'])
+            self.mainsnak.add(entity)
+            #self.attach(entity, 0, 0, 1, 1)
+
+            if 'qualifiers' in claim.keys():
+                self.claims = claim['qualifiers']
+                for i,P in enumerate(self.claims.keys()):
+                    self.download(P, self.load_qualifiers, i)
 
         except Exception as err:
             print(err)
 
-    def download(self, entity, callback):
-        f = cp(entity), cp(self.wikidata)
+    def download(self, URI, callback, *cb_args):
+        f = lambda : (cp(arg) for arg in cb_args)
+        URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
-            entity, wikidata = f
+            cb_args = list(f())
+            entity, error = None, None
+            try:
+                entity = wikidata.download(URI)
+            except Exception as err:
+                error = err
+            idle_add(lambda: callback(URI, entity, error, *cb_args),
+                     priority=PRIORITY_LOW)
+        thread = Thread(target = do_call)
+        thread.start()
+
+    def load_qualifiers(self, URI, qualifier, error, i):
+        try:
+            if error:
+                print(error)
+            #pprint(qualifier)
+            qualifier = QualifierProperty(qualifier)
+            values = Values(frame=False)
+            values.props.expand = True
+            values.props.hexpand = True
+            values.props.vexpand = True
+            self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
+            #self.qualifiers.attach(values, 1, i, 2, 1)
+            for j, claim in enumerate(self.claims[URI]):
+                self.load_value_async(URI, claim, values, i+self.extra+j)
+            self.extra += len(self.claims[URI]) - 1
+            pprint(j)
+        except Exception as e:
+            print(URI)
+            print(type(e))
+            print(e.args)
+            pprint(e.__traceback__)
+
+    def load_value_async(self, URI, claim, values, j):
+        f = cp(URI), cp(claim)
+        def do_call():
+            URI, claim = f
             error = None
             try:
-                entity = wikidata.download(entity)
-            except Exception as e:
-                error = e
-            idle_add(lambda: callback(entity, error))
+                pass
+            except Exception as err:
+                error = err
+            idle_add(lambda: self.on_value_complete(claim, values, error, j))
         thread = MyThread(target = do_call)
         thread.start()
 
-    def on_download_unit(self, unit, error):
+    def on_value_complete(self, claim, values, error, j):
         if error:
             print(error)
-        if unit:
-            label = self.wikidata.get_label(unit)
-            self.unit.set_text(label)
-            self.unit.set_visible(True)
+        value = Entity(claim)
+        self.set_font_deprecated(value)
+        self.qualifiers.attach(value, 1, j, 4, 1)
 
-    def on_download_done(self, entity, error):
+    def set_font_deprecated(self, editor_widget):
+        pango_context = editor_widget.create_pango_context()
+        font_description = pango_context.get_font_description()
+        increase = 8 #pt 14
+        font_size = 1024*increase
+        font_description.set_size(font_size)
+        editor_widget.override_font(font_description)
+
+    def load_entity(self, URI, entity, error):
         if error:
             print(error)
         label = self.wikidata.get_label(entity)
@@ -118,9 +116,15 @@ class Value(Box):
         self.label.set_text(label)
         self.label.set_tooltip_text(description)
 
-    @Template.Callback()
-    def label_button_press_event_cb(self, widget, event):
-        print(event.type)
+#    @Template.Callback()
+#    def label_button_press_event_cb(self, widget, event):
+#        print(event.type)
+#        print(event.button)
+#        if event.type == EventType._2BUTTON_PRESS:
+#            print(" double click ")
+#        elif event.type == EventType.BUTTON_PRESS:
+#            print("single click ")
+
         #if event.button == 1 :
         #    data = widget.get_path_at_pos(int(event.x), int(event.y))
         #    if data :

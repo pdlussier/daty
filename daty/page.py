@@ -60,6 +60,7 @@ class Page(ScrolledWindow):
                 #self.load_qualifiers_async(
         except Exception as e:
             print(URI)
+            pprint(e)
             print(e.traceback)
             print(prop.keys())
 

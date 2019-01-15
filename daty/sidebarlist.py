@@ -7,7 +7,7 @@ from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
 from threading import Thread
 
-from .entity import Entity
+from .entityselectable import EntitySelectable
 from .page import Page
 from .sidebarentity import SidebarEntity
 from .util import MyThread
@@ -70,14 +70,13 @@ class SidebarList(ListBox):
             entity = child.entity
             if value:
                 row.box.remove(child)
-                row.check = Entity(entity, widget=False, selected=self.selected)
+                row.check = EntitySelectable(entity, widget=False, selected=self.selected)
                 row.box.add(row.check)
                 row.box.add(child)
             else:
                 row.box.remove(row.check)
                 row.check.destroy()
                 del row.check
-                #row.add(SidebarEntity(entity))
  
     def add(self, widget):
         """Add widget to a new row

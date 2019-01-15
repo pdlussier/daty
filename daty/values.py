@@ -11,9 +11,12 @@ class Values(Frame):
 
     list = Template.Child("list")
 
-    def __init__(self, *args, entity=None, **kwargs):
+    def __init__(self, *args, frame=True, **kwargs):
         Frame.__init__(self, *args, **kwargs)
         self.list.set_header_func(self.update_header)
+
+        if not frame:
+            self.set_shadow_type(0) #None
 
     def update_header(self, row, before, *args):
         if before:

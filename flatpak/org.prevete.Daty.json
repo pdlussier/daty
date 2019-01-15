@@ -1,0 +1,70 @@
+{
+    "app-id": "org.prevete.DatyDevel",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "master",
+    "sdk" : "org.gnome.Sdk",
+    "tags" : [
+        "devel",
+        "development",
+        "nightly"
+    ],
+    "desktop-file-name-prefix": "(Development) ",
+    "command" : "daty",
+    "finish-args" : [
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--filesystem=xdg-run/gvfs",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--talk-name=ca.desrt.dconf",
+        "--talk-name=org.gtk.vfs",
+        "--talk-name=org.gtk.vfs.*",
+        "--talk-name=org.freedesktop.Notifications"
+    ],
+    "modules" : [
+    	"python3-setuptools_scm.json",
+        "python3-pykeepass.json",
+        {
+            "name" : "libhandy",
+            "buildsystem" : "meson",
+            "config-opts": [
+                "-Dglade_catalog=false"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://source.puri.sm/Librem5/libhandy.git"
+                }
+            ]
+        },
+        {
+            "name" : "libpwquality",
+            "buildsystem" : "autotools",
+            "config-opts": [
+                "--with-python-binary=python3"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/libpwquality/libpwquality.git"
+                }
+            ]
+        },
+        {
+            "name" : "passwordsafe",
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "config-opts": [
+                "-Dprofile=development"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/World/PasswordSafe.git"
+                }
+            ]
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <requires lib="libhandy" version="0.0"/>
@@ -18,7 +18,6 @@
     <property name="can_focus">False</property>
     <property name="icon_name">system-search-symbolic</property>
   </object>
-  <object class="GtkSizeGroup" id="end_pane_size_group"/>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -43,205 +42,6 @@
     <property name="icon_name">daty</property>
     <property name="gravity">center</property>
     <property name="show_menubar">False</property>
-    <child type="titlebar">
-      <object class="HdyTitleBar" id="titlebar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <object class="HdyLeaflet" id="header_box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="visible_child">header_bar</property>
-            <child>
-              <object class="GtkHeaderBar" id="header_bar">
-                <property name="width_request">250</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="title" translatable="yes">Daty</property>
-                <property name="subtitle" translatable="yes">test</property>
-                <property name="show_close_button">True</property>
-                <child>
-                  <object class="GtkButton" id="new_item">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">new-item-icon</property>
-                    <signal name="clicked" handler="new_item_clicked_cb" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="app_menu">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">app-menu-icon</property>
-                    <signal name="clicked" handler="app_menu_clicked_cb" object="app_menu_popover" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="select_entities">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">image1</property>
-                    <signal name="clicked" handler="select_entities_clicked_cb" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="cancel_entities_selection">
-                    <property name="label" translatable="yes">Cancel</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="cancel_entities_selection_clicked_cb" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="pack_type">end</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <style>
-                  <class name="sidebar"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkHeaderBar" id="sub_header_bar">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="show_close_button">True</property>
-                <child>
-                  <object class="GtkButton" id="item_back">
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">back-icon</property>
-                    <property name="always_show_image">True</property>
-                  </object>
-                </child>
-                <child type="title">
-                  <object class="GtkStack" id="entity_stack">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <child>
-                      <object class="GtkGrid" id="item_button">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="entity">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="valign">end</property>
-                            <property name="hexpand">True</property>
-                            <property name="vexpand">True</property>
-                            <property name="label" translatable="yes">entity</property>
-                            <property name="justify">center</property>
-                            <property name="ellipsize">middle</property>
-                            <attributes>
-                              <attribute name="font-desc" value="Cantarell Bold 10"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="description">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">center</property>
-                            <property name="valign">start</property>
-                            <property name="vexpand">True</property>
-                            <property name="label" translatable="yes">description</property>
-                            <property name="justify">center</property>
-                            <property name="wrap">True</property>
-                            <property name="ellipsize">middle</property>
-                            <property name="width_chars">2</property>
-                            <property name="max_width_chars">50</property>
-                            <attributes>
-                              <attribute name="font-desc" value="Cantarell 8"/>
-                            </attributes>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">item_button</property>
-                        <property name="title" translatable="yes">Title</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkStackSwitcher" id="column_switcher">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stack">content_stack</property>
-                      </object>
-                      <packing>
-                        <property name="name">column_switcher</property>
-                        <property name="title" translatable="yes">column_switcher</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="item_menu">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">item-menu-icon</property>
-                  </object>
-                  <packing>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="item_search">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="image">editor-search-icon</property>
-                  </object>
-                  <packing>
-                    <property name="pack_type">end</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
     <child>
       <object class="HdyLeaflet" id="content_box">
         <property name="visible">True</property>
@@ -342,6 +142,205 @@
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <object class="HdyTitleBar" id="titlebar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="HdyLeaflet" id="header_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="visible_child">header_bar</property>
+            <child>
+              <object class="GtkHeaderBar" id="header_bar">
+                <property name="width_request">250</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="title" translatable="yes">Daty</property>
+                <property name="subtitle" translatable="yes">test</property>
+                <property name="show_close_button">True</property>
+                <child>
+                  <object class="GtkButton" id="app_menu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">app-menu-icon</property>
+                    <signal name="clicked" handler="app_menu_clicked_cb" object="app_menu_popover" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="select_entities">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">image1</property>
+                    <signal name="clicked" handler="select_entities_clicked_cb" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="new_item">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">new-item-icon</property>
+                    <signal name="clicked" handler="new_item_clicked_cb" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="cancel_entities_selection">
+                    <property name="label" translatable="yes">Cancel</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="cancel_entities_selection_clicked_cb" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="pack_type">end</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <style>
+                  <class name="sidebar"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkHeaderBar" id="sub_header_bar">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="show_close_button">True</property>
+                <child type="title">
+                  <object class="GtkStack" id="entity_stack">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="GtkGrid" id="item_button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel" id="entity">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="valign">end</property>
+                            <property name="hexpand">True</property>
+                            <property name="vexpand">True</property>
+                            <property name="label" translatable="yes">entity</property>
+                            <property name="justify">center</property>
+                            <property name="ellipsize">middle</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Cantarell Bold 10"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="description">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="valign">start</property>
+                            <property name="vexpand">True</property>
+                            <property name="label" translatable="yes">description</property>
+                            <property name="justify">center</property>
+                            <property name="wrap">True</property>
+                            <property name="ellipsize">middle</property>
+                            <property name="width_chars">2</property>
+                            <property name="max_width_chars">50</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Cantarell 8"/>
+                            </attributes>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="name">item_button</property>
+                        <property name="title" translatable="yes">Title</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkStackSwitcher" id="column_switcher">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="stack">content_stack</property>
+                      </object>
+                      <packing>
+                        <property name="name">column_switcher</property>
+                        <property name="title" translatable="yes">column_switcher</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="item_back">
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">back-icon</property>
+                    <property name="always_show_image">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="item_menu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">item-menu-icon</property>
+                  </object>
+                  <packing>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="item_search">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="image">editor-search-icon</property>
+                  </object>
+                  <packing>
+                    <property name="pack_type">end</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
   <object class="GtkPopoverMenu" id="app_menu_popover">
     <property name="can_focus">False</property>
@@ -386,6 +385,12 @@
         <property name="position">1</property>
       </packing>
     </child>
+  </object>
+  <object class="GtkSizeGroup" id="end_pane_size_group">
+    <widgets>
+      <widget name="content_stack"/>
+      <widget name="sub_header_bar"/>
+    </widgets>
   </object>
   <object class="HdyHeaderGroup" id="header_group">
     <headerbars>

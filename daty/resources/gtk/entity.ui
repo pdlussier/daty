@@ -2,83 +2,145 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <template class="Entity" parent="GtkCheckButton">
+  <template class="Entity" parent="GtkStack">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="focus_on_click">False</property>
-    <property name="receives_default">False</property>
-    <property name="draw_indicator">True</property>
+    <property name="hexpand">True</property>
     <child>
-      <object class="GtkBox" id="widget">
+      <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox">
+          <object class="GtkLabel" id="unit">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="halign">start</property>
+            <property name="valign">baseline</property>
+            <property name="margin_left">4</property>
+            <property name="margin_start">4</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">unit</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell 8"/>
+            </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="vexpand">True</property>
+            <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
             <child>
               <object class="GtkLabel" id="label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin_start">18</property>
-                <property name="hexpand">False</property>
-                <property name="label" translatable="yes">Item</property>
+                <property name="valign">baseline</property>
+                <property name="margin_left">8</property>
+                <property name="margin_start">8</property>
+                <property name="label" translatable="yes">Label</property>
+                <property name="justify">fill</property>
                 <property name="wrap">True</property>
-                <attributes>
-                  <attribute name="font-desc" value="Cantarell Bold 10"/>
-                </attributes>
+                <property name="xalign">0</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="URI">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_start">3</property>
-                <property name="margin_end">18</property>
-                <property name="label" translatable="yes">(URI)</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="description">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="margin_left">18</property>
-            <property name="margin_right">18</property>
-            <property name="margin_start">18</property>
-            <property name="margin_end">18</property>
-            <property name="justify">fill</property>
-            <property name="wrap">True</property>
-            <attributes>
-              <attribute name="font-desc" value="Cantarell 8"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
       </object>
+      <packing>
+        <property name="name">view</property>
+        <property name="title" translatable="yes">View</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="entry">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="has_frame">False</property>
+        <property name="text" translatable="yes">Search entry</property>
+        <property name="primary_icon_name">system-search-symbolic</property>
+        <property name="show_emoji_icon">True</property>
+        <signal name="focus-out-event" handler="entry_focus_out_event_cb" swapped="no"/>
+        <signal name="key-release-event" handler="entry_key_release_event_cb" swapped="no"/>
+      </object>
+      <packing>
+        <property name="name">entry</property>
+        <property name="title" translatable="yes">Entry</property>
+        <property name="position">1</property>
+      </packing>
     </child>
   </template>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">focus-windows-symbolic</property>
+  </object>
+  <object class="GtkPopoverMenu" id="entity_popover">
+    <property name="can_focus">False</property>
+    <property name="relative_to">entry</property>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="description">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">8</property>
+                <property name="hexpand">True</property>
+                <property name="label" translatable="yes">Description</property>
+                <property name="justify">fill</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="focus_on_click">False</property>
+                <property name="receives_default">True</property>
+                <property name="image">image1</property>
+                <property name="relief">none</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
 </interface>

@@ -9,7 +9,7 @@ from gi.repository.GLib import idle_add
 from gi.repository.Gtk import ListBox, ListBoxRow, Template, Window
 from threading import Thread
 
-from .entity import Entity
+from .entityselectable import EntitySelectable
 from .triplet import Triplet
 from .wikidata import Wikidata
 
@@ -102,7 +102,7 @@ class Open(Window):
     def on_search_done(self, results, error):
         self.label_listbox.foreach(self.label_listbox.remove)
         for r in results:
-            entity = Entity(r, selected=self.label_listbox.selected)
+            entity = EntitySelectable(r, selected=self.label_listbox.selected)
             row = ListBoxRow()
             row.add(entity)
             self.label_listbox.add(row)
