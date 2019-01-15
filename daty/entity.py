@@ -147,4 +147,4 @@ class Entity(Stack):
     def entry_key_release_event_cb(self, widget, event):
         if event.keyval == Gdk.KEY_Escape:
             self.set_visible_child_name("view")
-             self.entity_popover.hide()
+            self.entity_popover.hide()
