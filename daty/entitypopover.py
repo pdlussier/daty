@@ -13,8 +13,11 @@ class EntityPopover(PopoverMenu):
     description = Template.Child("description")
     new_window = Template.Child("new_window")
 
-    def __init__(self, URI, description, *args, load=None, parent=None, **kwargs):
+    def __init__(self, URI, label, description, *args, load=None, parent=None, **kwargs):
         PopoverMenu.__init__(self, *args, **kwargs)
+
+        self.load = load
+        self.label = {"Label":label, "Description":description, "URI":URI}
 
         if parent:
             self.set_relative_to(parent)
@@ -23,5 +26,4 @@ class EntityPopover(PopoverMenu):
 
     @Template.Callback()
     def new_window_clicked_cb(self, widget):
-        #load(
-        pass
+        self.load([self.label])

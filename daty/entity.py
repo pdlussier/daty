@@ -85,21 +85,18 @@ class Entity(Stack):
                   self.label.set_text(dv['value'])
                   self.label.set_tooltip_text("External ID")
               if dt == 'geo-shape':
-                  print(dv['value'])
+                  print('geo-shape')
               if dt == 'globe-coordinate':
-                  print(dv['value'])
+                  print('globe-coordinate')
               if dt == 'tabular-data':
-                  print(dv['value'])
+                  print('tabular-data')
               if dt == 'time':
-                  print(dv['value'])
-
-            #if 'qualifiers' in claim.keys():
-            #    self.claims = claim['qualifiers']
-            #    for i,P in enumerate(self.claims.keys()):
-            #        self.download(P, self.load_qualifiers, i)
+                  print('time')
 
         except Exception as err:
             print(err)
+            print(type(err))
+            print(err.__traceback__)
 
     def download(self, URI, callback, *cb_args):
         f = lambda : (cp(arg) for arg in cb_args)
@@ -119,6 +116,7 @@ class Entity(Stack):
     def on_download_unit(self, URI, unit, error):
         if error:
             print(error)
+            print(type(error))
         if unit:
             label = self.wikidata.get_label(unit)
             self.unit.set_text(label)
@@ -126,6 +124,7 @@ class Entity(Stack):
 
     def load_entity(self, URI, entity, error):
         if error:
+            print(type(error))
             print(error)
         self.URI = URI
         label = self.wikidata.get_label(entity)
@@ -133,7 +132,7 @@ class Entity(Stack):
         self.label.set_text(label)
         self.label.set_tooltip_text(description)
         self.entry.set_text(label)
-        self.entity_popover = EntityPopover(self.URI, description, parent=self, load=self.load)
+        self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
@@ -145,13 +144,14 @@ class Entity(Stack):
 
     @Template.Callback()
     def entry_focus_in_event_cb(self, widget, event):
+        #self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
         self.entity_popover.set_visible(True)
 
     @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
         self.set_visible_child_name("view")
         self.entity_popover.hide()
-
+        
     @Template.Callback()
     def entry_key_release_event_cb(self, widget, event):
         if event.keyval == KEY_Escape:
