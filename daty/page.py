@@ -20,11 +20,11 @@ class Page(ScrolledWindow):
     statements = Template.Child("statements")
     wikidata = Wikidata()   
  
-    def __init__(self, entity, *args, **kwargs):
+    def __init__(self, entity, *args, load=None, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
-       
+      
+        self.load = load
         self.claims = entity['claims']
-        self.properties = {}
         for i,P in enumerate(self.claims.keys()):
             self.download(P, self.load_property, i)
 
@@ -80,6 +80,6 @@ class Page(ScrolledWindow):
     def on_value_complete(self, claim, values, error):
         if error:
             print(error)
-        value = Value(claim=claim)
+        value = Value(claim=claim, load=self.load)
         values.add(value)
         values.show_all()

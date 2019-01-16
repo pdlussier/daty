@@ -16,11 +16,15 @@ from .util import MyThread
 class SidebarList(ListBox):
     __gtype_name__ = "SidebarList"
 
-    def __init__(self, 
+    def __init__(self,
+                 content_leaflet,
+                 titlebar_leaflet,
                  stack, 
                  entity_label,
                  entity_description, 
-                 autoselect=True, *args, **kwargs):
+                 autoselect=True,
+                 load=None,
+                 *args, **kwargs):
         """Sidebar ListBox
         
         Args:
@@ -35,11 +39,14 @@ class SidebarList(ListBox):
 
         self.autoselect = autoselect
         self.stack = stack
+        self.load = load
 
         # Set separator as row header
         self.set_header_func(self.update_header)
 
         self.connect("row-selected", self.sidebar_row_selected_cb,
+                                     content_leaflet,
+                                     titlebar_leaflet,
                                      stack,
                                      entity_label,
                                      entity_description)
@@ -70,7 +77,9 @@ class SidebarList(ListBox):
             entity = child.entity
             if value:
                 row.box.remove(child)
-                row.check = EntitySelectable(entity, widget=False, selected=self.selected)
+                row.check = EntitySelectable(entity,
+                                             widget=False, 
+                                             selected=self.selected)
                 row.box.add(row.check)
                 row.box.add(child)
             else:
@@ -124,16 +133,19 @@ class SidebarList(ListBox):
         thread.start()
 
     def on_page_complete(self, entity):
-        page = Page(entity['Data'])
+        page = Page(entity['Data'], load=self.load)
         self.stack.add_titled(page, entity['URI'], entity['Label'])
         self.stack.set_visible_child_name(entity['URI'])
 
     def sidebar_row_selected_cb(self,
                                 listbox, 
-                                row, 
+                                row,
+                                content_leaflet, 
+                                titlebar_leaflet,
                                 stack, 
                                 entity_label,
-                                entity_description):
+                                entity_description,
+                                load=None):
         """Sidebar row selected callback
 
             If not existing, creates entity page and then
@@ -148,6 +160,16 @@ class SidebarList(ListBox):
                 entity_label (Gtk.Label): widget of entity title
                 entity_description(Gtk.Label)
         """
+
+        # Set view for folded mode
+        content_leaflet.set_visible_child_name("content_stack")
+        titlebar_leaflet.set_visible_child_name("sub_header_bar")
+        #sub_header_bar = [c for c in titlebar_leaflet.get_children()
+        #                  if c.get_name() == 'sub_header_bar'][-1]
+        #entity_back = [c for c in sub_header_bar
+        #               if c.get_name() == 'entity_back'][-1]
+        #entity_back.set_visible(True)
+            
         # Get entity from SidebarEntity child
         sidebar_entity = row.box.child
         entity = sidebar_entity.entity
@@ -176,23 +198,3 @@ class SidebarList(ListBox):
             self.load_page_async(entity)
         else:
             stack.set_visible_child_name(entity['URI'])
-        #def do_call():
-            #error = None
-            #try:
-                    #label = Label()
-                    #page = Page(entity['Data'])
-                    #stack.add_titled(page, entity['URI'], entity['Label'])
-                    #self.stack.set_visible_child_name(entity['URI'])
-                #self.stack.show_all()
-
-                    #self.load_page_async(entity, self.on_page_complete)
-                #print("stai aprendo", entity['URI'])
-                #else:
-                #    stack.set_visible_child_name(entity['URI'])
-            #except Exception as err:
-         #       error = err
-         #   idle_add(lambda: error)
-        #thread = Thread(target = do_call)
-        #thread.start()
-
-        #stack.show_all() 

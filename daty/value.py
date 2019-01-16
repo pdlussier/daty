@@ -25,13 +25,14 @@ class Value(Grid):
     mainsnak = Template.Child("mainsnak")
     wikidata = Wikidata()
 
-    def __init__(self, claim, *args, **kwargs):
+    def __init__(self, claim, *args, load=None, **kwargs):
         Grid.__init__(self, *args, **kwargs)
 
+        self.load = load
         self.extra = 0
 
         try:
-            entity = Entity(claim['mainsnak'])
+            entity = Entity(claim['mainsnak'], load=self.load)
             self.mainsnak.add(entity)
             #self.attach(entity, 0, 0, 1, 1)
 
@@ -69,7 +70,6 @@ class Value(Grid):
             values.props.hexpand = True
             values.props.vexpand = True
             self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
-            #self.qualifiers.attach(values, 1, i, 2, 1)
             for j, claim in enumerate(self.claims[URI]):
                 self.load_value_async(URI, claim, values, i+self.extra+j)
             self.extra += len(self.claims[URI]) - 1
@@ -96,9 +96,9 @@ class Value(Grid):
     def on_value_complete(self, claim, values, error, j):
         if error:
             print(error)
-        value = Entity(claim)
+        value = Entity(claim, load=self.load)
         self.set_font_deprecated(value)
-        self.qualifiers.attach(value, 1, j, 4, 1)
+        self.qualifiers.attach(value, 1, j, 2, 1)
 
     def set_font_deprecated(self, editor_widget):
         pango_context = editor_widget.create_pango_context()

@@ -4,6 +4,7 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entity.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entityselectable.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/entitypopover.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/loadingpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <!-- <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file> -->

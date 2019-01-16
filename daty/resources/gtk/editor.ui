@@ -49,6 +49,7 @@
         <property name="has_focus">True</property>
         <property name="visible_child">single_column</property>
         <property name="mode_transition_type">slide</property>
+        <property name="child_transition_type">slide</property>
         <property name="interpolate_size">True</property>
         <signal name="notify::folded" handler="on_content_box_folded_changed" after="yes" swapped="no"/>
         <child>
@@ -58,8 +59,12 @@
             <property name="has_focus">True</property>
             <property name="hexpand">True</property>
             <property name="mode_transition_type">slide</property>
+            <property name="child_transition_type">slide</property>
+            <property name="interpolate_size">True</property>
+            <signal name="notify::folded" handler="on_single_column_folded_changed" after="yes" swapped="no"/>
             <child>
               <object class="GtkBox" id="sidebar">
+                <property name="name">sidebar</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="has_focus">True</property>
@@ -86,6 +91,9 @@
                   </packing>
                 </child>
               </object>
+              <packing>
+                <property name="name">sidebar</property>
+              </packing>
             </child>
             <child>
               <object class="GtkSeparator">
@@ -150,9 +158,12 @@
           <object class="HdyLeaflet" id="header_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="visible_child">header_bar</property>
+            <property name="mode_transition_type">slide</property>
+            <property name="child_transition_type">slide</property>
+            <property name="interpolate_size">True</property>
             <child>
               <object class="GtkHeaderBar" id="header_bar">
+                <property name="name">header_bar</property>
                 <property name="width_request">250</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -210,6 +221,9 @@
                   </packing>
                 </child>
               </object>
+              <packing>
+                <property name="name">header_bar</property>
+              </packing>
             </child>
             <child>
               <object class="GtkSeparator">
@@ -222,6 +236,7 @@
             </child>
             <child>
               <object class="GtkHeaderBar" id="sub_header_bar">
+                <property name="name">sub_header_bar</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
@@ -304,11 +319,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="item_back">
+                  <object class="GtkButton" id="entity_back">
+                    <property name="name">entity_back</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="image">back-icon</property>
                     <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="entity_back_clicked_cb" swapped="no"/>
                   </object>
                 </child>
                 <child>
@@ -336,6 +353,9 @@
                   </packing>
                 </child>
               </object>
+              <packing>
+                <property name="name">sub_header_bar</property>
+              </packing>
             </child>
           </object>
         </child>

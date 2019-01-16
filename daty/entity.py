@@ -9,7 +9,9 @@ from gi.repository.Gdk import EventType, KEY_Escape
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Stack, StyleContext, Template
 from pprint import pprint
 from threading import Thread
+from time import sleep
 
+from .entitypopover import EntityPopover
 from .qualifierproperty import QualifierProperty
 from .util import MyThread
 from .values import Values
@@ -23,11 +25,13 @@ class Entity(Stack):
     entry = Template.Child("entry")
     label = Template.Child("label")
     unit = Template.Child("unit")
-    
+
     wikidata = Wikidata()
 
-    def __init__(self, snak, *args, css=None, **kwargs):
+    def __init__(self, snak, *args, css=None, load=None, **kwargs):
         Stack.__init__(self, *args, **kwargs)
+
+        self.load = load
 
         try:
             if snak['snaktype'] == 'novalue':
@@ -129,6 +133,7 @@ class Entity(Stack):
         self.label.set_text(label)
         self.label.set_tooltip_text(description)
         self.entry.set_text(label)
+        self.entity_popover = EntityPopover(self.URI, description, parent=self, load=self.load)
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
@@ -139,12 +144,16 @@ class Entity(Stack):
             self.entry.grab_focus()
 
     @Template.Callback()
+    def entry_focus_in_event_cb(self, widget, event):
+        self.entity_popover.set_visible(True)
+
+    @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
         self.set_visible_child_name("view")
         self.entity_popover.hide()
 
     @Template.Callback()
     def entry_key_release_event_cb(self, widget, event):
-        if event.keyval == Gdk.KEY_Escape:
+        if event.keyval == KEY_Escape:
             self.set_visible_child_name("view")
             self.entity_popover.hide()

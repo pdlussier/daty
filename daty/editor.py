@@ -24,8 +24,10 @@ class Editor(ApplicationWindow):
 
     # Title bar
     titlebar = Template.Child("titlebar")
+    header_box = Template.Child("header_box")
 
     # Header bar
+    header_bar = Template.Child("header_bar")
     select_entities = Template.Child("select_entities")
     cancel_entities_selection = Template.Child("cancel_entities_selection")
     app_menu = Template.Child("app_menu")
@@ -33,17 +35,20 @@ class Editor(ApplicationWindow):
 
     # Sub header bar
     sub_header_bar = Template.Child("sub_header_bar")
+    entity_back = Template.Child("entity_back")
     entity_stack = Template.Child("entity_stack")
     item_button = Template.Child("item_button")
     entity = Template.Child("entity")
     description = Template.Child("description")
 
-    # Sidebar 
+    # Sidebar
+    sidebar = Template.Child("sidebar")
     sidebar_viewport = Template.Child("sidebar_viewport")
 
     # Content
     content_box = Template.Child("content_box")
     content_stack = Template.Child("content_stack")
+    single_column = Template.Child("single_column")
 
     # Specific
     pages = Template.Child("pages")
@@ -74,7 +79,12 @@ class Editor(ApplicationWindow):
         #self.common.set_visible(False)
 
         # Init sidebar
-        self.sidebar_list = SidebarList(self.pages, self.entity, self.description)
+        self.sidebar_list = SidebarList(self.single_column,
+                                        self.header_box,
+                                        self.pages, 
+                                        self.entity,
+                                        self.description,
+                                        load=self.load)
         self.sidebar_viewport.add(self.sidebar_list)
 
         # Init pages
@@ -170,7 +180,6 @@ class Editor(ApplicationWindow):
         """
         self.set_selection_mode(False)
 
-
     def set_selection_mode(self, value):
         """Toggle selection mode
 
@@ -247,3 +256,17 @@ class Editor(ApplicationWindow):
                 self.content_stack.remove(self.common)
                 self.content_box.add(self.column_separator)
                 self.content_box.add(self.common)
+
+    @Template.Callback()
+    def on_single_column_folded_changed(self, leaflet, folded):
+        if self.single_column.props.folded:
+            #pass
+            self.entity_back.set_visible(True)
+        else:
+            print("I'm her")
+            self.entity_back.set_visible(False)
+
+    @Template.Callback()
+    def entity_back_clicked_cb(self, widget):
+        self.header_box.set_visible_child(self.header_bar)
+        self.single_column.set_visible_child(self.sidebar)
