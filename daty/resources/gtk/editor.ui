@@ -376,7 +376,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">about</property>
+            <property name="action_name">app.about</property>
             <property name="text" translatable="yes">About</property>
           </object>
           <packing>
@@ -390,7 +390,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">quit</property>
+            <property name="action_name">app.quit</property>
             <property name="text" translatable="yes">Quit</property>
           </object>
           <packing>

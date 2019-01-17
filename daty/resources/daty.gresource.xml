@@ -7,7 +7,6 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/entitypopover.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/loadingpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
-    <!-- <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file> -->
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/property.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/qualifierproperty.ui</file>
@@ -20,6 +19,7 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/usersetup.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/value.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/values.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/aboutdaty.ui</file>
   </gresource>
 
   <gresource prefix="/org/prevete/Daty/icons">

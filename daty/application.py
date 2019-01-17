@@ -28,8 +28,10 @@ require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import OptionArg, OptionFlags
 from gi.repository.Gio import ApplicationFlags, SimpleAction
-from gi.repository.Gtk import AboutDialog, Application, Builder
+from gi.repository.Gtk import Application, Builder
 from sys import argv
+
+#from .aboutdaty import AboutDaty
 
 class Daty(Application):
     def __init__(self, *args, new_session=True, entities=[], **kwargs):
@@ -45,13 +47,13 @@ class Daty(Application):
         Application.do_startup(self)
 
         # Set app menu
-        #action = SimpleAction.new("about", None)
-        #action.connect("activate", self.on_about)
-        #self.add_action(action)
+        action = SimpleAction.new("about", None)
+        action.connect("activate", self.on_about)
+        self.add_action(action)
 
-        #action = SimpleAction.new("quit", None)
-        #action.connect("activate", self.on_quit)
-        #self.add_action(action)
+        action = SimpleAction.new("quit", None)
+        action.connect("activate", self.on_quit)
+        self.add_action(action)
 
         #builder = Builder()
         #builder.add_from_resource("/org/prevete/Daty/gtk/menus.ui")
@@ -75,7 +77,8 @@ class Daty(Application):
         return 0
 
     def on_about(self, action, param):
-        about_dialog = AboutDialog(transient_for=self.window, modal=True)
+        from .aboutdaty import AboutDaty
+        about_dialog = AboutDaty(transient_for=self.window, modal=True)
         about_dialog.present()
 
     def on_quit(self, action, param):

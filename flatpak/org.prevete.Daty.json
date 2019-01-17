@@ -24,8 +24,12 @@
         "--talk-name=org.freedesktop.Notifications"
     ],
     "modules" : [
-    	"python3-setuptools_scm.json",
-        "python3-pykeepass.json",
+    	"python3-appdirs.json",
+        "python3-beautifulsoup4.json",
+        "python3-bleach.json",
+        "python3-pywikibot.json",
+        "python3-requests.json",
+        "python3-setproctitle.json",
         {
             "name" : "libhandy",
             "buildsystem" : "meson",
@@ -40,29 +44,15 @@
             ]
         },
         {
-            "name" : "libpwquality",
-            "buildsystem" : "autotools",
-            "config-opts": [
-                "--with-python-binary=python3"
+            "name" : "daty",
+            "buildsystem" : "simple",
+            "build-commands": [
+                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} daty"
             ],
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://github.com/libpwquality/libpwquality.git"
-                }
-            ]
-        },
-        {
-            "name" : "passwordsafe",
-            "buildsystem" : "meson",
-            "builddir" : true,
-            "config-opts": [
-                "-Dprofile=development"
-            ],
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.gnome.org/World/PasswordSafe.git"
+                    "url" : "https://gitlab.gnome.org/tallero/daty.git"
                 }
             ]
         }

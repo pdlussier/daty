@@ -31,7 +31,7 @@ except Exception as e:
 
 setup(
     name = "daty",
-    version = "0.1",
+    version = "1.0alpha",
     author = "Pellegrino Prevete",
     author_email = "pellegrinoprevete@gmail.com",
     description = "Advanced Wikidata editor",

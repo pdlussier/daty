@@ -24,9 +24,6 @@
 
 #from ast import literal_eval
 from gi.repository import GObject
-#from gi.repository.Gdk import Screen
-#from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION
-#from os.path import dirname, realpath
 from pickle import dump
 from pickle import load as pickle_load
 from threading import BoundedSemaphore, Thread

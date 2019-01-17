@@ -1,8 +1,8 @@
 {
-    "name": "python3-pywikibot",
+    "name": "python3-requests",
     "buildsystem": "simple",
     "build-commands": [
-        "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} pywikibot"
+        "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} requests"
     ],
     "sources": [
         {
@@ -29,11 +29,6 @@
             "type": "file",
             "url": "https://files.pythonhosted.org/packages/52/2c/514e4ac25da2b08ca5a464c50463682126385c4272c18193876e91f4bc38/requests-2.21.0.tar.gz",
             "sha256": "502a824f31acdacb3a35b6690b5fbf0bc41d63a24a45c4004352b0242707598e"
-        },
-        {
-            "type": "file",
-            "url": "https://files.pythonhosted.org/packages/79/ca/8e86a6c2019c87a1352ae7c330d7a606932f2e2ba7505ddb795f46fd435f/pywikibot-3.0.20190106.tar.gz",
-            "sha256": "73ac3db29bb1f984098af42182ceb336a813ed1e0143a0b0d5f479f8b88c4b3e"
         }
     ]
 }
