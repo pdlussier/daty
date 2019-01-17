@@ -9,7 +9,21 @@
       <object class="GtkLabel" id="intro">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Setup Introduction</property>
+        <property name="margin_start">18</property>
+        <property name="margin_end">18</property>
+        <property name="margin_top">18</property>
+        <property name="margin_bottom">18</property>
+        <property name="label" translatable="yes">&lt;b&gt;Welcome to Daty, the Wikidata editor!&lt;/b&gt;
+
+In order to edit entities you will need a Wikimedia account and a bot user.
+You can create them at this &lt;a href="https://www.wikidata.org/wiki/Special:BotPasswords"&gt;page&lt;/a&gt;.
+
+In any case editing is disabled because this is preview, so you can fill the following fields with whatever you want.
+
+If you like what you see and you would like the development to continue, endorse the &lt;a href="https://wikidata.org/User:Ogoorcs/daty"&gt;project&lt;/a&gt;!</property>
+        <property name="use_markup">True</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0</property>
       </object>
       <packing>
         <property name="title" translatable="yes">Introduction</property>

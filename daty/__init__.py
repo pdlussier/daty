@@ -35,7 +35,7 @@ from setproctitle import setproctitle
 from sys import argv
 
 name = "daty"
-version = "0.0.1"
+version = "1.0alpha"
 setproctitle(name)
 
 def main():

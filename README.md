@@ -1,7 +1,7 @@
 # Daty
 
 [![Python 3.x Support](https://img.shields.io/pypi/pyversions/Django.svg)](https://python.org)
-[![License: GPL v3+](https://img.shields.io/badge/license-GPL%20v3%2B-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![License: AGPL v3+](https://img.shields.io/badge/license-AGPL%20v3%2B-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
 [![Daty welcome screen](mockups/editor.png)](mockups/editor.png)
 
@@ -36,7 +36,7 @@ In progress.
 In progress.
 
 #### Flatpak
-In progress
+In progress.
 
 ### Mac OS
 Hardware or contributors needed.
@@ -53,6 +53,8 @@ Run the following commands from your terminal:
     # apt install python3-gi gir1.2-gtk-3.0 python3-pip libhandy-0.0-0
     # pip3 install pywikibot
 
+
+### Run
 To run daty you just need to clone this repository and execute
 
     $ python3 setup.py sdist bdist_wheel
