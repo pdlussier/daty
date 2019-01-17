@@ -7,7 +7,7 @@ _installer_root="${_thisdir}"/installer
 _arch=$(uname -m)
 _date=$(date +'%Y%m%d')
 _dateqif=$(date +'%Y-%m-%d')
-_version=0.1
+_version=1.0alpha
 _filename=daty-${_arch}-${_version}.msi
 _log=/tmp/installer.log
 if [ "${_arch}" = "x86_64" ]; then
@@ -182,7 +182,7 @@ install_daty_packages() {
   #  --noconfirm --root "${_newdaty}"
 
   makepkg -f
-  pacman -U mingw-w64-${_arch}-python3-daty-git-0.1-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
+  pacman -U mingw-w64-${_arch}-python3-daty-git-${_version}-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
 
   _result=$?
   if [ "$_result" -ne "0" ]; then
