@@ -1,0 +1,131 @@
+Metadata-Version: 2.1
+Name: pywikibot
+Version: 3.0.dev0
+Summary: Python MediaWiki Bot Framework
+Home-page: https://www.mediawiki.org/wiki/Manual:Pywikibot
+Maintainer: The Pywikibot team
+Maintainer-email: pywikibot@lists.wikimedia.org
+License: MIT License
+Download-URL: https://tools.wmflabs.org/pywikibot/
+Description: .. image:: https://travis-ci.org/wikimedia/pywikibot.svg?branch=master
+           :alt: Travis Build Status
+           :target: https://travis-ci.org/wikimedia/pywikibot
+        .. image:: https://img.shields.io/appveyor/ci/ladsgroup/pywikibot-g4xqx/master.svg?style=flat-square&label=AppVeyor%20CI
+           :alt: AppVeyor Build Status
+           :target: https://ci.appveyor.com/project/ladsgroup/pywikibot-g4xqx
+        .. image:: https://codecov.io/gh/wikimedia/pywikibot/branch/master/graph/badge.svg
+           :alt: Code coverage
+           :target: https://codecov.io/gh/wikimedia/pywikibot
+        .. image:: https://api.codeclimate.com/v1/badges/de6ca4c66e7c7bee4156/maintainability
+           :alt: Maintainability
+           :target: https://codeclimate.com/github/wikimedia/pywikibot/maintainability
+        .. image:: https://img.shields.io/pypi/pyversions/pywikibot.svg
+           :alt: Python
+           :target: https://www.python.org/downloads/
+        .. image:: https://img.shields.io/pypi/v/pywikibot.svg
+           :alt: Pywikibot release
+           :target: https://pypi.org/project/pywikibot/
+        
+        Pywikibot
+        =========
+        
+        The Pywikibot framework is a Python library that interfaces with the
+        `MediaWiki API <https://www.mediawiki.org/wiki/API:Main_page>`_
+        version 1.14 or higher.
+        
+        Also included are various general function scripts that can be adapted for
+        different tasks.
+        
+        For further information about the library excluding scripts see
+        the full `code documentation <https://doc.wikimedia.org/pywikibot/>`_.
+        
+        Quick start
+        -----------
+        
+        ::
+        
+            git clone https://gerrit.wikimedia.org/r/pywikibot/core.git
+            cd core
+            git submodule update --init
+            python pwb.py script_name
+        
+        Or to install using PyPI (excluding scripts)
+        ::
+        
+            pip install -U setuptools
+            pip install pywikibot
+        
+        Our `installation
+        guide <https://www.mediawiki.org/wiki/Manual:Pywikibot/Installation>`_
+        has more details for advanced usage.
+        
+        Basic Usage
+        -----------
+        
+        If you wish to write your own script it's very easy to get started:
+        
+        ::
+        
+            import pywikibot
+            site = pywikibot.Site('en', 'wikipedia')  # The site we want to run our bot on
+            page = pywikibot.Page(site, 'Wikipedia:Sandbox')
+            page.text = page.text.replace('foo', 'bar')
+            page.save('Replacing "foo" with "bar"')  # Saves the page
+        
+        -------------------------------------------------------------------------------------------
+        
+        For more documentation on pywikibot see our `docs <https://doc.wikimedia.org/pywikibot/>`_.
+        
+        
+        Required external programs
+        ---------------------------
+        
+        It may require the following programs to function properly:
+        
+        * `7za`: To extract 7z files
+        
+        
+        Contributing
+        ------------
+        
+        Our code is maintained on Wikimedia's `Gerrit installation <https://gerrit.wikimedia.org/>`_,
+        `learn <https://www.mediawiki.org/wiki/Developer_access>`_ how to get
+        started.
+        
+        
+Keywords: API,bot,framework,mediawiki,pwb,python,pywikibot,pywikipedia,pywikipediabot,wiki,wikimedia,wikipedia
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Wiki
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Requires-Python: >=2.7.2, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*
+Provides-Extra: states_redirect.py
+Provides-Extra: isbn
+Provides-Extra: html
+Provides-Extra: eventstreams
+Provides-Extra: flickrripper.py
+Provides-Extra: weblinkchecker.py
+Provides-Extra: Graphviz
+Provides-Extra: IRC
+Provides-Extra: Tkinter
+Provides-Extra: security
+Provides-Extra: flake8
+Provides-Extra: script_wui.py
+Provides-Extra: mwparserfromhell
+Provides-Extra: patrol.py
+Provides-Extra: mwoauth
+Provides-Extra: Google

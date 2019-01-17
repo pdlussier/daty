@@ -21,7 +21,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python3-setuptools")
 options=('staticlibs' 'strip' '!debug')
 provides=("mingw-w64-daty" "${MINGW_PACKAGE_PREFIX}-daty")
 conflicts=("mingw-w64-daty" "${MINGW_PACKAGE_PREFIX}-daty")
-source=('daty::git+https://gitlab.com/tallero/daty.git')
+source=('daty::git+https://gitlab.gnome.org/tallero/daty.git')
 sha256sums=('SKIP')
 
 package_python3-daty-git() {

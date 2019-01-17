@@ -1,7 +1,7 @@
 {
     "app-id": "org.prevete.DatyDevel",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "master",
+    "runtime-version" : "3.30",
     "sdk" : "org.gnome.Sdk",
     "tags" : [
         "devel",
@@ -47,7 +47,7 @@
             "name" : "daty",
             "buildsystem" : "simple",
             "build-commands": [
-                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} daty"
+                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} ."
             ],
             "sources" : [
                 {
