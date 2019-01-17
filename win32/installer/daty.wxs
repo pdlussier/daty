@@ -42,7 +42,7 @@
       <Custom Action="UpdateIconCache" After="SetUpdateIconCacheCommand">Not Installed</Custom>
       <Custom Action="SetUpdatePixbufLoadersCommand" After="UpdateIconCache">Not Installed</Custom>
       <Custom Action="UpdatePixbufLoaders" After="SetUpdatePixbufLoadersCommand">Not Installed</Custom>
-      <Custom Action="UpdateShebang" After="UpdateShebang">Not Installed</Custom>
+      <Custom Action="UpdateShebang" After="UpdatePixbufLoaders">Not Installed</Custom>
     </InstallExecuteSequence>
 
   </Product>
