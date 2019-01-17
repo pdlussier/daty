@@ -113,7 +113,6 @@ remove_useless_stuff() {
   # remove on the lib folder
   rm -rf installer/SourceDir/lib/terminfo
   rm -rf installer/SourceDir/lib/python2*
-  rm -rf installer/SourceDir/lib/python3.7/distutils
   rm -rf installer/SourceDir/lib/python3.7/ensurepip
   rm -rf installer/SourceDir/lib/python3.7/lib2to3
   rm -rf installer/SourceDir/lib/python3.7/unittest

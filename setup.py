@@ -44,7 +44,7 @@ setup(
         'daty':daty_files
     },
     data_files = [
-        ('share/applications', ['daty/resources/daty.desktop']),
+        ('share/applications', ['daty/resources/org.prevete.Daty.desktop']),
         ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/daty.svg']),
         ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/daty.png'])
     ],

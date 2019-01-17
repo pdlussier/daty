@@ -4,14 +4,25 @@ from sys import argv
 
 installdir = argv[1]
 
-script = join(installdir, "bin", "daty-script.pyw")
+script = installdir + "\\bin\\daty-script.pyw"
 
 pattern = "C:/msys64/mingw64/bin/python3w.exe"
 
-python = join(installdir, "bin", "python3w.exe")
+repl = "\"" + installdir + "\\bin\\python3w.exe" + "\""
 
-with open(script, 'w') as f:
+repl = sub("\\\\", "/", repl)
+
+print(script)
+print(pattern)
+print(repl)
+
+with open(script, 'r') as f:
     content = f.read()
-    content = sub(pattern, python, content)
+    f.close()
+
+content = sub(pattern, repl, content)
+
+print(content)
+with open(script, 'w') as f:
     f.write(content)
     f.close()
