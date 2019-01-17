@@ -9,7 +9,7 @@ pkgdesc='Daty Wikidata Editor'
 url='https://gitlab.com/tallero/daty'
 license=('AGPLv3')
 arch=('any')
-depends=("${MINGW_PACKAGE_PREFIX}-libhandy"
+depends=("${MINGW_PACKAGE_PREFIX}-libhandy-git"
          "${MINGW_PACKAGE_PREFIX}-python3-appdirs"
          "${MINGW_PACKAGE_PREFIX}-python3-bleach"
          "${MINGW_PACKAGE_PREFIX}-python3-beautifulsoup4"
