@@ -32,7 +32,7 @@
     <CustomAction Id="UpdateIconCache" BinaryKey="WixCA" DllEntry="CAQuietExec" Return="ignore" Execute="deferred" Impersonate="no" />
     <CustomAction Id="SetUpdatePixbufLoadersCommand" Property="UpdatePixbufLoaders" Value="&quot;[INSTALLDIR]bin\gdk-pixbuf-query-loaders.exe&quot; --update-cache"/>
     <CustomAction Id="UpdatePixbufLoaders" BinaryKey="WixCA" DllEntry="CAQuietExec" Return="ignore" Execute="deferred" Impersonate="no" />
-    <CustomAction Id="SetUpdateShebangCommand" Property="UpdateShebang" Value="&quot;[INSTALLDIR]bin\python3.exe&quot; &quot;[INSTALLDIR]\lib\python3.7\site-packages\daty\resources\update-shebang.py&quot; &quot;[INSTALLDIR]&quot;"/>
+    <CustomAction Id="SetUpdateShebangCommand" Property="UpdateShebang" Value="&quot;[INSTALLDIR]bin\python3.exe&quot; &quot;[INSTALLDIR]lib\python3.7\site-packages\daty\resources\update-shebang.py&quot; &quot;[INSTALLDIR]&quot;"/>
     <CustomAction Id="UpdateShebang" BinaryKey="WixCA" DllEntry="CAQuietExec" Return="ignore" Execute="deferred" Impersonate="no" />
 
     <InstallExecuteSequence>
