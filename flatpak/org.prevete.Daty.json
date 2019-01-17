@@ -8,7 +8,6 @@
         "development",
         "nightly"
     ],
-    "desktop-file-name-prefix": "(Development) ",
     "command" : "daty",
     "finish-args" : [
         "--share=ipc",
@@ -34,7 +33,7 @@
             "name" : "libhandy",
             "buildsystem" : "meson",
             "config-opts": [
-                "-Dglade_catalog=false"
+                "-Dglade_catalog=disabled"
             ],
             "sources" : [
                 {
