@@ -182,7 +182,7 @@ install_daty_packages() {
   #  --noconfirm --root "${_newdaty}"
 
   makepkg -f
-  pacman -U mingw-w64-${_arch}-python3-daty-git-${_version}-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
+  pacman -U mingw-w64-${_arch}-python3-daty-git-${_version}alpha-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
 
   _result=$?
   if [ "$_result" -ne "0" ]; then
