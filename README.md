@@ -3,17 +3,25 @@
 [![Python 3.x Support](https://img.shields.io/pypi/pyversions/Django.svg)](https://python.org)
 [![License: AGPL v3+](https://img.shields.io/badge/license-AGPL%20v3%2B-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-[![Daty welcome screen](mockups/editor.png)](mockups/editor.png)
+[![Daty welcome screen](https://gitlab.gnome.org/tallero/daty/raw/master/mockups/editor.png)](mockups/editor.png)
 
 *Daty* is a free cross-platform advanced Wikidata editor adhering to [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/stable/), intended to enable better editing workflow and faster deployment of requested user features.
 Use *Daty* to search, select, read, batch edit items, script actions, share, visualize proposed changes and bots.
 
 *Daty* is written in Python 3 and it uses [GTK+ 3.0](https://developer.gnome.org/hig/stable/) python bindings for interface organization and drawing.
 
-It has a progressive layout thanks to [libhandy](https://source.puri.sm/Librem5/libhandy) and uses [pywikibot](https://phabricator.wikimedia.org/project/profile/87/) as a backend.
+It has a progressive layout thanks to [libhandy](https://source.puri.sm/Librem5/libhandy) and uses [pywikibot](https://phabricator.wikimedia.org/project/profile/87/) as a backend. 
 
-## Currently implemented
-- [X] Search and open entities through elasting search and triplets;
+## Current status
+
+The development of the current version (1.0α) has been made possible thanks to a sponsorship provided by [Wikimedia CH](https://wikimedia.ch). 
+
+Endorse the project on [Wikidata](https://wikidata.org/wiki/User:Ogoorcs/Daty/Endorsement) to help the development get funds.
+
+An overview of what you will find in the stable 1.0 version is available at project presentation [page](https://prevete.ml/articles/daty.html).
+
+- [X] Search and open entities through elastic search;
+- [X] Search and open entities with triplets (broken in the current version);
 - [X] Read entities and follow their values;
 - [ ] Page and sidebar search;
 - [ ] Edit statements;
@@ -24,47 +32,74 @@ It has a progressive layout thanks to [libhandy](https://source.puri.sm/Librem5/
 ### Windows
 I have to upload the exe.
 
-### Linux
+### GNU/Linux
+
+#### Flatpak
+
+[![](https://terminal.run/stuff/flathub_download_badge.png)](https://flathub.org/apps/details/org.prevete.Daty)
+
 #### Archlinux
 The package `daty-git` has been published on [AUR](https://aur.archlinux.org/packages/daty-git/).
 
-### Ubuntu
-#### Ubuntu disco
-In progress.
+#### Ubuntu Disco (19.04 unstable)
 
-#### Fedora
-In progress.
+    # apt install python3-gi gir1.2-gtk-3.0 python3-pip libhandy-0.0-0
+    # pip3 install pywikibot daty
 
-#### Flatpak
-In progress.
+#### Others
+Provided you have already installed on your system
+
+```
+* pygobject >= 3.20
+* Gtk >= 3.20
+* libhandy >= 0.0.4
+* pywikibot >= 3.0
+```
+you can install daty from [Pypi](https://pypi.org/project/daty/).
 
 ### Mac OS
 Hardware or contributors needed.
 
-## Development
-In order to run `daty`, you need to install [PyGobject](https://pygobject.readthedocs.io/en/latest/getting_started.html), [pywikibot](https://pypi.org/project/pywikibot) and [libhandy](https://source.puri.sm/tallero/libhandy). If your distribution is not in the following, hopefully it should still have them available for you in their repositories.
+## Building from source
 
-### Archlinux
-Install `daty-git` from [AUR](https://aur.archlinux.org/packages/daty-git/) and skip to "Run".
+#### Option 1: with GNOME Builder
+Open GNOME Builder, click the "Clone..." button, paste the repository url.
+Clone the project and hit the ![](https://terminal.run/stuff/run_button.png) button to start building Password Safe.
 
-### Ubuntu disco / Debian Sid
-Run the following commands from your terminal:
+#### Option 2: with Flatpak Builder
+```
+# Clone Daty repository
+git clone https://gitlab.gnome.org/tallero/daty.git
+cd daty
+# Add Flathub repository
+flatpak remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
+# Install the required GNOME runtimes
+flatpak install flathub org.gnome.Platform//3.30 org.gnome.Sdk//3.30
+# Start building
+flatpak-builder --repo=repo org.prevete.Daty flatpak/org.prevete.Daty.json --force-clean
+# Create the Flatpak
+flatpak build-export repo org.prevete.Daty
+flatpak build-bundle repo org.prevete.Daty.flatpak org.prevete.Daty
+# Install the Flatpak
+flatpak install org.prevete.Daty.flatpak
+```
 
-    # apt install python3-gi gir1.2-gtk-3.0 python3-pip libhandy-0.0-0
-    # pip3 install pywikibot
+#### Option 3: with Pypi
+Provided you have installed
 
+```
+* pygobject >= 3.20
+* Gtk >= 3.20
+* libhandy >= 0.0.4
+* pywikibot >= 3.0
+```
+You just need to enter in the cloned directory and run
 
-### Run
-To run daty you just need to clone this repository and execute
-
-    $ python3 setup.py sdist bdist_wheel
-    $ sudo python3 setup.py install
+    $ sudo python3 setup.py install --user
     $ daty
-
-or you can just open the entry that should have appeared in your menu.
 
 ## About
 
 This program is licensed under [GNU Affero General Public License v3 or later](https://www.gnu.org/licenses/agpl-3.0.en.html) by [Pellegrino Prevete](http://prevete.ml).<br>
-If you find this program useful, consider voting to give this project a grant at the [itWikiCon 2018 Ideathon](https://meta.wikimedia.org/wiki/ItWikiCon/2018/Ideathon), or offering me a [beer](https://patreon.com/tallero), a new [computer](https://patreon.com/tallero) or a part time remote [job](mailto:pellegrinoprevete@gmail.com) to help me pay the bills.
+If you find this program useful, consider [endorsing](https://wikidata.org/wiki/User:Ogoorcs/Daty/Endorsement) the project, offering me a [beer](https://patreon.com/tallero), a new [computer](https://patreon.com/tallero) or a part time remote [job](mailto:pellegrinoprevete@gmail.com) to help me pay the bills.
 
