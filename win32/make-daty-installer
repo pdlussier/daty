@@ -183,7 +183,7 @@ install_daty_packages() {
   makepkg -f
   pacman -U mingw-w64-${_arch}-python3-daty-git-${_version}alpha-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
 
-  find "${_newdaty}" \( -name "daty-script.pyw" \) -exec sed -i "s|C:/msys64/mingw64/bin/python3w.exe|C:/Program Files/Daty/bin/python3w.exe|g" "{}" \;
+  find "${_newdaty}" \( -name "daty-script.pyw" \) -exec sed -i "s|C:/msys64/mingw64/bin/python3w.exe|\"C:/Program Files/Daty/bin/python3w.exe\"|g" "{}" \;
 
   _result=$?
   if [ "$_result" -ne "0" ]; then
