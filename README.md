@@ -30,7 +30,7 @@ An overview of what you will find in the stable 1.0 version is available at proj
 ## Installation
 
 ### Windows
-I have to upload the exe.
+You can download the installer [here](https://gitlab.gnome.org/tallero/daty/raw/master/win32/daty-x86_64-1.0alpha.msi)
 
 ### GNU/Linux
 
