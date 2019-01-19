@@ -45,8 +45,9 @@ setup(
     },
     data_files = [
         ('share/applications', ['daty/resources/org.prevete.Daty.desktop']),
-        ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/daty.svg']),
-        ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/daty.png'])
+        ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/org.prevete.Daty.svg']),
+        ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/org.prevete.Daty.png']),
+        ('share/icons/hicolor/16x16/apps', ['daty/resources/icons/16x16/apps/org.prevete.Daty-symbolic.png'])
     ],
     entry_points = {'gui_scripts': ['daty = daty:main']},
     install_requires = [

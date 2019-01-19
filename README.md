@@ -20,9 +20,11 @@ Endorse the project on [Wikidata](https://wikidata.org/wiki/User:Ogoorcs/Daty/En
 
 An overview of what you will find in the stable 1.0 version is available at project presentation [page](https://prevete.ml/articles/daty.html).
 
+
 - [X] Search and open entities through elastic search;
 - [X] Search and open entities with triplets (broken in the current version);
 - [X] Read entities and follow their values;
+- [X] Mobile view;
 - [ ] Page and sidebar search;
 - [ ] Edit statements;
 - [ ] Mass-edit statements.
@@ -30,7 +32,7 @@ An overview of what you will find in the stable 1.0 version is available at proj
 ## Installation
 
 ### Windows
-You can download the installer [here](https://gitlab.gnome.org/tallero/daty/raw/master/win32/daty-x86_64-1.0alpha.msi)
+You can download the installer [here](https://gitlab.gnome.org/tallero/daty/raw/master/win32/daty-x86_64-1.0alpha.msi).
 
 ### GNU/Linux
 
@@ -95,8 +97,18 @@ Provided you have installed
 ```
 You just need to enter in the cloned directory and run
 
-    $ sudo python3 setup.py install --user
+    $ sudo python3 setup.py install
     $ daty
+
+## Documentation
+
+Sphinx documentation for the project can be built running
+
+    $ python3 setup.py build_sphinx
+
+You can then read the main page of the built html documentation directing your browser to `doc/build/html/index.html`.
+
+It will be made directly available online after the code will stabilize.
 
 ## About
 

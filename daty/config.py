@@ -46,6 +46,7 @@ class Config:
 
         """
         for type,p in self.dirs.items():
+            print(type,p)
             if not exists(p):
                 split = p.split("/")
                 path = split[0] + sep
