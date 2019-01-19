@@ -49,7 +49,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/tallero/daty.git"
+                    "url" : "file:///home/desktopper/Projects/daty"
                 }
             ]
         }

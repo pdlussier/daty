@@ -72,7 +72,7 @@ class Editor(ApplicationWindow):
         ApplicationWindow.__init__(self, *args, **kwargs)
 
         # Set window icon
-        icon = lambda x: IconTheme.get_default().load_icon(("daty"), x, 0)
+        icon = lambda x: IconTheme.get_default().load_icon(("org.prevete.Daty"), x, 0)
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
 
