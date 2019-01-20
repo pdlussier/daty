@@ -18,6 +18,8 @@ from .sidebarlist import SidebarList
 from .util import MyThread
 from .wikidata import Wikidata
 
+name = "org.prevete.Daty"
+
 @Template.from_resource("/org/prevete/Daty/gtk/editor.ui")
 class Editor(ApplicationWindow):
     __gtype_name__ = "Editor"
@@ -72,7 +74,7 @@ class Editor(ApplicationWindow):
         ApplicationWindow.__init__(self, *args, **kwargs)
 
         # Set window icon
-        icon = lambda x: IconTheme.get_default().load_icon(("org.prevete.Daty"), x, 0)
+        icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
 
