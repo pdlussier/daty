@@ -50,7 +50,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "file:///home/desktopper/Projects/daty"
+                    "url" : "https://gitlab.gnome.org/World/daty"
                 }
             ]
         }
