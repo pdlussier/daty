@@ -1,7 +1,7 @@
 try:
-    from .util import load, save
+    from .util import load, mkdirs, save
 except:
-    from util import load, save
+    from util import load, mkdirs, save
 
 from appdirs import *
 from gettext import bindtextdomain, textdomain, translation
@@ -45,19 +45,20 @@ class Config:
             PYWIKIBOT_DIR.
 
         """
-        for type,p in self.dirs.items():
-            print(type,p)
-            if not exists(p):
-                split = p.split("/")
-                path = split[0] + sep
-                for d in split[1:]:
-                    path = join(path, d)
-                    try:
-                        mkdir(path)
-                    except FileExistsError as e:
-                        pass
-            if type == 'config' and not exists(join(p, 'pywikibot')):
-                mkdir(join(p, 'pywikibot'))
+        for dir_type, path in self.dirs.items():
+            mkdirs(path)
+            #print(type,p)
+            #if not exists(p):
+            #    split = p.split("/")
+            #    path = split[0] + sep
+            #    for d in split[1:]:
+            #        path = join(path, d)
+            #        try:
+            #            mkdir(path)
+            #        except FileExistsError as e:
+            #            pass
+            if dir_type == 'config': #and not exists(join(path, 'pywikibot')):
+                mkdirs(join(path, 'pywikibot'))
 
         # Set pywikibot environment variable
         environ['PYWIKIBOT_DIR'] = join(self.dirs['config'], 'pywikibot')

@@ -62,7 +62,7 @@ class Daty(Application):
     def do_activate(self, new_session=True, **kwargs):
         if not self.window:
             from .editor import Editor
-            self.window = Editor(application=self, title="Daty", entities=self.entities)
+            self.window = Editor(application=self, title="Daty", quit_cb=self.quit, entities=self.entities)
         #self.window.present()
 
     def do_command_line(self, command_line):

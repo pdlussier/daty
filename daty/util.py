@@ -24,6 +24,7 @@
 
 #from ast import literal_eval
 from gi.repository import GObject
+from os import makedirs
 from pickle import dump
 from pickle import load as pickle_load
 from threading import BoundedSemaphore, Thread
@@ -63,6 +64,11 @@ def load(path):
         variable = pickle_load(f)
     f.close()
     return variable
+
+def mkdirs(newdir, mode=700):
+    try: makedirs(newdir, mode)
+    except OSError:
+        pass
 
 def async_call(f, on_done):
   """Calls f on another thread

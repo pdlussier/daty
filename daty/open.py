@@ -6,12 +6,14 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add
-from gi.repository.Gtk import ListBox, ListBoxRow, Template, Window
+from gi.repository.Gtk import IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
 from threading import Thread
 
 from .entityselectable import EntitySelectable
 from .triplet import Triplet
 from .wikidata import Wikidata
+
+name = 'org.prevete.Daty'
 
 @Template.from_resource("/org/prevete/Daty/gtk/open.ui")
 class Open(Window):
@@ -31,11 +33,19 @@ class Open(Window):
     label_listbox = Template.Child("label_listbox")
     open_button = Template.Child("open_button")
 
-    def __init__(self, load, *args, new_session=True, verbose=False):
+    def __init__(self, load, *args, new_session=True, quit_cb=None, verbose=False):
         Window.__init__(self, *args)
+
+        # Set window icon
+        icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
+        icons = [icon(size) for size in [32, 48, 64, 96]];
+        self.set_icon_list(icons);
 
         self.verbose = verbose
 
+        if quit_cb:
+            self.quit_cb = quit_cb
+            self.connect("delete-event", self.on_quit)
         self.show_all()
 
         constraint = ListBoxRow()
@@ -54,6 +64,9 @@ class Open(Window):
         self.entities = self.label_listbox.selected
 
         self.open_button.connect('clicked', self.open_button_clicked_cb, load)
+
+    def on_quit(self, widget, event):
+        self.quit_cb()
 
     def set_search_placeholder(self, value, search_stack="label_search"):
        if value:

@@ -62,7 +62,7 @@ class Editor(ApplicationWindow):
 
     wikidata = Wikidata()
 
-    def __init__(self, *args, entities=[], max_pages=10, **kwargs):
+    def __init__(self, *args, entities=[], quit_cb=None, max_pages=10, **kwargs):
         """Editor class
 
             Args:
@@ -96,7 +96,7 @@ class Editor(ApplicationWindow):
         if entities:
             self.load(entities)
         else:
-            Open(self.load, new_session=True)
+            Open(self.load, quit_cb=quit_cb, new_session=True)
 
     def load(self, entities):
         """Open entities

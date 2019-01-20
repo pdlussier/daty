@@ -34,7 +34,7 @@ from gi.repository.Gtk import main as gtk_main
 from setproctitle import setproctitle
 from sys import argv
 
-name = "daty"
+name = "org.prevete.Daty"
 version = "1.0alpha"
 setproctitle(name)
 
