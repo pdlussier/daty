@@ -23,7 +23,7 @@
   </gresource>
 
   <gresource prefix="/org/prevete/Daty/icons">
-  <file compressed="true" alias="daty.svg">icons/scalable/apps/daty.svg</file>
-  <file compressed="true" alias="daty-symbolic.svg">icons/symbolic/apps/daty-symbolic.svg</file>
+  <file compressed="true" alias="org.prevete.Daty.svg">icons/scalable/apps/org.prevete.Daty.svg</file>
+  <file compressed="true" alias="org.prevete.Daty-symbolic.svg">icons/scalable/apps/org.prevete.Daty-symbolic.svg</file>
   </gresource>
 </gresources>
