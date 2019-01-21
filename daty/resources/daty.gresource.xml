@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/org/prevete/Daty">
+  <gresource prefix="/ml/prevete/Daty">
     <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entity.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entityselectable.ui</file>
@@ -22,8 +22,8 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/aboutdaty.ui</file>
   </gresource>
 
-  <gresource prefix="/org/prevete/Daty/icons">
-  <file compressed="true" alias="org.prevete.Daty.svg">icons/scalable/apps/org.prevete.Daty.svg</file>
-  <file compressed="true" alias="org.prevete.Daty-symbolic.svg">icons/scalable/apps/org.prevete.Daty-symbolic.svg</file>
+  <gresource prefix="/ml/prevete/Daty/icons">
+  <file compressed="true" alias="ml.prevete.Daty.svg">icons/scalable/apps/ml.prevete.Daty.svg</file>
+  <file compressed="true" alias="ml.prevete.Daty-symbolic.svg">icons/scalable/apps/ml.prevete.Daty-symbolic.svg</file>
   </gresource>
 </gresources>

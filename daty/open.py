@@ -1,5 +1,27 @@
 # -*- coding: utf-8 -*-
 
+#    Open
+#
+#    ----------------------------------------------------------------------
+#    Copyright © 2018  Pellegrino Prevete
+#
+#    All rights reserved
+#    ----------------------------------------------------------------------
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
 #import asyncio
 from copy import deepcopy as cp
 from gi import require_version
@@ -13,9 +35,9 @@ from .entityselectable import EntitySelectable
 from .triplet import Triplet
 from .wikidata import Wikidata
 
-name = 'org.prevete.Daty'
+name = 'ml.prevete.Daty'
 
-@Template.from_resource("/org/prevete/Daty/gtk/open.ui")
+@Template.from_resource("/ml/prevete/Daty/gtk/open.ui")
 class Open(Window):
     __gtype_name__ = "Open"
 

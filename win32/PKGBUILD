@@ -6,7 +6,7 @@ pkgname=("${MINGW_PACKAGE_PREFIX}-python3-${_realname}")
 pkgver=1.0alpha
 pkgrel=1
 pkgdesc='Daty Wikidata Editor'
-url='https://gitlab.com/tallero/daty'
+url='https://gitlab.gnome.org/World/Daty'
 license=('AGPLv3')
 arch=('any')
 depends=("${MINGW_PACKAGE_PREFIX}-libhandy"
@@ -21,7 +21,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-python3-setuptools")
 options=('staticlibs' 'strip' '!debug')
 provides=("mingw-w64-daty" "${MINGW_PACKAGE_PREFIX}-daty")
 conflicts=("mingw-w64-daty" "${MINGW_PACKAGE_PREFIX}-daty")
-source=('daty::git+https://gitlab.gnome.org/tallero/daty.git')
+source=('daty::git+https://gitlab.gnome.org/World/Daty.git')
 sha256sums=('SKIP')
 
 package_python3-daty-git() {
