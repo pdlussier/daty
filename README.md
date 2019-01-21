@@ -3,7 +3,7 @@
 [![Python 3.x Support](https://img.shields.io/pypi/pyversions/Django.svg)](https://python.org)
 [![License: AGPL v3+](https://img.shields.io/badge/license-AGPL%20v3%2B-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-[![Daty welcome screen](https://gitlab.gnome.org/World/daty/raw/master/mockups/editor.png)](mockups/editor.png)
+[![Daty welcome screen](https://gitlab.gnome.org/World/Daty/raw/master/mockups/editor.png)](mockups/editor.png)
 
 *Daty* is a free cross-platform advanced Wikidata editor adhering to [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/stable/), intended to enable better editing workflow and faster deployment of requested user features.
 Use *Daty* to search, select, read, batch edit items, script actions, share, visualize proposed changes and bots.
@@ -32,7 +32,7 @@ An overview of what you will find in the stable 1.0 version is available at proj
 ## Installation
 
 ### Windows
-You can download the installer [here](https://gitlab.gnome.org/World/daty/uploads/7069b09176aac05a1e596d29f1d4f64d/daty-x86_64-1.0.msi).
+You can download the installer [here](https://gitlab.gnome.org/World/Daty/uploads/7069b09176aac05a1e596d29f1d4f64d/daty-x86_64-1.0.msi).
 
 ### GNU/Linux
 
@@ -71,7 +71,7 @@ Clone the project and hit the ![](https://terminal.run/stuff/run_button.png) but
 #### Option 2: with Flatpak Builder
 ```
 # Clone Daty repository
-git clone https://gitlab.gnome.org/World/daty.git
+git clone https://gitlab.gnome.org/World/Daty.git
 cd daty
 # Add Flathub repository
 flatpak remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
