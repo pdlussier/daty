@@ -10,13 +10,13 @@
     <property name="program_name">Daty</property>
     <property name="version">1.0α</property>
     <property name="copyright" translatable="yes">Copyright © 2018, 2019 Pellegrino Prevete</property>
-    <property name="comments" translatable="yes">A free cross-platform Wikidata editor</property>
-    <property name="website">https://gitlab.gnome.org/tallero/daty</property>
+    <property name="comments" translatable="yes">A free cross-platform Wikidata editor.</property>
+    <property name="website">https://gitlab.gnome.org/World/Daty</property>
     <property name="website_label" translatable="yes">Website</property>
-    <property name="logo_icon_name">daty</property>
+    <property name="logo_icon_name">org.prevete.Daty</property>
     <property name="license_type">agpl-3-0</property>
     <child internal-child="vbox">
-      <object class="GtkBox">
+      <object class="GtkBox" id="test">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
