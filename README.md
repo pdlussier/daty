@@ -66,7 +66,7 @@ Hardware or contributors needed.
 
 #### Option 1: with GNOME Builder
 Open GNOME Builder, click the "Clone..." button, paste the repository url.
-Clone the project and hit the ![](https://terminal.run/stuff/run_button.png) button to start building Password Safe.
+Clone the project and hit the ![](https://terminal.run/stuff/run_button.png) button to start building Daty.
 
 #### Option 2: with Flatpak Builder
 ```
