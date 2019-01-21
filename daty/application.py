@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 #    Daty
 #
@@ -10,16 +10,16 @@
 #    ----------------------------------------------------------------------
 #
 #    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
+#    it under the terms of the GNU Affero General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
+#    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
@@ -35,7 +35,7 @@ from sys import argv
 
 class Daty(Application):
     def __init__(self, *args, new_session=True, entities=[], **kwargs):
-        super().__init__(*args, application_id="org.prevete.Daty",
+        super().__init__(*args, application_id="ml.prevete.Daty",
                          flags=ApplicationFlags.HANDLES_COMMAND_LINE,
                          **kwargs)
         self.entities=entities
@@ -56,7 +56,7 @@ class Daty(Application):
         self.add_action(action)
 
         #builder = Builder()
-        #builder.add_from_resource("/org/prevete/Daty/gtk/menus.ui")
+        #builder.add_from_resource("/ml/prevete/Daty/gtk/menus.ui")
         #self.set_app_menu(builder.get_object("app-menu"))
 
     def do_activate(self, new_session=True, **kwargs):

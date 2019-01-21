@@ -13,7 +13,7 @@
     <property name="comments" translatable="yes">A free cross-platform Wikidata editor.</property>
     <property name="website">https://gitlab.gnome.org/World/Daty</property>
     <property name="website_label" translatable="yes">Website</property>
-    <property name="logo_icon_name">org.prevete.Daty</property>
+    <property name="logo_icon_name">ml.prevete.Daty</property>
     <property name="license_type">agpl-3-0</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="test">

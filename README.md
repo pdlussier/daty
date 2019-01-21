@@ -38,7 +38,7 @@ You can download the installer [here](https://gitlab.gnome.org/World/Daty/upload
 
 #### Flatpak
 
-[![](https://terminal.run/stuff/flathub_download_badge.png)](https://flathub.org/apps/details/org.prevete.Daty)
+[![](https://terminal.run/stuff/flathub_download_badge.png)](https://flathub.org/apps/details/ml.prevete.Daty)
 
 #### Archlinux
 The package `daty-git` has been published on [AUR](https://aur.archlinux.org/packages/daty-git/).
@@ -78,12 +78,12 @@ flatpak remote-add flathub --if-not-exists https://dl.flathub.org/repo/flathub.f
 # Install the required GNOME runtimes
 flatpak install flathub org.gnome.Platform//3.30 org.gnome.Sdk//3.30
 # Start building
-flatpak-builder --repo=repo org.prevete.Daty flatpak/org.prevete.Daty.json --force-clean
+flatpak-builder --repo=repo ml.prevete.Daty flatpak/ml.prevete.Daty.json --force-clean
 # Create the Flatpak
-flatpak build-export repo org.prevete.Daty
-flatpak build-bundle repo org.prevete.Daty.flatpak org.prevete.Daty
+flatpak build-export repo ml.prevete.Daty
+flatpak build-bundle repo ml.prevete.Daty.flatpak ml.prevete.Daty
 # Install the Flatpak
-flatpak install org.prevete.Daty.flatpak
+flatpak install ml.prevete.Daty.flatpak
 ```
 
 #### Option 3: with Pypi
