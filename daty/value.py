@@ -57,7 +57,6 @@ class Value(Grid):
         try:
             entity = Entity(claim['mainsnak'], load=self.load)
             self.mainsnak.add(entity)
-            #self.attach(entity, 0, 0, 1, 1)
 
             if 'qualifiers' in claim.keys():
                 self.claims = claim['qualifiers']

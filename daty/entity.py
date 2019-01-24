@@ -50,10 +50,15 @@ class Entity(Stack):
 
     wikidata = Wikidata()
 
-    def __init__(self, snak, *args, css=None, load=None, **kwargs):
+    def __init__(self, snak, *args, qualifier=False, css=None, load=None, **kwargs):
         Stack.__init__(self, *args, **kwargs)
 
         self.load = load
+
+        context = self.get_style_context()
+        provider = CssProvider()
+        provider.load_from_resource('/ml/prevete/Daty/gtk/entity.css')
+        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         try:
             if snak['snaktype'] == 'novalue':
@@ -166,8 +171,10 @@ class Entity(Stack):
 
     @Template.Callback()
     def entry_focus_in_event_cb(self, widget, event):
-        #self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
-        self.entity_popover.set_visible(True)
+        try:
+            self.entity_popover.set_visible(True)
+        except:
+            print("no popover available for this type of value")
 
     @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
@@ -179,3 +186,8 @@ class Entity(Stack):
         if event.keyval == KEY_Escape:
             self.set_visible_child_name("view")
             self.entity_popover.hide()
+
+    @Template.Callback()
+    def entry_changed_cb(self, entry):
+        print(entry.get_text())
+        

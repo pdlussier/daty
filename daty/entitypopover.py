@@ -49,3 +49,6 @@ class EntityPopover(PopoverMenu):
     @Template.Callback()
     def new_window_clicked_cb(self, widget):
         self.load([self.label])
+
+    def set_results(self, widget):
+        pass          
