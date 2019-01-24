@@ -199,7 +199,9 @@ class SidebarList(ListBox):
 
         # Set titlebar
         entity_label.set_text(entity["Label"])
+        entity_label.set_tooltip_text(entity["Label"])
         entity_description.set_text(entity["Description"])
+        entity_description.set_tooltip_text(entity["Description"])
 
         # If there is no corresponding child in stack, create one
         if not stack.get_child_by_name(entity['URI']):

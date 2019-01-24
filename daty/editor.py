@@ -27,7 +27,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
-from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template, Separator
+from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
@@ -75,6 +75,7 @@ class Editor(ApplicationWindow):
     single_column = Template.Child("single_column")
 
     # Specific
+    entity_search_bar = Template.Child("entity_search_bar")
     pages = Template.Child("pages")
 
     # Separator
@@ -114,6 +115,9 @@ class Editor(ApplicationWindow):
         # Init pages
         loading = LoadingPage()
         self.pages.add_titled(loading, "loading", "Loading")
+
+        # Search bar
+        self.entity_search_bar.add(SearchEntry())
 
         # Parse args
         self.max_pages = max_pages
@@ -294,3 +298,18 @@ class Editor(ApplicationWindow):
     def entity_back_clicked_cb(self, widget):
         self.header_box.set_visible_child(self.header_bar)
         self.single_column.set_visible_child(self.sidebar)
+
+    @Template.Callback()
+    def key_press_event_cb(self, window, event):
+        if type(window.get_focus()) == SearchEntry:
+            pass
+        else:
+            #if Esc, set placeholder at [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
+            if event.keyval == 65307:
+                self.entity_search_bar.set_search_mode(False)
+            # else if key is [Right Alt, Tab, Maiusc, Control, Bloc Maiusc, Left Alt]
+            elif event.keyval in [65027, 65289, 65505, 65509, 65513]:
+                pass
+            else:
+                if not self.entity_search_bar.get_search_mode:
+                    self.entity_search_bar.set_search_mode(True)
