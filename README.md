@@ -32,7 +32,7 @@ An overview of what you will find in the stable 1.0 version is available at proj
 ## Installation
 
 ### Windows
-You can download the installer [here](https://gitlab.gnome.org/World/Daty/uploads/7069b09176aac05a1e596d29f1d4f64d/daty-x86_64-1.0.msi).
+You can download the installer [here](https://gitlab.gnome.org/World/Daty/uploads/6129428130ad687e2fac23fa4a3c839b/daty-x86_64-1.0alpha.msi).
 
 ### GNU/Linux
 
