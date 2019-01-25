@@ -27,7 +27,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
-from gi.repository.Gtk import ApplicationWindow, IconTheme, Label, Template, Separator, SearchEntry
+from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
@@ -76,6 +76,7 @@ class Editor(ApplicationWindow):
 
     # Specific
     entity_search_bar = Template.Child("entity_search_bar")
+    entity_search_entry = Template.Child("entity_search_entry")
     pages = Template.Child("pages")
 
     # Separator
@@ -103,21 +104,25 @@ class Editor(ApplicationWindow):
 
         #self.common.set_visible(False)
 
+        # Search bar
+        #self.entity_search_bar.entry = SearchEntry()
+        #self.entity_search_bar.add(self.entity_search_bar.entry)
+        #self.entity_search_bar.entry.set_visible(True)
+        #self.entity_search_bar.connect_entry(self.entity_search_entry)
+
         # Init sidebar
         self.sidebar_list = SidebarList(self.single_column,
                                         self.header_box,
                                         self.pages, 
                                         self.entity,
                                         self.description,
+                                        self.entity_search_entry,
                                         load=self.load)
         self.sidebar_viewport.add(self.sidebar_list)
 
         # Init pages
         loading = LoadingPage()
         self.pages.add_titled(loading, "loading", "Loading")
-
-        # Search bar
-        self.entity_search_bar.add(SearchEntry())
 
         # Parse args
         self.max_pages = max_pages
@@ -288,10 +293,8 @@ class Editor(ApplicationWindow):
     @Template.Callback()
     def on_single_column_folded_changed(self, leaflet, folded):
         if self.single_column.props.folded:
-            #pass
             self.entity_back.set_visible(True)
         else:
-            print("I'm her")
             self.entity_back.set_visible(False)
 
     @Template.Callback()
@@ -311,5 +314,13 @@ class Editor(ApplicationWindow):
             elif event.keyval in [65027, 65289, 65505, 65509, 65513]:
                 pass
             else:
-                if not self.entity_search_bar.get_search_mode:
+                if not self.entity_search_bar.get_search_mode():
+                    #context = IMContext()
+                    #context.connect("commit", self.to_entity_search_entry)
+                    #context.filter_event()
+                    #print("Set search mode True")
+                    #self.entity_search_bar.entry.set_visible(True)
                     self.entity_search_bar.set_search_mode(True)
+                    #self.entity_search_entry.grab_focus()
+                    #self.event
+                    #self.entity|search_bar.entry.grab_focus()

@@ -45,6 +45,8 @@ class SidebarList(ListBox):
                  stack, 
                  entity_label,
                  entity_description, 
+                 entity_search_entry,
+                 sidebar_search_entry=None,
                  autoselect=True,
                  load=None,
                  *args, **kwargs):
@@ -64,8 +66,12 @@ class SidebarList(ListBox):
         self.stack = stack
         self.load = load
 
+        entity_search_entry.connect("search-changed", self.on_entity_search_entry_changed_cb)
+
         # Set separator as row header
         self.set_header_func(self.update_header)
+
+        #search_entry.connect("
 
         self.connect("row-selected", self.sidebar_row_selected_cb,
                                      content_leaflet,
@@ -73,6 +79,10 @@ class SidebarList(ListBox):
                                      stack,
                                      entity_label,
                                      entity_description)
+
+    def on_entity_search_entry_changed_cb(self, entry, event):
+        text = entry.get_text()
+        print(text)
 
     def update_header(self, row, before, *args):
         """See GTK+ Documentation"""
