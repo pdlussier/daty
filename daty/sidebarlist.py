@@ -66,7 +66,10 @@ class SidebarList(ListBox):
         self.stack = stack
         self.load = load
 
-        entity_search_entry.connect("search-changed", self.on_entity_search_entry_changed_cb)
+        print(entity_search_entry)
+        #if entity_search_entry:
+        #    print(entity_search_entry)
+        #    entity_search_entry.connect("search-changed", self.on_entity_search_entry_changed_cb)
 
         # Set separator as row header
         self.set_header_func(self.update_header)

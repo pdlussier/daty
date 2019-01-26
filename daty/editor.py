@@ -67,6 +67,8 @@ class Editor(ApplicationWindow):
 
     # Sidebar
     sidebar = Template.Child("sidebar")
+    #sidebar_search_bar = Template.Child("sidebar_search_bar")
+    #sidebar_search_entry = Template.Child("sidebar_search_entry")
     sidebar_viewport = Template.Child("sidebar_viewport")
 
     # Content
@@ -104,12 +106,6 @@ class Editor(ApplicationWindow):
 
         #self.common.set_visible(False)
 
-        # Search bar
-        #self.entity_search_bar.entry = SearchEntry()
-        #self.entity_search_bar.add(self.entity_search_bar.entry)
-        #self.entity_search_bar.entry.set_visible(True)
-        #self.entity_search_bar.connect_entry(self.entity_search_entry)
-
         # Init sidebar
         self.sidebar_list = SidebarList(self.single_column,
                                         self.header_box,
@@ -119,6 +115,8 @@ class Editor(ApplicationWindow):
                                         self.entity_search_entry,
                                         load=self.load)
         self.sidebar_viewport.add(self.sidebar_list)
+
+        #self.sidebar_search_bar.set_search_mode(True)
 
         # Init pages
         loading = LoadingPage()
@@ -305,6 +303,7 @@ class Editor(ApplicationWindow):
     @Template.Callback()
     def key_press_event_cb(self, window, event):
         focused = window.get_focus()
+        print(focused)
         if type(focused) == SearchEntry:
             pass
         elif type(focused) == SidebarEntity:
