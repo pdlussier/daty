@@ -27,7 +27,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
-from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, Template, Separator, SearchEntry
+from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
@@ -61,14 +61,15 @@ class Editor(ApplicationWindow):
     sub_header_bar = Template.Child("sub_header_bar")
     entity_back = Template.Child("entity_back")
     entity_stack = Template.Child("entity_stack")
-    item_button = Template.Child("item_button")
+    entity_button = Template.Child("entity_button")
     entity = Template.Child("entity")
     description = Template.Child("description")
+    entity_search = Template.Child("entity_search")
 
     # Sidebar
     sidebar = Template.Child("sidebar")
-    #sidebar_search_bar = Template.Child("sidebar_search_bar")
-    #sidebar_search_entry = Template.Child("sidebar_search_entry")
+    sidebar_search_bar = Template.Child("sidebar_search_bar")
+    sidebar_search_entry = Template.Child("sidebar_search_entry")
     sidebar_viewport = Template.Child("sidebar_viewport")
 
     # Content
@@ -80,6 +81,8 @@ class Editor(ApplicationWindow):
     entity_search_bar = Template.Child("entity_search_bar")
     entity_search_entry = Template.Child("entity_search_entry")
     pages = Template.Child("pages")
+
+    start_pane_size_group = Template.Child("start_pane_size_group")
 
     # Separator
 #    edit_column_separator = Template.Child("edit_column_separator")
@@ -179,8 +182,8 @@ class Editor(ApplicationWindow):
         self.sidebar_list.show_all()
 
     @Template.Callback()
-    def new_item_clicked_cb(self, widget):
-        """New item button clicked callback
+    def new_entity_clicked_cb(self, widget):
+        """New entity button clicked callback
 
             If clicked, it opens the 'open new entities' window.
 
@@ -277,7 +280,7 @@ class Editor(ApplicationWindow):
             else: 
                 # WIP: self.sub_header_bar.set_title("test")
                 # Set the switcher to something else
-                self.entity_stack.set_visible_child_name("item_button")
+                self.entity_stack.set_visible_child_name("entity_button")
 
                 # Show sub header properties
                 #print(dir(self.sub_header_bar.props))
@@ -303,11 +306,11 @@ class Editor(ApplicationWindow):
     @Template.Callback()
     def key_press_event_cb(self, window, event):
         focused = window.get_focus()
-        print(focused)
         if type(focused) == SearchEntry:
             pass
-        elif type(focused) == SidebarEntity:
-            print("sidebar")
+        elif type(focused) == ListBoxRow:
+            if not self.sidebar_search_bar.get_search_mode():
+                self.sidebar_search_bar.set_search_mode(True)
         else:
             #if Esc, set placeholder at [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
             if event.keyval == 65307:
@@ -323,6 +326,3 @@ class Editor(ApplicationWindow):
                     #print("Set search mode True")
                     #self.entity_search_bar.entry.set_visible(True)
                     self.entity_search_bar.set_search_mode(True)
-                    #self.entity_search_entry.grab_focus()
-                    #self.event
-                    #self.entity|search_bar.entry.grab_focus()
