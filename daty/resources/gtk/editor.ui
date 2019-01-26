@@ -23,12 +23,12 @@
   <property name="can_focus">False</property>
   <property name="icon_name">object-select-symbolic</property>
  </object>
- <object class="GtkImage" id="item-menu-icon">
+ <object id="entity-menu-icon" class="GtkImage">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
   <property name="icon_name">view-more-symbolic</property>
  </object>
- <object class="GtkImage" id="new-item-icon">
+ <object class="GtkImage" id="new-entity-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
   <property name="icon_name">list-add-symbolic</property>
@@ -64,18 +64,20 @@
       <property name="interpolate_size">True</property>
       <signal name="notify::folded" handler="on_single_column_folded_changed" after="yes" swapped="no"/>
       <child>
-       <object class="GtkBox" id="sidebar">
+       <object class="GtkGrid" id="sidebar">
         <property name="name">sidebar</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="has_focus">True</property>
         <property name="orientation">vertical</property>
+        <property name="expand">False</property>
         <child>
          <object class="HdySearchBar" id="sidebar_search_bar">
           <property name="visible">True</property>
           <property name="can_focus">False</property>
           <property name="show_close_button">False</property>
           <property name="search_mode_enabled">True</property>
+          <property name="hexpand">True</property>
           <child>
            <object class="GtkSearchEntry" id="sidebar_search_entry">
             <property name="visible">True</property>
@@ -89,9 +91,8 @@
           </child>
          </object>
          <packing>
-          <property name="expand">False</property>
-          <property name="fill">True</property>
-          <property name="position">0</property>
+          <property name="left_attach">0</property>
+          <property name="top_attach">0</property>
          </packing>
         </child>
         <child>
@@ -99,6 +100,8 @@
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="hscrollbar_policy">never</property>
+          <property name="vexpand">True</property>
+          <property name="hexpand">True</property>
           <child>
            <object class="GtkViewport" id="sidebar_viewport">
             <property name="visible">True</property>
@@ -110,10 +113,8 @@
           </child>
          </object>
          <packing>
-          <property name="expand">True</property>
-          <property name="fill">True</property>
-          <property name="position">1
-</property>
+          <property name="left_attach">0</property>
+          <property name="top_attach">1</property>
          </packing>
         </child>
        </object>
@@ -246,12 +247,12 @@
          </packing>
         </child>
         <child>
-         <object class="GtkButton" id="new_item">
+         <object class="GtkButton" id="new_entity">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
-          <property name="image">new-item-icon</property>
-          <signal name="clicked" handler="new_item_clicked_cb" swapped="no"/>
+          <property name="image">new-entity-icon</property>
+          <signal name="clicked" handler="new_entity_clicked_cb" swapped="no"/>
          </object>
          <packing>
           <property name="position">2</property>
@@ -297,7 +298,7 @@
           <property name="valign">center</property>
           <property name="hexpand">True</property>
           <child>
-           <object class="GtkScrolledWindow" id="item_button">
+           <object class="GtkScrolledWindow" id="entity_button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="hexpand">True</property>
@@ -393,11 +394,11 @@
          </object>
         </child>
         <child>
-         <object class="GtkButton" id="item_menu">
+         <object class="GtkButton" id="entity_menu">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
-          <property name="image">item-menu-icon</property>
+          <property name="image">entity-menu-icon</property>
          </object>
          <packing>
           <property name="pack_type">end</property>
@@ -405,7 +406,7 @@
          </packing>
         </child>
         <child>
-         <object class="GtkButton" id="item_search">
+         <object class="GtkButton" id="entity_search">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
@@ -482,9 +483,9 @@
    <headerbar name="sub_header_bar"/>
   </headerbars>
  </object>
- <object class="GtkPopoverMenu" id="item_menu_popover">
+ <object class="GtkPopoverMenu" id="entity_menu_popover">
   <property name="can_focus">False</property>
-  <property name="relative_to">new_item</property>
+  <property name="relative_to">new_entity</property>
   <property name="constrain_to">none</property>
   <child>
    <object class="GtkBox">
