@@ -25,7 +25,8 @@ An overview of what you will find in the stable 1.0 version is available at proj
 - [X] Search and open entities with triplets (broken in the current version);
 - [X] Read entities and follow their values;
 - [X] Mobile view;
-- [ ] Page and sidebar search;
+- [X] Open entities search;
+- [X] Property In-page search;
 - [ ] Edit statements;
 - [ ] Mass-edit statements.
 
