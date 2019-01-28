@@ -85,7 +85,6 @@ class Page(ScrolledWindow):
             for claim in self.claims[URI]:
                 claim = claim.toJSON()
                 self.load_value_async(URI, claim, values)
-                #self.load_qualifiers_async(
         except Exception as e:
             print(URI)
             pprint(e)
