@@ -25,7 +25,7 @@
 #from ast import literal_eval
 from copy import deepcopy as cp
 from gi.repository import GObject
-from os import makedirs
+from os import makedirs, umask
 from pickle import dump
 from pickle import load as pickle_load
 from re import IGNORECASE, compile, escape, sub
@@ -81,10 +81,14 @@ def label_color(label, text=None, color='#e5a50a'):
     else:
         label.set_text(label.orig)
         
-def mkdirs(newdir, mode=700):
-    try: makedirs(newdir, mode)
+def mkdirs(newdir, mode=0o755):
+    try:
+        original_umask = umask(0)
+        makedirs(newdir, mode)
     except OSError:
         pass
+    finally:
+        umask(original_umask)
 
 def async_call(f, on_done):
   """Calls f on another thread
