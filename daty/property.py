@@ -44,7 +44,8 @@ class Property(Button):
         provider = CssProvider()
         provider.load_from_resource('/ml/prevete/Daty/gtk/property.css')
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
-       
+
+        self.prop = prop
         label, tooltip = self.wikidata.get_label(prop), self.wikidata.get_description(prop) 
         self.set_label(label, tooltip)
 

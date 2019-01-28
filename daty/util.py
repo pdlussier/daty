@@ -23,10 +23,12 @@
 #
 
 #from ast import literal_eval
+from copy import deepcopy as cp
 from gi.repository import GObject
 from os import makedirs
 from pickle import dump
 from pickle import load as pickle_load
+from re import IGNORECASE, compile, escape, sub
 from threading import BoundedSemaphore, Thread
 
 threadLimiter = BoundedSemaphore(10)
@@ -65,6 +67,20 @@ def load(path):
     f.close()
     return variable
 
+def label_color(label, text=None, color='#e5a50a'):
+    label_text = label.get_text()
+    try: label.orig == True
+    except Exception as e:
+        label.orig = cp(label_text)
+    if text:
+        colored = "".join(["<b><span color='", color, "'>", text, "</span></b>"])
+        cu_text = compile(escape(text), IGNORECASE)
+        label_text = cu_text.sub(colored, label_text)
+        label.set_text(label_text) 
+        label.set_use_markup(True)
+    else:
+        label.set_text(label.orig)
+        
 def mkdirs(newdir, mode=700):
     try: makedirs(newdir, mode)
     except OSError:

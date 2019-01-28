@@ -33,8 +33,10 @@ from re import IGNORECASE, compile, escape, sub
 
 from .entityselectable import EntitySelectable
 from .page import Page
+from .property import Property
 from .sidebarentity import SidebarEntity
-from .util import MyThread
+from .values import Values
+from .util import MyThread, label_color
 
 @Template.from_resource("/ml/prevete/Daty/gtk/sidebarlist.ui")
 class SidebarList(ListBox):
@@ -82,31 +84,51 @@ class SidebarList(ListBox):
 
     def entity_search_entry_changed_cb(self, entry):
         text = entry.get_text()
-        print(text)
+        page = self.stack.get_visible_child()
+        statements = page.statements
+        i = 0
+        row = lambda i,j: statements.get_child_at(j,i)
+        while row(i,0):
+            if text.lower() in row(i,0).property_label.get_text().lower():
+                label_color(row(i,0).property_label, text)
+                row(i,0).set_visible(True)
+                row(i,1).set_visible(True)
+            else:
+                label_color(row(i,0).property_label, color='')
+                row(i,0).set_visible(False)
+                row(i,1).set_visible(False)
+            i = i + 1
+        #except Exception as e:
+        #    print(e)
+        #properties = (p for p in statements.get_children() if type(p) == Property)
+        #values = (v for v in statements.get_children() if type(v) == Values)
+        #fields = statements.get_children()
+        #print(len(list(values)), len(list(fields)))
+        #for i,f in enumerate(fields):
+        #    #print(f)
+        #    if type(f) == Property:
+        #        if text.lower() in f.property_label.get_text().lower() or text.lower() in f.property_label.get_tooltip_text().lower():
+        #           print("riga", i)
+        #           
+        #           f.property_label.set_visible(True)
+        #           v = statements
+        #           label_color(f.property_label, text)
+        #        else:
+        #           f.property_label.set_visible(False)
 
     def sidebar_search_entry_changed_cb(self, entry):
-        text = entry.get_text().lower()
+        text = entry.get_text()
         for row in self.get_children():
             if row.get_children():
                 child = row.box.child
                 entity = child.entity
-                if text in entity["Label"].lower() or text in entity["Description"].lower():
+                if text.lower() in entity["Label"].lower() or text.lower() in entity["Description"].lower():
                     row.set_visible(True)
-                    if text:
-                        new_text = compile(escape(text), IGNORECASE)
-                        new_label = new_text.sub("<span color='#e5a50a'>" + text + "</span>", entity["Label"])
-                        new_description = new_text.sub("<span color='#e5a50a'>" + text + "</span>", entity["Description"])
-                        child.label.set_text(new_label)
-                        child.label.set_use_markup(True)
-                        child.description.set_text(new_description)
-                        child.description.set_use_markup(True)
-                    else:
-                        child.label.set_text(entity["Label"])
-                        child.description.set_text(entity["Description"])
+                    label_color(child.label, text)
+                    label_color(child.description, text)
                 else:
                     row.set_visible(False)
-                    
-
+                   
     def update_header(self, row, before, *args):
         """See GTK+ Documentation"""
         if before:
