@@ -14,7 +14,7 @@
       Use Daty to search, select, read, batch edit items, script actions, share, visualize proposed changes and bots.
     </p>
     <p>
-      <b>ATTENTION: This is a preview release, so entities editing is disabled.</b>
+      ATTENTION: This is a preview release, so entities editing is disabled.
     </p>
   </description>
   <url type="homepage">https://gitlab.gnome.org/World/Daty/</url>
@@ -36,6 +36,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release date="2019-01-28" version="1.0a1">
+      <description>
+        <p>Fix permissions in flatpak</p>
+      </description>
+    </release>
     <release date="2019-01-24" version="1.0a">
       <description>
         <p>Preview: Reader functions only.</p>
