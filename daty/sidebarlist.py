@@ -100,6 +100,9 @@ class SidebarList(ListBox):
                         child.label.set_use_markup(True)
                         child.description.set_text(new_description)
                         child.description.set_use_markup(True)
+                     else:
+                        child.label.set_text(entity["Label"])
+                        child.description.set_text(entity["Description"])
                 else:
                     row.set_visible(False)
                     

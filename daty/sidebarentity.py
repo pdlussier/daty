@@ -48,9 +48,11 @@ class SidebarEntity(Box):
         self.entity = entity
  
         self.label.set_text(entity["Label"])
+        self.label.set_tooltip_text(entity["Label"])
 
         if description:
             self.description.set_text(entity['Description'])
+            self.description.set_tooltip_text(entity["Description"])
         else:
             self.remove(self.description)
 
