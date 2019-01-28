@@ -109,10 +109,14 @@ class Wikidata:
         Returns:
             
         """
-        if uri.startswith("P"):
-            return PropertyPage(self.repo, uri).get()
-        if uri.startswith("Q") or uri.startswith("L"):
-            return ItemPage(self.repo, uri).get()
+        try:
+            if uri.startswith("P"):
+                return PropertyPage(self.repo, uri).get()
+            if uri.startswith("Q") or uri.startswith("L"):
+                return ItemPage(self.repo, uri).get()
+        except Exception as e:
+            print(e)
+            print(e.__traceback__)
 
     def get_claim(self, claim):
         #from pywikibot.page import Claim
