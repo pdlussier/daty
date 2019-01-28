@@ -18,20 +18,25 @@
   <property name="can_focus">False</property>
   <property name="icon_name">system-search-symbolic</property>
  </object>
- <object class="GtkImage" id="image1">
+ <object class="GtkImage" id="entities-select-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
   <property name="icon_name">object-select-symbolic</property>
+ </object>
+ <object class="GtkImage" id="new-entity-icon">
+  <property name="visible">True</property>
+  <property name="can_focus">False</property>
+  <property name="icon_name">list-add-symbolic</property>
  </object>
  <object id="entity-menu-icon" class="GtkImage">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
   <property name="icon_name">view-more-symbolic</property>
  </object>
- <object class="GtkImage" id="new-entity-icon">
+ <object class="GtkImage" id="entities-search-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
-  <property name="icon_name">list-add-symbolic</property>
+  <property name="icon_name">system-search-symbolic</property>
  </object>
  <template class="Editor" parent="GtkApplicationWindow">
   <property name="can_focus">False</property>
@@ -82,6 +87,7 @@
            <object class="GtkSearchEntry" id="sidebar_search_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <signal name="stop-search" handler="sidebar_search_entry_stop_search_cb" swapped="no"/>
            </object>
            <packing>
             <property name="expand">False</property>
@@ -152,6 +158,7 @@
              <object class="GtkSearchEntry" id="entity_search_entry">
               <property name="visible">True</property>
               <property name="can_focus">True</property>
+              <signal name="stop-search" handler="entity_search_entry_stop_search_cb" swapped="no"/>
              </object>
              <packing>
               <property name="expand">False</property>
@@ -234,12 +241,12 @@
          </packing>
         </child>
         <child>
-         <object class="GtkButton" id="select_entities">
+         <object class="GtkButton" id="entities_select">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
-          <property name="image">image1</property>
-          <signal name="clicked" handler="select_entities_clicked_cb" swapped="no"/>
+          <property name="image">entities-select-icon</property>
+          <signal name="clicked" handler="entities_select_clicked_cb" swapped="no"/>
          </object>
          <packing>
           <property name="pack_type">end</property>
@@ -247,15 +254,27 @@
          </packing>
         </child>
         <child>
-         <object class="GtkButton" id="new_entity">
+         <object class="GtkButton" id="entity_new">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
           <property name="image">new-entity-icon</property>
-          <signal name="clicked" handler="new_entity_clicked_cb" swapped="no"/>
+          <signal name="clicked" handler="entity_new_clicked_cb" swapped="no"/>
          </object>
          <packing>
-          <property name="position">2</property>
+          <property name="position">1</property>
+         </packing>
+        </child>
+        <child>
+         <object class="GtkToggleButton" id="entities_search">
+          <property name="visible">False</property>
+          <property name="can_focus">True</property>
+          <property name="receives_default">True</property>
+          <property name="image">entities-search-icon</property>
+          <signal name="toggled" handler="entities_search_toggled_cb" swapped="no"/>
+         </object>
+         <packing>
+          <property name="position">0</property>
          </packing>
         </child>
         <child>
@@ -406,12 +425,12 @@
          </packing>
         </child>
         <child>
-         <object class="GtkButton" id="entity_search">
+         <object class="GtkToggleButton" id="entity_search">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
           <property name="image">editor-search-icon</property>
-          <signal name="clicked" handler="entity_search_clicked_cb" swapped="no"/>
+          <signal name="toggled" handler="entity_search_toggled_cb" swapped="no"/>
          </object>
          <packing>
           <property name="pack_type">end</property>
@@ -486,7 +505,7 @@
  </object>
  <object class="GtkPopoverMenu" id="entity_menu_popover">
   <property name="can_focus">False</property>
-  <property name="relative_to">new_entity</property>
+  <property name="relative_to">entity_new</property>
   <property name="constrain_to">none</property>
   <child>
    <object class="GtkBox">
