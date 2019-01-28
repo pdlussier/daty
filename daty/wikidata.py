@@ -140,10 +140,8 @@ class Wikidata:
             else:
                 return "Select a secondary language"
         except Exception as e:
-            print(entity.keys())
+            print(entity)
             print(e.__traceback__)
-            #print(self.wikidata.get_description(entity))
-            #print(e.traceback)
 
     def entity_search(self, query, entity):
         """
