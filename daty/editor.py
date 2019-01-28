@@ -24,9 +24,11 @@
 
 from copy import deepcopy as cp
 from gi import require_version
+require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
+from gi.repository.Gdk import KEY_Escape
 from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
@@ -52,7 +54,9 @@ class Editor(ApplicationWindow):
 
     # Header bar
     header_bar = Template.Child("header_bar")
-    select_entities = Template.Child("select_entities")
+    entity_new = Template.Child("entity_new")
+    entities_search = Template.Child("entities_search")
+    entities_select = Template.Child("entities_select")
     cancel_entities_selection = Template.Child("cancel_entities_selection")
     app_menu = Template.Child("app_menu")
     app_menu_popover = Template.Child("app_menu_popover")
@@ -181,7 +185,7 @@ class Editor(ApplicationWindow):
         self.sidebar_list.show_all()
 
     @Template.Callback()
-    def new_entity_clicked_cb(self, widget):
+    def entity_new_clicked_cb(self, widget):
         """New entity button clicked callback
 
             If clicked, it opens the 'open new entities' window.
@@ -192,7 +196,14 @@ class Editor(ApplicationWindow):
         Open(self.load, new_session=False,)
 
     @Template.Callback()
-    def select_entities_clicked_cb(self, widget):
+    def entities_search_toggled_cb(self, widget):
+        if widget.get_active():
+            self.sidebar_search_bar.set_search_mode(True)
+        else:
+            self.sidebar_search_bar.set_search_mode(False)
+
+    @Template.Callback()
+    def entities_select_clicked_cb(self, widget):
         """Select sidebar entities button clicked callback
 
             If clicked, activates header bar selection mode.
@@ -221,10 +232,14 @@ class Editor(ApplicationWindow):
         """
         # Titlebar
         self.titlebar.set_selection_mode(value)
+        # New entity button
+        self.entity_new.set_visible(not value)
+        # Entities search button
+        self.entities_search.set_visible(value)
         # App menu
         self.app_menu.set_visible(not value)
         # Select button
-        self.select_entities.set_visible(not value)
+        self.entities_select.set_visible(not value)
         # Cancel selection button
         self.cancel_entities_selection.set_visible(value)
         # Sidebar
@@ -303,14 +318,20 @@ class Editor(ApplicationWindow):
         self.single_column.set_visible_child(self.sidebar)
 
     @Template.Callback()
-    def entity_search_clicked_cb(self, widget):
-        if not self.entity_search_bar.get_search_mode():
+    def entity_search_toggled_cb(self, widget):
+        if widget.get_active():
             self.entity_search_bar.set_search_mode(True)
         else:
             self.entity_search_bar.set_search_mode(False)
 
     @Template.Callback()
     def key_press_event_cb(self, window, event):
+        """Manages editor's key press events
+
+        Args:
+            window (Gtk.Window): it is self;
+            event (Gdk.Event): the key press event.
+        """
         focused = window.get_focus()
         sidebar_focused = self.single_column.get_visible_child_name() == 'sidebar'
         if type(focused) == SearchEntry:
@@ -321,19 +342,29 @@ class Editor(ApplicationWindow):
             else:
                 self.sidebar_search_entry.grab_focus()
         else:
-            #if Esc, set placeholder at [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
+            
             if event.keyval == 65307:
                  if self.titlebar.get_selection_mode():
                      self.set_selection_mode(False)
-            #    self.entity_search_bar.set_search_mode(False)
-            # else if key is [Right Alt, Tab, Maiusc, Control, Bloc Maiusc, Left Alt]
+            # else if modifier
             if event.keyval in [65027, 65289, 65505, 65509, 65513]:
                 pass
             else:
                 if not self.entity_search_bar.get_search_mode():
+                    self.entity_search.set_active(True)
                     #context = IMContext()
                     #context.connect("commit", self.to_entity_search_entry)
                     #context.filter_event()
-                    #print("Set search mode True")
-                    #self.entity_search_bar.entry.set_visible(True)
                     self.entity_search_bar.set_search_mode(True)
+
+    @Template.Callback()
+    def entity_search_entry_stop_search_cb(self, widget):
+        if self.entity_search.get_active():
+            self.entity_search.set_active(False)
+            self.entity_search_bar.set_search_mode(False)
+
+    @Template.Callback()
+    def sidebar_search_entry_stop_search_cb(self, widget):
+        if self.entities_search.get_active():
+            self.entities_search.set_active(False)
+
