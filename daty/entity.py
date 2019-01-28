@@ -183,9 +183,13 @@ class Entity(Stack):
         
     @Template.Callback()
     def entry_key_release_event_cb(self, widget, event):
-        if event.keyval == KEY_Escape:
-            self.set_visible_child_name("view")
-            self.entity_popover.hide()
+        try:
+            if event.keyval == KEY_Escape:
+                self.set_visible_child_name("view")
+                self.entity_popover.hide()
+        except AttributeError as e:
+            print("no entity popover for this value")
+            
 
     @Template.Callback()
     def entry_changed_cb(self, entry):

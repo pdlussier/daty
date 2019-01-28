@@ -116,10 +116,9 @@ class Editor(ApplicationWindow):
                                         self.entity,
                                         self.description,
                                         self.entity_search_entry,
+                                        self.sidebar_search_entry,
                                         load=self.load)
         self.sidebar_viewport.add(self.sidebar_list)
-
-        #self.sidebar_search_bar.set_search_mode(True)
 
         # Init pages
         loading = LoadingPage()
@@ -304,6 +303,13 @@ class Editor(ApplicationWindow):
         self.single_column.set_visible_child(self.sidebar)
 
     @Template.Callback()
+    def entity_search_clicked_cb(self, widget):
+        if not self.entity_search_bar.get_search_mode():
+            self.entity_search_bar.set_search_mode(True)
+        else:
+            self.entity_search_bar.set_search_mode(False)
+
+    @Template.Callback()
     def key_press_event_cb(self, window, event):
         focused = window.get_focus()
         if type(focused) == SearchEntry:
@@ -314,9 +320,11 @@ class Editor(ApplicationWindow):
         else:
             #if Esc, set placeholder at [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
             if event.keyval == 65307:
-                self.entity_search_bar.set_search_mode(False)
+                 if self.titlebar.get_selection_mode():
+                     self.set_selection_mode(False)
+            #    self.entity_search_bar.set_search_mode(False)
             # else if key is [Right Alt, Tab, Maiusc, Control, Bloc Maiusc, Left Alt]
-            elif event.keyval in [65027, 65289, 65505, 65509, 65513]:
+            if event.keyval in [65027, 65289, 65505, 65509, 65513]:
                 pass
             else:
                 if not self.entity_search_bar.get_search_mode():

@@ -119,23 +119,37 @@ class Wikidata:
         return claim.toJSON()
 
     def get_label(self, entity, language='en'):
+        """Get entity label
+
+        Args:
+            entity (dict): output of <entity>Page.get;
+            language (str): language of the label to be selected (default 'en')
+        """
         try:
-            if language in entity['labels'].keys():
+            if language in entity['labels']:
                 return entity['labels'][language]
             else:
-                return ""
+                return "Select a secondary language"
         except Exception as e:
             print(e)
 
     def get_description(self, entity, language='en'):
         try:
-            if language in entity['descriptions'].keys():
+            if language in entity['descriptions']:
                 return entity['descriptions'][language]
             else:
-                return ""
+                return "Select a secondary language"
         except Exception as e:
-            print(self.wikidata.get_description(entity))
-            print(e.traceback)
+            print(entity.keys())
+            print(e.__traceback__)
+            #print(self.wikidata.get_description(entity))
+            #print(e.traceback)
+
+    def entity_search(self, query, entity):
+        """
+
+        """
+        pass
 
     def search(self, query, verbose=False):
         """

@@ -29,6 +29,7 @@ require_version('Gtk', '3.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
 from threading import Thread
+from re import IGNORECASE, compile, escape, sub
 
 from .entityselectable import EntitySelectable
 from .page import Page
@@ -46,7 +47,7 @@ class SidebarList(ListBox):
                  entity_label,
                  entity_description, 
                  entity_search_entry,
-                 sidebar_search_entry=None,
+                 sidebar_search_entry,
                  autoselect=True,
                  load=None,
                  *args, **kwargs):
@@ -66,15 +67,11 @@ class SidebarList(ListBox):
         self.stack = stack
         self.load = load
 
-        print(entity_search_entry)
-        #if entity_search_entry:
-        #    print(entity_search_entry)
-        #    entity_search_entry.connect("search-changed", self.on_entity_search_entry_changed_cb)
+        self.entity_search_entry = entity_search_entry
+        self.sidebar_search_entry = sidebar_search_entry
 
         # Set separator as row header
         self.set_header_func(self.update_header)
-
-        #search_entry.connect("
 
         self.connect("row-selected", self.sidebar_row_selected_cb,
                                      content_leaflet,
@@ -83,9 +80,29 @@ class SidebarList(ListBox):
                                      entity_label,
                                      entity_description)
 
-    def on_entity_search_entry_changed_cb(self, entry, event):
+    def entity_search_entry_changed_cb(self, entry):
         text = entry.get_text()
         print(text)
+
+    def sidebar_search_entry_changed_cb(self, entry):
+        text = entry.get_text().lower()
+        for row in self.get_children():
+            if row.get_children():
+                child = row.box.child
+                entity = child.entity
+                if text in entity["Label"].lower() or text in entity["Description"].lower():
+                    row.set_visible(True)
+                    if text:
+                        new_text = compile(escape(text), IGNORECASE)
+                        new_label = new_text.sub("<span color='#e5a50a'>" + text + "</span>", entity["Label"])
+                        new_description = new_text.sub("<span color='#e5a50a'>" + text + "</span>", entity["Description"])
+                        child.label.set_text(new_label)
+                        child.label.set_use_markup(True)
+                        child.description.set_text(new_description)
+                        child.description.set_use_markup(True)
+                else:
+                    row.set_visible(False)
+                    
 
     def update_header(self, row, before, *args):
         """See GTK+ Documentation"""
@@ -172,6 +189,8 @@ class SidebarList(ListBox):
         page = Page(entity['Data'], load=self.load)
         self.stack.add_titled(page, entity['URI'], entity['Label'])
         self.stack.set_visible_child_name(entity['URI'])
+        self.entity_search_entry.connect("search-changed", self.entity_search_entry_changed_cb)
+        self.sidebar_search_entry.connect("search-changed", self.sidebar_search_entry_changed_cb)
 
     def sidebar_row_selected_cb(self,
                                 listbox, 
@@ -236,3 +255,5 @@ class SidebarList(ListBox):
             self.load_page_async(entity)
         else:
             stack.set_visible_child_name(entity['URI'])
+            self.entity_search_entry.connect("search-changed", self.entity_search_entry_changed_cb)
+            self.sidebar_search_entry.connect("search-changed", self.sidebar_search_entry_changed_cb)

@@ -40,6 +40,7 @@ from .util import MyThread
 class Page(ScrolledWindow):
     __gtype_name__ = "Page"
 
+    image = Template.Child("image")
     statements = Template.Child("statements")
     wikidata = Wikidata()   
  
@@ -48,6 +49,10 @@ class Page(ScrolledWindow):
       
         self.load = load
         self.claims = entity['claims']
+
+        if not 'P18' in self.claims:
+            self.image.set_visible(False)
+
         for i,P in enumerate(self.claims.keys()):
             self.download(P, self.load_property, i)
 
