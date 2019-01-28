@@ -312,11 +312,14 @@ class Editor(ApplicationWindow):
     @Template.Callback()
     def key_press_event_cb(self, window, event):
         focused = window.get_focus()
+        sidebar_focused = self.single_column.get_visible_child_name() == 'sidebar'
         if type(focused) == SearchEntry:
             pass
-        elif type(focused) == ListBoxRow:
+        elif type(focused) == ListBoxRow or sidebar_focused:
             if not self.sidebar_search_bar.get_search_mode():
                 self.sidebar_search_bar.set_search_mode(True)
+            else:
+                self.sidebar_search_entry.grab_focus()
         else:
             #if Esc, set placeholder at [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
             if event.keyval == 65307:
