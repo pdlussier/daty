@@ -83,7 +83,7 @@ class Config:
             #        except FileExistsError as e:
             #            pass
             if dir_type == 'config': #and not exists(join(path, 'pywikibot')):
-                mkdirs(join(path, 'pywikibot'))
+                mkdirs(join(path, 'pywikibot'), mode=0o700)
 
         # Set pywikibot environment variable
         environ['PYWIKIBOT_DIR'] = join(self.dirs['config'], 'pywikibot')
