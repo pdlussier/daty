@@ -24,7 +24,7 @@
 
 
 try:
-    from .util import load, mkdirs, save
+    from .util import chmod_recursively, load, mkdirs, save
 except:
     from util import load, mkdirs, save
 
@@ -32,9 +32,10 @@ from appdirs import *
 from gettext import bindtextdomain, textdomain, translation
 from gi.repository.Gio import Resource, ResourceLookupFlags, resource_load
 from locale import getdefaultlocale
-from os import environ, mkdir, sep
+from os import chmod, environ, mkdir, sep
 from os.path import abspath, dirname, exists, join
 from re import sub
+from shutil import rmtree as rm
 
 class Config:
     """Daty configuration class.
@@ -72,16 +73,6 @@ class Config:
         """
         for dir_type, path in self.dirs.items():
             mkdirs(path)
-            #print(type,p)
-            #if not exists(p):
-            #    split = p.split("/")
-            #    path = split[0] + sep
-            #    for d in split[1:]:
-            #        path = join(path, d)
-            #        try:
-            #            mkdir(path)
-            #        except FileExistsError as e:
-            #            pass
             if dir_type == 'config': #and not exists(join(path, 'pywikibot')):
                 mkdirs(join(path, 'pywikibot'), mode=0o700)
 
@@ -136,9 +127,22 @@ class Config:
         password_config = sub(u'your_bot_password', bot_password, password_config)
 
         # Write files
-        with open(config_save_file, 'w') as f:
-            f.write(config)
-        f.close()
+        try:
+            with open(config_save_file, 'w') as f:
+                f.write(config)
+            f.close()
+        except PermissionError as e:
+            print(e)
+            for dir_type, path in self.dirs.items():
+                try:
+                    print(path)
+                    chmod_recursively(path, mode=0o777)
+                    rm(path)
+                except Exception as e:
+                    print(e)
+                    print(e.__traceback__)
+            self.set_dirs()
+            self.create_pywikibot_config(user, bot_user, bot_password)
 
         with open(password_save_file, 'w') as f:
             f.write(password_config)

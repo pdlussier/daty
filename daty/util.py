@@ -67,6 +67,20 @@ def load(path):
     f.close()
     return variable
 
+def chmod_recursively(path, mode=0o755):
+    from os import chmod, walk
+    from os.path import join
+    chmod(path, mode)
+    for root, dirs, files in walk(path):  
+      for d in dirs:  
+        current_path = join(root, d)
+        print(current_path)
+        chmod(current_path, mode)
+      for f in files:
+        current_path = join(root, f)
+        print(current_path)
+        chmod(current_path, mode)
+
 def label_color(label, text=None, color='#e5a50a'):
     label_text = label.get_text()
     try: label.orig == True
