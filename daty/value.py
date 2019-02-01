@@ -58,10 +58,14 @@ class Value(Grid):
             entity = Entity(claim['mainsnak'], load=self.load)
             self.mainsnak.add(entity)
 
-            if 'qualifiers' in claim.keys():
+            if 'qualifiers' in claim:
                 self.claims = claim['qualifiers']
                 for i,P in enumerate(self.claims.keys()):
                     self.download(P, self.load_qualifiers, i)
+
+            if 'references' in claim:
+                self.references = claim['references']
+                
 
         except Exception as err:
             print(err)

@@ -89,7 +89,10 @@ class SidebarList(ListBox):
         i = 0
         row = lambda i,j: statements.get_child_at(j,i)
         while row(i,0):
-            if text.lower() in row(i,0).property_label.get_text().lower():
+            p_label = row(i,0).property_label.get_text()
+            p_desc = row(i,0).property_label.get_tooltip_text()
+            p_found = self.filter(text, p_label) or self.filter(text, p_desc)
+            if p_found:
                 label_color(row(i,0).property_label, text)
                 row(i,0).set_visible(True)
                 row(i,1).set_visible(True)
@@ -98,23 +101,9 @@ class SidebarList(ListBox):
                 row(i,0).set_visible(False)
                 row(i,1).set_visible(False)
             i = i + 1
-        #except Exception as e:
-        #    print(e)
-        #properties = (p for p in statements.get_children() if type(p) == Property)
-        #values = (v for v in statements.get_children() if type(v) == Values)
-        #fields = statements.get_children()
-        #print(len(list(values)), len(list(fields)))
-        #for i,f in enumerate(fields):
-        #    #print(f)
-        #    if type(f) == Property:
-        #        if text.lower() in f.property_label.get_text().lower() or text.lower() in f.property_label.get_tooltip_text().lower():
-        #           print("riga", i)
-        #           
-        #           f.property_label.set_visible(True)
-        #           v = statements
-        #           label_color(f.property_label, text)
-        #        else:
-        #           f.property_label.set_visible(False)
+
+    def filter(query, text):
+        return query.lower() in text.lower()
 
     def sidebar_search_entry_changed_cb(self, entry):
         text = entry.get_text()

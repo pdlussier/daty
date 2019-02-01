@@ -115,8 +115,9 @@ class Wikidata:
             if uri.startswith("Q") or uri.startswith("L"):
                 return ItemPage(self.repo, uri).get()
         except Exception as e:
-            print(e)
-            print(e.__traceback__)
+            if 'Page [[wikidata:' in str(e):
+                print(e)
+                return {}
 
     def get_claim(self, claim):
         #from pywikibot.page import Claim
@@ -129,6 +130,8 @@ class Wikidata:
             entity (dict): output of <entity>Page.get;
             language (str): language of the label to be selected (default 'en')
         """
+        if not entity:
+            return "No available label"
         try:
             if language in entity['labels']:
                 return entity['labels'][language]
@@ -138,6 +141,8 @@ class Wikidata:
             print(e)
 
     def get_description(self, entity, language='en'):
+        if not entity:
+            return "No available description in selected language"
         try:
             if language in entity['descriptions']:
                 return entity['descriptions'][language]
