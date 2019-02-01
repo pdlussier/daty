@@ -196,7 +196,7 @@ class SidebarList(ListBox):
         f = lambda : entity
         def do_call():
             idle_add(lambda: self.on_page_complete(entity))
-        thread = MyThread(target = do_call)
+        thread = Thread(target = do_call)
         thread.start()
 
     def on_page_complete(self, entity):

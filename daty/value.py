@@ -46,7 +46,7 @@ class Value(Grid):
 
     qualifiers = Template.Child("qualifiers")
     mainsnak = Template.Child("mainsnak")
-    wikidata = Wikidata()
+    #wikidata = Wikidata()
 
     def __init__(self, claim, *args, load=None, **kwargs):
         Grid.__init__(self, *args, **kwargs)
@@ -59,9 +59,9 @@ class Value(Grid):
             self.mainsnak.add(entity)
 
             if 'qualifiers' in claim:
-                self.claims = claim['qualifiers']
-                for i,P in enumerate(self.claims.keys()):
-                    self.download(P, self.load_qualifiers, i)
+                claims = claim['qualifiers']
+                for i,P in enumerate(claims):
+                    self.download(P, self.load_qualifiers, i, claims[P])
 
             if 'references' in claim:
                 self.references = claim['references']
@@ -71,13 +71,15 @@ class Value(Grid):
             print(err)
 
     def download(self, URI, callback, *cb_args):
-        f = lambda : (cp(arg) for arg in cb_args)
-        URI, wikidata = cp(URI), cp(self.wikidata)
+        #f = lambda : (cp(arg) for arg in cb_args)
+        #URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
-            cb_args = list(f())
+            #cb_args = list(f())
             entity, error = None, None
             try:
+                wikidata = Wikidata()
                 entity = wikidata.download(URI)
+                del wikidata
             except Exception as err:
                 error = err
             idle_add(lambda: callback(URI, entity, error, *cb_args),
@@ -85,7 +87,7 @@ class Value(Grid):
         thread = Thread(target = do_call)
         thread.start()
 
-    def load_qualifiers(self, URI, qualifier, error, i):
+    def load_qualifiers(self, URI, qualifier, error, i, claims):
         try:
             if error:
                 print(error)
@@ -96,20 +98,18 @@ class Value(Grid):
             values.props.hexpand = True
             values.props.vexpand = True
             self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
-            for j, claim in enumerate(self.claims[URI]):
+            for j, claim in enumerate(claims):
                 self.load_value_async(URI, claim, values, i+self.extra+j)
-            self.extra += len(self.claims[URI]) - 1
+            self.extra += len(claims) - 1
             pprint(j)
         except Exception as e:
             print(URI)
-            print(type(e))
-            print(e.args)
-            pprint(e.__traceback__)
+            raise e
 
     def load_value_async(self, URI, claim, values, j):
-        f = cp(URI), cp(claim)
+        #f = cp(URI), cp(claim)
         def do_call():
-            URI, claim = f
+            #URI, claim = f
             error = None
             try:
                 pass
@@ -137,8 +137,9 @@ class Value(Grid):
     def load_entity(self, URI, entity, error):
         if error:
             print(error)
-        label = self.wikidata.get_label(entity)
-        description = self.wikidata.get_description(entity)
+        wikidata = Wikidata()
+        label = wikidata.get_label(entity)
+        description = wikidata.get_description(entity)
         self.label.set_text(label)
         self.label.set_tooltip_text(description)
 

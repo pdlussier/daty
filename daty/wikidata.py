@@ -27,22 +27,21 @@ from bleach import clean
 from bs4 import BeautifulSoup
 from copy import deepcopy as copy
 from os import mkdir
+from os.path import join, getmtime
 from pprint import pprint
 from re import sub
 from requests import get
+from time import time
 
 from .config import Config
 config = Config()
-from pywikibot import ItemPage, PropertyPage, Site
-from pywikibot.data.sparql import SparqlQuery
-from pywikibot.page import Claim
+
+from .util import load, save
 
 class Wikidata:
     def __init__(self, verbose=False):
-        config = Config()
+        self.config = Config()
         self.verbose = verbose
-        site = Site('wikidata', 'wikidata')
-        self.repo = site.data_repository()
         self.vars = []
 
     def select(self, var, statements, keep_data=False):
@@ -57,6 +56,7 @@ class Wikidata:
         Returns:
             (list) of results URI, or query sparql response if "keep_data" is True.
         """
+        from pywikibot.data.sparql import SparqlQuery
         # We will transform them
         var = copy(var)
         statements = copy(statements)
@@ -101,27 +101,39 @@ class Wikidata:
         results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def download(self, uri):
+    def download(self, uri, use_cache=True):
         """
 
         Args:
-            id (str): LQP id
+            id (str): LQP id;
+            use_cache (bool): whether to use cache;
         Returns:
-            
+            (dict) the downloaded entity as a dict
         """
         try:
+            from pywikibot import ItemPage, PropertyPage, Site
+            site = Site('wikidata', 'wikidata')
+            repo = site.data_repository()
+            path = join(self.config.dirs['cache'], uri)
+            mtime = getmtime(path)
+            if not use_cache or time() - mtime > 604800:
+                raise FileNotFoundError
+            var = load(path)
+            return var
+        except FileNotFoundError as e:
+            print("entity", uri, "not present in cache")
+        try:
+            print("dowloading", uri)
             if uri.startswith("P"):
-                return PropertyPage(self.repo, uri).get()
+                entity = PropertyPage(repo, uri).get()
             if uri.startswith("Q") or uri.startswith("L"):
-                return ItemPage(self.repo, uri).get()
+                entity = ItemPage(repo, uri).get()
+            save(entity, path)
+            return entity
         except Exception as e:
             if 'Page [[wikidata:' in str(e):
                 print(e)
                 return {}
-
-    def get_claim(self, claim):
-        #from pywikibot.page import Claim
-        return claim.toJSON()
 
     def get_label(self, entity, language='en'):
         """Get entity label

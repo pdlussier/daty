@@ -42,36 +42,39 @@ class Page(ScrolledWindow):
 
     image = Template.Child("image")
     statements = Template.Child("statements")
-    wikidata = Wikidata()   
+    #wikidata = Wikidata()
  
     def __init__(self, entity, *args, load=None, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
       
         self.load = load
-        self.claims = entity['claims']
+        #self.claims = entity['claims']
+        claims = entity['claims']
 
-        if not 'P18' in self.claims:
+        if not 'P18' in claims:
             self.image.set_visible(False)
 
-        for i,P in enumerate(self.claims.keys()):
-            self.download(P, self.load_property, i)
+        for i,P in enumerate(claims):
+            self.download(P, self.load_property, i, claims[P])
 
     def download(self, URI, callback, *cb_args):
-        f = lambda : (cp(arg) for arg in cb_args)
-        URI, wikidata = cp(URI), cp(self.wikidata)
+        #f = lambda : (cp(arg) for arg in cb_args)
+        #URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
-            cb_args = list(f())
+            #cb_args = list(f())
+            wikidata = Wikidata()
             entity, error = None, None
             try:
                 entity = wikidata.download(URI)
+                del wikidata
             except Exception as err:
                 error = err
             idle_add(lambda: callback(URI, entity, error, *cb_args),
                      priority=PRIORITY_LOW)
-        thread = Thread(target = do_call)
+        thread = MyThread(target = do_call)
         thread.start()
 
-    def load_property(self, URI, prop, error, i):
+    def load_property(self, URI, prop, error, i, claims):
         try:
             if error:
                 print(error)
@@ -82,19 +85,17 @@ class Page(ScrolledWindow):
             values.props.vexpand = True
             self.statements.attach(prop, 0, i, 1, 1)
             self.statements.attach(values, 1, i, 2, 1)
-            for claim in self.claims[URI]:
+            for claim in claims:
                 claim = claim.toJSON()
                 self.load_value_async(URI, claim, values)
         except Exception as e:
             print(URI)
-            pprint(e)
-            print(e.traceback)
-            print(prop.keys())
+            raise e
 
     def load_value_async(self, URI, claim, values):
-        f = cp(URI), cp(claim)
+        #f = cp(URI), cp(claim)
         def do_call():
-            URI, claim = f
+            #URI, claim = f
             error = None
             try:
                 pass

@@ -31,7 +31,8 @@ from pickle import load as pickle_load
 from re import IGNORECASE, compile, escape, sub
 from threading import BoundedSemaphore, Thread
 
-threadLimiter = BoundedSemaphore(10)
+#TODO: check if threadLimiter is working
+threadLimiter = BoundedSemaphore(2)
 
 class MyThread(Thread):
 
@@ -51,7 +52,6 @@ def save(variable, path):
     """
     with open(path, 'wb') as f:
         dump(variable, f)
-    f.close()
 
 def load(path):
     """Load variable from Pickle file
@@ -64,7 +64,6 @@ def load(path):
     """
     with open(path, 'rb') as f:
         variable = pickle_load(f)
-    f.close()
     return variable
 
 def chmod_recursively(path, mode=0o755):

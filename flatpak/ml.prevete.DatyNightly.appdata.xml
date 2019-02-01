@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>ml.prevete.Daty</id>
+  <launchable type="desktop-id">ml.prevete.DatyNightly.desktop</launchable>
+  <name>Daty Nightly</name>
+  <summary>Free Wikidata editor.</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <description>
+    <p>
+      Daty is a free Wikidata editor adhering to GNOME Human Interface Guidelines, intended to enable a better editing workflow and faster deployment of requested user features for Wikidata.
+    </p>
+    <p>
+      Use Daty to search, select, read, batch edit items, script actions, share, visualize proposed changes and bots.
+    </p>
+    <p>
+      ATTENTION: This is a preview release, so entities editing is disabled.
+    </p>
+  </description>
+  <url type="homepage">https://gitlab.gnome.org/World/Daty/</url>
+  <url type="help">https://gitlab.gnome.org/World/Daty/#documentation</url>
+  <url type="bugtracker">https://gitlab.gnome.org/World/Daty/issues</url>
+  <url type="donation">http://patreon.com/tallero</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://gitlab.gnome.org/World/Daty/raw/master/screenshots/editor.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://gitlab.gnome.org/World/Daty/raw/master/screenshots/mobile-view-page.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://gitlab.gnome.org/World/Daty/raw/master/screenshots/mobile-view-sidebar.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://gitlab.gnome.org/World/Daty/raw/master/screenshots/free-text-search.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release date="2019-01-28" version="1.0a1">
+      <description>
+        <p>Fix permissions in flatpak</p>
+      </description>
+    </release>
+    <release date="2019-01-24" version="1.0a">
+      <description>
+        <p>Preview: Reader functions only.</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.0"/>
+  <developer_name>Pellegrino Prevete</developer_name>
+  <update_contact>pellegrinoprevete@gmail.com</update_contact>
+  <kudos>
+    <kudo>ModernToolkit</kudo>
+  </kudos>
+</component>

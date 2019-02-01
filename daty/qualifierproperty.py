@@ -41,6 +41,7 @@ class QualifierProperty(EventBox):
 
         label, tooltip = self.wikidata.get_label(prop), self.wikidata.get_description(prop) 
         self.set_label(label, tooltip)
+        del prop
 
     def set_label(self, label, tooltip):
         self.label.set_text(label)

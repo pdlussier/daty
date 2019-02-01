@@ -143,6 +143,8 @@ class Editor(ApplicationWindow):
         """
         for entity in entities:
             self.download(entity, self.load_row_async)
+        # TODO: autoselect the row of the last entity
+
         self.show()
 
     def download(self, entity, callback):
@@ -152,15 +154,11 @@ class Editor(ApplicationWindow):
                 entity (dict): have keys "URI", "Label", "Description"
         """
         entity = cp(entity)
-        wikidata = cp(self.wikidata)
+        #   wikidata = cp(self.wikidata)
         def do_call():
-            entity['Data'] = wikidata.download(entity['URI'])
-            if not entity['Label']:
-                entity['Label'] = wikidata.get_label(entity['Data'])
-            if not entity['Description']:
-                entity['Description'] = wikidata.get_description(entity['Data'])
+            entity['Data'] = cp(self.wikidata).download(entity['URI'])
             idle_add(lambda: callback(entity))
-        thread = MyThread(target = do_call)
+        thread = Thread(target = do_call)
         thread.start()
 
     def load_row_async(self, entity):
@@ -180,6 +178,10 @@ class Editor(ApplicationWindow):
         thread.start()
 
     def on_row_complete(self, entity):
+        if not entity['Label']:
+            entity['Label'] = wikidata.get_label(entity['Data'])
+        if not entity['Description']:
+            entity['Description'] = wikidata.get_description(entity['Data'])
         sidebar_entity = SidebarEntity(entity, description=True)
         self.sidebar_list.add(sidebar_entity)
         self.sidebar_list.show_all()

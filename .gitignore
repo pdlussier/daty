@@ -1,4 +1,5 @@
 .buildconfig
+.flatpak-builder
 .ipynb_checkpoints
 __pycache__
 \#*

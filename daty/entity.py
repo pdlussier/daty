@@ -22,7 +22,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from copy import deepcopy as cp
+#from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
@@ -35,7 +35,7 @@ from time import sleep
 
 from .entitypopover import EntityPopover
 from .qualifierproperty import QualifierProperty
-from .util import MyThread
+#from .util import MyThread
 from .values import Values
 from .wikidata import Wikidata
 
@@ -48,7 +48,7 @@ class Entity(Stack):
     label = Template.Child("label")
     unit = Template.Child("unit")
 
-    wikidata = Wikidata()
+    #wikidata = Wikidata()
 
     def __init__(self, snak, *args, qualifier=False, css=None, load=None, **kwargs):
         Stack.__init__(self, *args, **kwargs)
@@ -74,7 +74,7 @@ class Entity(Stack):
                     URI = 'Q' + str(numeric_id)
                   if entity_type == 'property':
                     URI = 'P' + str(numeric_id)
-                  entity = self.download(URI, self.load_entity)
+                  self.download(URI, self.load_entity)
               if dt == 'url':
                   url = dv['value']
                   label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
@@ -126,13 +126,15 @@ class Entity(Stack):
             print(err.__traceback__)
 
     def download(self, URI, callback, *cb_args):
-        f = lambda : (cp(arg) for arg in cb_args)
-        URI, wikidata = cp(URI), cp(self.wikidata)
+        #f = lambda : (cp(arg) for arg in cb_args)
+        #URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
-            cb_args = list(f())
+            #cb_args = list(f())
             entity, error = None, None
             try:
+                wikidata = Wikidata()
                 entity = wikidata.download(URI)
+                del wikidata
             except Exception as err:
                 error = err
             idle_add(lambda: callback(URI, entity, error, *cb_args),
@@ -145,21 +147,27 @@ class Entity(Stack):
             print(error)
             print(type(error))
         if unit:
-            label = self.wikidata.get_label(unit)
+            wikidata = Wikidata()
+            label = wikidata.get_label(unit)
             self.unit.set_text(label)
             self.unit.set_visible(True)
+            del wikidata
+            del unit
 
     def load_entity(self, URI, entity, error):
         if error:
             print(type(error))
             print(error)
         self.URI = URI
-        label = self.wikidata.get_label(entity)
-        description = self.wikidata.get_description(entity)
+        wikidata = Wikidata()
+        label = wikidata.get_label(entity)
+        description = wikidata.get_description(entity)
         self.label.set_text(label)
         self.label.set_tooltip_text(description)
         self.entry.set_text(label)
-        self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
+        #self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
+        del entity
+        del wikidata
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
@@ -174,19 +182,29 @@ class Entity(Stack):
         try:
             self.entity_popover.set_visible(True)
         except:
-            print("no popover available for this type of value")
+            label = self.label.get_label()
+            description = self.label.get_tooltip_text()
+            try:
+                self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
+                self.entity_popover.set_visible(True)
+            except AttributeError as e:
+                print("no popover available for this type of value")
 
     @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
         self.set_visible_child_name("view")
-        self.entity_popover.hide()
-        
+        try:
+            self.entity_popover.hide()
+        except AttributeError as e:
+            print("this entity has no popover")
+
     @Template.Callback()
     def entry_key_release_event_cb(self, widget, event):
         try:
             if event.keyval == KEY_Escape:
-                self.set_visible_child_name("view")
-                self.entity_popover.hide()
+                self.entry_focus_out_event_cb(widget, event)
+                #self.set_visible_child_name("view")
+                #self.entity_popover.hide()
         except AttributeError as e:
             print("no entity popover for this value")
             
