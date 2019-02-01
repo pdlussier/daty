@@ -121,7 +121,6 @@ class Wikidata:
             entity = load(path)
         except FileNotFoundError as e:
             print("entity", uri, "not present in cache")
-        if not entity:
             try:
                 print("dowloading", uri)
                 if uri.startswith("P"):
