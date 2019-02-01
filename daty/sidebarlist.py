@@ -102,7 +102,7 @@ class SidebarList(ListBox):
                 row(i,1).set_visible(False)
             i = i + 1
 
-    def filter(query, text):
+    def filter(self, query, text):
         return query.lower() in text.lower()
 
     def sidebar_search_entry_changed_cb(self, entry):
