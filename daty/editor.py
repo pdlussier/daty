@@ -158,6 +158,7 @@ class Editor(ApplicationWindow):
         def do_call():
             entity['Data'] = cp(self.wikidata).download(entity['URI'])
             idle_add(lambda: callback(entity))
+            return None
         thread = Thread(target = do_call)
         thread.start()
 

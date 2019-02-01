@@ -66,6 +66,7 @@ class Value(Grid):
             if 'references' in claim:
                 self.references = claim['references']
                 
+            del claim
 
         except Exception as err:
             print(err)
@@ -82,9 +83,8 @@ class Value(Grid):
                 del wikidata
             except Exception as err:
                 error = err
-            idle_add(lambda: callback(URI, entity, error, *cb_args),
-                     priority=PRIORITY_LOW)
-        thread = Thread(target = do_call)
+            idle_add(lambda: callback(URI, entity, error, *cb_args))
+        thread = MyThread(target = do_call)
         thread.start()
 
     def load_qualifiers(self, URI, qualifier, error, i, claims):
@@ -101,7 +101,7 @@ class Value(Grid):
             for j, claim in enumerate(claims):
                 self.load_value_async(URI, claim, values, i+self.extra+j)
             self.extra += len(claims) - 1
-            pprint(j)
+            return None
         except Exception as e:
             print(URI)
             raise e
@@ -125,6 +125,7 @@ class Value(Grid):
         value = Entity(claim, load=self.load)
         self.set_font_deprecated(value)
         self.qualifiers.attach(value, 1, j, 2, 1)
+        return None
 
     def set_font_deprecated(self, editor_widget):
         pango_context = editor_widget.create_pango_context()
@@ -142,6 +143,7 @@ class Value(Grid):
         description = wikidata.get_description(entity)
         self.label.set_text(label)
         self.label.set_tooltip_text(description)
+        return None
 
 #    @Template.Callback()
 #    def label_button_press_event_cb(self, widget, event):

@@ -28,7 +28,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
-from threading import Thread
+#from threading import Thread
 from re import IGNORECASE, compile, escape, sub
 
 from .entityselectable import EntitySelectable
@@ -196,7 +196,7 @@ class SidebarList(ListBox):
         f = lambda : entity
         def do_call():
             idle_add(lambda: self.on_page_complete(entity))
-        thread = Thread(target = do_call)
+        thread = MyThread(target = do_call)
         thread.start()
 
     def on_page_complete(self, entity):
@@ -205,6 +205,7 @@ class SidebarList(ListBox):
         self.stack.set_visible_child_name(entity['URI'])
         self.entity_search_entry.connect("search-changed", self.entity_search_entry_changed_cb)
         self.sidebar_search_entry.connect("search-changed", self.sidebar_search_entry_changed_cb)
+        return None
 
     def sidebar_row_selected_cb(self,
                                 listbox, 

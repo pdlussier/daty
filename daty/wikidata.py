@@ -101,7 +101,7 @@ class Wikidata:
         results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def download(self, uri, use_cache=True):
+    def download(self, uri, use_cache=True, target=None):
         """
 
         Args:
@@ -118,22 +118,33 @@ class Wikidata:
             mtime = getmtime(path)
             if not use_cache or time() - mtime > 604800:
                 raise FileNotFoundError
-            var = load(path)
-            return var
+            entity = load(path)
         except FileNotFoundError as e:
             print("entity", uri, "not present in cache")
-        try:
-            print("dowloading", uri)
-            if uri.startswith("P"):
-                entity = PropertyPage(repo, uri).get()
-            if uri.startswith("Q") or uri.startswith("L"):
-                entity = ItemPage(repo, uri).get()
-            save(entity, path)
+        if not entity:
+            try:
+                print("dowloading", uri)
+                if uri.startswith("P"):
+                    entity = PropertyPage(repo, uri).get()
+                if uri.startswith("Q") or uri.startswith("L"):
+                    entity = ItemPage(repo, uri).get()
+                save(entity, path)
+                #return entity
+            except Exception as e:
+                if 'Page [[wikidata:' in str(e):
+                    print(e)
+                    return {}
+        if target:
+            output = {}
+            for t in target:
+                if t == "Label":
+                    output["Label"] = self.get_label(entity)
+                if t == "Description":
+                    output["Description"] = self.get_description(entity)
+            return output
+        else:
             return entity
-        except Exception as e:
-            if 'Page [[wikidata:' in str(e):
-                print(e)
-                return {}
+
 
     def get_label(self, entity, language='en'):
         """Get entity label
@@ -150,7 +161,7 @@ class Wikidata:
             else:
                 return "Select a secondary language"
         except Exception as e:
-            print(e)
+            raise e
 
     def get_description(self, entity, language='en'):
         if not entity:
@@ -162,7 +173,7 @@ class Wikidata:
                 return "Select a secondary language"
         except Exception as e:
             print(entity)
-            print(e.__traceback__)
+            raise e
 
     def entity_search(self, query, entity):
         """

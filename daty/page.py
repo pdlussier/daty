@@ -55,9 +55,20 @@ class Page(ScrolledWindow):
             self.image.set_visible(False)
 
         for i,P in enumerate(claims):
-            self.download(P, self.load_property, i, claims[P])
+            self.download(P, self.load_property,
+                          i, claims[P], target=["Label", "Description"])
+            values = Values()
+            values.props.expand = True
+            values.props.hexpand = True
+            values.props.vexpand = True
+            self.statements.attach(values, 1, i, 2, 1)
+            for claim in claims[P]:
+                claim = claim.toJSON()
+                self.load_value_async(claim, values)
 
-    def download(self, URI, callback, *cb_args):
+        #del entity
+
+    def download(self, URI, callback, *cb_args, target=None):
         #f = lambda : (cp(arg) for arg in cb_args)
         #URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
@@ -65,12 +76,12 @@ class Page(ScrolledWindow):
             wikidata = Wikidata()
             entity, error = None, None
             try:
-                entity = wikidata.download(URI)
+                entity = wikidata.download(URI, target=target)
                 del wikidata
             except Exception as err:
                 error = err
-            idle_add(lambda: callback(URI, entity, error, *cb_args),
-                     priority=PRIORITY_LOW)
+            idle_add(lambda: callback(URI, entity, error, *cb_args))#,
+                     #priority=PRIORITY_LOW)
         thread = MyThread(target = do_call)
         thread.start()
 
@@ -79,20 +90,13 @@ class Page(ScrolledWindow):
             if error:
                 print(error)
             prop = Property(prop)
-            values = Values()
-            values.props.expand = True
-            values.props.hexpand = True
-            values.props.vexpand = True
             self.statements.attach(prop, 0, i, 1, 1)
-            self.statements.attach(values, 1, i, 2, 1)
-            for claim in claims:
-                claim = claim.toJSON()
-                self.load_value_async(URI, claim, values)
+            return None
         except Exception as e:
             print(URI)
             raise e
 
-    def load_value_async(self, URI, claim, values):
+    def load_value_async(self, claim, values):
         #f = cp(URI), cp(claim)
         def do_call():
             #URI, claim = f
@@ -101,7 +105,8 @@ class Page(ScrolledWindow):
                 pass
             except Exception as err:
                 error = err
-            idle_add(lambda: self.on_value_complete(claim, values, error))
+            idle_add(lambda: self.on_value_complete(claim, values, error))#,
+                     #priority=PRIORITY_LOW)
         thread = MyThread(target = do_call)
         thread.start()
 
@@ -111,3 +116,4 @@ class Page(ScrolledWindow):
         value = Value(claim=claim, load=self.load)
         values.add(value)
         values.show_all()
+        return None

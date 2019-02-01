@@ -32,7 +32,7 @@ from re import IGNORECASE, compile, escape, sub
 from threading import BoundedSemaphore, Thread
 
 #TODO: check if threadLimiter is working
-threadLimiter = BoundedSemaphore(2)
+threadLimiter = BoundedSemaphore(4)
 
 class MyThread(Thread):
 

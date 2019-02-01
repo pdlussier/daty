@@ -33,10 +33,7 @@ from pprint import pprint
 from threading import Thread
 from time import sleep
 
-from .entitypopover import EntityPopover
-from .qualifierproperty import QualifierProperty
 #from .util import MyThread
-from .values import Values
 from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/entity.ui")
@@ -112,13 +109,22 @@ class Entity(Stack):
                   self.label.set_text(dv['value'])
                   self.label.set_tooltip_text("External ID")
               if dt == 'geo-shape':
-                  print('geo-shape')
+                  #TODO: implement geo-shape
+                  #print('geo-shape')
+                  pass
               if dt == 'globe-coordinate':
-                  print('globe-coordinate')
+                  #TODO: implement globe-coordinate
+                  #print('globe-coordinate')
+                  pass
               if dt == 'tabular-data':
-                  print('tabular-data')
+                  #TODO: implement tabular-data
+                  #print('tabular-data')
+                  pass
               if dt == 'time':
-                  print('time')
+                  #TODO: implement time point
+                  #print('time')
+                  pass
+            del snak
 
         except Exception as err:
             print(err)
@@ -133,12 +139,13 @@ class Entity(Stack):
             entity, error = None, None
             try:
                 wikidata = Wikidata()
-                entity = wikidata.download(URI)
+                entity = wikidata.download(URI, target=["Label", "Description"])
                 del wikidata
             except Exception as err:
                 error = err
             idle_add(lambda: callback(URI, entity, error, *cb_args),
                      priority=PRIORITY_LOW)
+            return None
         thread = Thread(target = do_call)
         thread.start()
 
@@ -147,27 +154,28 @@ class Entity(Stack):
             print(error)
             print(type(error))
         if unit:
-            wikidata = Wikidata()
-            label = wikidata.get_label(unit)
-            self.unit.set_text(label)
+            #wikidata = Wikidata()
+            #label = wikidata.get_label(unit)
+            self.unit.set_text(unit["Label"])
             self.unit.set_visible(True)
-            del wikidata
+            #del wikidata
             del unit
+            return None
 
     def load_entity(self, URI, entity, error):
         if error:
             print(type(error))
             print(error)
         self.URI = URI
-        wikidata = Wikidata()
-        label = wikidata.get_label(entity)
-        description = wikidata.get_description(entity)
-        self.label.set_text(label)
-        self.label.set_tooltip_text(description)
-        self.entry.set_text(label)
-        #self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
+        #wikidata = Wikidata()
+        #label = wikidata.get_label(entity)
+        #description = wikidata.get_description(entity)
+        self.label.set_text(entity["Label"])
+        self.label.set_tooltip_text(entity["Description"])
+        self.entry.set_text(entity["Label"])
         del entity
-        del wikidata
+        #del wikidata
+        return None
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
@@ -185,6 +193,7 @@ class Entity(Stack):
             label = self.label.get_label()
             description = self.label.get_tooltip_text()
             try:
+                from .entitypopover import EntityPopover
                 self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
                 self.entity_popover.set_visible(True)
             except AttributeError as e:
@@ -211,5 +220,6 @@ class Entity(Stack):
 
     @Template.Callback()
     def entry_changed_cb(self, entry):
-        print(entry.get_text())
+        #print(entry.get_text())
+        pass
         

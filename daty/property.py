@@ -24,9 +24,9 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconTheme, Label, Template
+from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconTheme, Template
 
-from .wikidata import Wikidata
+#from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/property.ui")
 class Property(Button):
@@ -44,9 +44,10 @@ class Property(Button):
         provider.load_from_resource('/ml/prevete/Daty/gtk/property.css')
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
 
-        wikidata = Wikidata()
-        label, tooltip = wikidata.get_label(prop), wikidata.get_description(prop)
-        self.set_label(label, tooltip)
+        #wikidata = Wikidata()
+        #label, tooltip = wikidata.get_label(prop), wikidata.get_description(prop)
+        self.set_label(prop["Label"], prop["Description"])
+        #del prop
 
     def set_label(self, label, tooltip):
         self.property_label.set_text(label)
