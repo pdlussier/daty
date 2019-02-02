@@ -272,9 +272,6 @@ some constraint</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
                         <signal name="clicked" handler="placeholder_add_constraint_clicked_cb" swapped="no"/>
-                        <style>
-                          <class name="suggested-action"/>
-                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -289,8 +286,10 @@ some constraint</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame">
+                  <object class="GtkFrame" id="constraint_box">
+                    <property name="name">constraint_box</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_top">12</property>
                     <property name="vexpand">True</property>
                     <property name="label_xalign">0</property>
                     <property name="label_yalign">1</property>
@@ -306,6 +305,7 @@ some constraint</property>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_bottom">6</property>
                         <property name="label" translatable="yes">Constraints</property>
                         <attributes>
                           <attribute name="font-desc" value="Cantarell Bold 10"/>
@@ -368,7 +368,6 @@ some constraint</property>
         <child>
           <object class="GtkButton" id="open_session">
             <property name="label" translatable="yes">Load saved session</property>
-            <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Open a pre-existing session</property>
@@ -382,6 +381,7 @@ some constraint</property>
             <child>
               <object class="GtkButton" id="open_button">
                 <property name="label" translatable="yes">Open</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <accelerator key="Return" signal="clicked"/>
@@ -400,12 +400,12 @@ some constraint</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="placeholder_back">
+          <object class="GtkButton" id="back">
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="image">back-icon</property>
             <property name="always_show_image">True</property>
-            <signal name="clicked" handler="placeholder_back_clicked_cb" swapped="no"/>
+            <signal name="clicked" handler="back_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="position">2</property>

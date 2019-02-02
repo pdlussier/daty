@@ -44,16 +44,15 @@ class Open(Window):
     wikidata = Wikidata()
 
     #properties = Template.Child("properties")
+    back = Template.Child("back")
     content_stack = Template.Child("content_stack")
     header_bar = Template.Child("header_bar")
-#    header_bar_stack = Template.Child("header_bar_stack")
-    search_stack = Template.Child("search_stack")
+    constraint_box = Template.Child("constraint_box")
     constraint_button_box = Template.Child("constraint_button_box")
     constraint_listbox = Template.Child("constraint_listbox")
     constraint_search = Template.Child("constraint_search")
     open_session = Template.Child("open_session")
     page = Template.Child("page")
-    placeholder_back = Template.Child("placeholder_back")
     label_listbox = Template.Child("label_listbox")
     open_button = Template.Child("open_button")
     results = Template.Child("results")
@@ -71,7 +70,7 @@ class Open(Window):
         self.set_icon_list(icons);
 
         self.verbose = verbose
-        self.new_session = new_session
+        #self.new_session = new_session
 
         if quit_cb:
             self.quit_cb = quit_cb
@@ -87,10 +86,13 @@ class Open(Window):
         self.label_listbox.selected = []
 
         if new_session:
-            self.set_search_placeholder(True)
+            self.header_bar.set_show_close_button(True)
+            #self.set_search_placeholder(True)
               
         else:
-            self.set_search_placeholder(False, search_stack="label_search")
+            self.header_bar.set_show_close_button(False)
+            self.back.set_visible(True)
+            #self.set_search_placeholder(False, search_stack="label_search")
 
         self.entities = self.label_listbox.selected
 
@@ -107,32 +109,15 @@ class Open(Window):
         child = self.page.get_child_at(0,0)
         child.set_property("vexpand", value)
         if value:
-            print(child.props)
             self.page.child_set_property(child, "width", 2)
-            self.constraint_button_box.props.valign = 1
+            if not self.constraint_box.get_visible():
+                self.constraint_button_box.props.valign = 1
 
         else:
-            print(child.props)
             self.page.child_set_property(child, "width", 1)
             #child.set_property("vexpand", False)
-            self.constraint_button_box.props.valign = 0
-            #self.open_button.set_visible(value)
-       #if value:
-       #    self.header_bar_stack.set_visible_child_name("open_entities")
-       #    self.content_stack.set_visible_child_name("placeholder")
-       #    self.open_session.set_visible(True)
-       #    self.placeholder_back.set_visible(False)
-       #    self.open_button.set_visible(False)
-       #    self.header_bar.set_show_close_button(True)
-       #else:
-       #    if self.content_stack.get_visible_child_name() == "placeholder":
-       #         self.header_bar_stack.set_visible_child_name("header_search_type")
-       #         self.content_stack.set_visible_child_name("search")
-       #         self.search_stack.set_visible_child_name(search_stack)
-       #         self.open_session.set_visible(False)
-       #         self.placeholder_back.set_visible(True)
-       #         self.open_button.set_visible(True)
-       #         self.header_bar.set_show_close_button(False)
+            if not self.constraint_box.get_visible():
+                self.constraint_button_box.props.valign = 0
 
     def open_button_clicked_cb(self, widget, load):
         if self.entities != []:
@@ -140,32 +125,28 @@ class Open(Window):
         self.destroy()
 
     @Template.Callback()
-    def placeholder_back_clicked_cb(self, widget):
-        self.set_search_placeholder(True)
+    def back_clicked_cb(self, widget):
+        self.on_quit(widget, None)
+        #self.set_search_placeholder(True)
 
     @Template.Callback()
     def placeholder_add_constraint_clicked_cb(self, widget):
-        self.set_search_placeholder(False, search_stack="constraints")
+        self.constraint_box.set_visible(True)
+        #self.set_search_placeholder()
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):
-        #pass
-    #    if self.verbose:
-    #        print("Keyval of key pressed:", event.keyval)
         # if Esc, set placeholder ot [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
-        if event.keyval == 65307 and self.new_session:
+        if event.keyval == 65307:
             #self.set_search_placeholder(True)
             self.search_entry.set_text("")
-    #    # else if key is [Right Alt, Tab, Maiusc, Control, Bloc Maiusc, Left Alt]
-    #    elif event.keyval in [65027, 65289, 65505, 65509, 65513]:
-    #        pass
-    #    else:
-    #        self.set_search_placeholder(False)
 
     def on_search_done(self, results, error):
         self.label_listbox.foreach(self.label_listbox.remove)
         for r in results:
-            entity = EntitySelectable(r, selected=self.label_listbox.selected)
+            entity = EntitySelectable(r,
+                                      selected=self.label_listbox.selected,
+                                      open_button=self.open_button)
             row = ListBoxRow()
             row.add(entity)
             self.label_listbox.add(row)

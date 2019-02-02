@@ -33,7 +33,7 @@ class EntitySelectable(CheckButton):
     description = Template.Child("description")
     URI = Template.Child("URI")
 
-    def __init__(self, entity, *args, widget=True, selected=None):
+    def __init__(self, entity, *args, widget=True, selected=None, open_button=None):
         """Search result widget in 'open new entity' dialog
 
             Args:
@@ -54,10 +54,12 @@ class EntitySelectable(CheckButton):
             self.URI.destroy()
 
         if selected != None:
-            self.connect("toggled", self.toggled_cb, selected)
+            args = [self.toggled_cb, selected]
+            if open_button: args = args + [open_button]
+            self.connect("toggled", *args)
         self.show_all()
 
-    def toggled_cb(self, widget, selected):
+    def toggled_cb(self, widget, selected, *args):
         """Toggled callback
 
             Args:
@@ -67,5 +69,14 @@ class EntitySelectable(CheckButton):
         """
         if widget.get_active():
             selected.append(self.entity)
+            try:
+                args[0].set_sensitive(True)
+            except:
+                pass
         else:
             selected.remove(self.entity)
+            if not selected:
+                try:
+                    args[0].set_sensitive(False)
+                except:
+                    pass

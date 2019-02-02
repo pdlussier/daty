@@ -112,6 +112,7 @@ class Editor(ApplicationWindow):
         self.set_icon_list(icons);
 
         #self.common.set_visible(False)
+        self.quit_cb = quit_cb
 
         # Init sidebar
         self.sidebar_list = SidebarList(self.single_column,
@@ -133,7 +134,7 @@ class Editor(ApplicationWindow):
         if entities:
             self.load(entities)
         else:
-            Open(self.load, quit_cb=quit_cb, new_session=True)
+            Open(self.load, quit_cb=self.quit_cb, new_session=True)
 
     def load(self, entities):
         """Open entities
@@ -196,7 +197,7 @@ class Editor(ApplicationWindow):
             Args:
                 widget (Gtk.Widget): the clicked widget.
         """
-        Open(self.load, new_session=False,)
+        Open(self.load, quit_cb=self.quit_cb, new_session=False)
 
     @Template.Callback()
     def entities_search_toggled_cb(self, widget):
