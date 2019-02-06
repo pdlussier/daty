@@ -25,18 +25,18 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import Frame, ListBoxRow, Separator, Template
+from gi.repository.Gtk import ListBox, ListBoxRow, Separator, Template
 from pprint import pprint
 
 @Template.from_resource("/ml/prevete/Daty/gtk/values.ui")
-class Values(Frame):
+class Values(ListBox):
     __gtype_name__ = "Values"
 
-    list = Template.Child("list")
+    #list = Template.Child("list")
 
     def __init__(self, *args, frame=True, **kwargs):
-        Frame.__init__(self, *args, **kwargs)
-        self.list.set_header_func(self.update_header)
+        ListBox.__init__(self, *args, **kwargs)
+        self.set_header_func(self.update_header)
 
         if not frame:
             self.set_shadow_type(0) #None
@@ -48,6 +48,6 @@ class Values(Frame):
     def add(self, widget):
         row = ListBoxRow()
         row.add(widget)
-        self.list.add(row)
+        super(Values, self).add(row)
         
         

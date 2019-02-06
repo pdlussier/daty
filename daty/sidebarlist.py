@@ -37,6 +37,7 @@ from .property import Property
 from .sidebarentity import SidebarEntity
 from .values import Values
 from .util import MyThread, label_color
+#from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/sidebarlist.ui")
 class SidebarList(ListBox):
@@ -50,8 +51,9 @@ class SidebarList(ListBox):
                  entity_description, 
                  entity_search_entry,
                  sidebar_search_entry,
-                 autoselect=True,
+                 autoselect=False,
                  load=None,
+                 wikidata=None,
                  *args, **kwargs):
         """Sidebar ListBox
         
@@ -65,12 +67,16 @@ class SidebarList(ListBox):
         """
         ListBox.__init__(self, *args, **kwargs)
 
+        # Set some inputs as attributes
         self.autoselect = autoselect
         self.stack = stack
         self.load = load
-
+        self.wikidata = wikidata
         self.entity_search_entry = entity_search_entry
         self.sidebar_search_entry = sidebar_search_entry
+
+        # Set "last" selected entities attribute
+        self.last = []
 
         # Set separator as row header
         self.set_header_func(self.update_header)
@@ -154,7 +160,7 @@ class SidebarList(ListBox):
                 row.check.destroy()
                 del row.check
  
-    def add(self, widget):
+    def add(self, widget, select=False):
         """Add widget to a new row
 
             Overrides Gtk.Container.add
@@ -182,7 +188,7 @@ class SidebarList(ListBox):
         super(SidebarList, self).add(row)
 
         # Select if 'autoselect'
-        if len(self.get_children()) == 1 and self.autoselect:
+        if (len(self.get_children()) >= 1 and self.autoselect) or select:
             self.select_row(row)
 
         # The final empty row that acts as separator
@@ -191,6 +197,23 @@ class SidebarList(ListBox):
         row.props.selectable = False
         super(SidebarList, self).add(row)
      
+    def remove_row(self, sidebar_entity):
+        i = 0
+        while True:
+            row = self.get_row_at_index(i)
+            if hasattr(row, 'box') and row.box.child == sidebar_entity:
+                self.last.remove(row)
+                self.remove(row)
+                row.destroy()
+                try:
+                    row = self.get_row_at_index(i+1)
+                    self.remove(row)
+                    row.destroy()
+                except:
+                    return i-2
+                return i
+            i += 1
+
     def load_page_async(self, entity):
         entity = cp(entity)
         f = lambda : entity
@@ -200,7 +223,7 @@ class SidebarList(ListBox):
         thread.start()
 
     def on_page_complete(self, entity):
-        page = Page(entity['Data'], load=self.load)
+        page = Page(entity['Data'], load=self.load, wikidata=self.wikidata)
         self.stack.add_titled(page, entity['URI'], entity['Label'])
         self.stack.set_visible_child_name(entity['URI'])
         self.entity_search_entry.connect("search-changed", self.entity_search_entry_changed_cb)
@@ -231,6 +254,9 @@ class SidebarList(ListBox):
                 entity_description(Gtk.Label)
         """
 
+        # Set last
+        self.last.append(row)
+
         # Set view for folded mode
         content_leaflet.set_visible_child_name("content_stack")
         titlebar_leaflet.set_visible_child_name("sub_header_bar")
@@ -239,21 +265,26 @@ class SidebarList(ListBox):
         #entity_back = [c for c in sub_header_bar
         #               if c.get_name() == 'entity_back'][-1]
         #entity_back.set_visible(True)
-            
+
+
         # Get entity from SidebarEntity child
         sidebar_entity = row.box.child
         entity = sidebar_entity.entity
 
         # Set titlebar
-        entity_label.set_text(entity["Label"])
-        entity_label.set_tooltip_text(entity["Label"])
-        entity_description.set_text(entity["Description"])
-        entity_description.set_tooltip_text(entity["Description"])
+        def set_text(widget, label):
+            widget.set_text(label)
+            widget.set_tooltip_text(label)
+
+        set_text(entity_label, entity["Label"])
+        set_text(entity_description, entity["Description"])
 
         # If there is no corresponding child in stack, create one
         if not stack.get_child_by_name(entity['URI']):
             stack.set_visible_child_name("loading")
             children = stack.get_children()
+
+            # Prune the cache
             if len(children) >= 10:
                 print("more than 5 children")
                 oldest = children[1]
@@ -261,12 +292,8 @@ class SidebarList(ListBox):
                 oldest.destroy()
                 del oldest
                 print(len(children))
-            # To be replaced with a timeout that makes sure 
-            # that you are not just passing over the row with arrows.
-            #page = Page(entity['Data'])
-            #stack.add_titled(page, entity['URI'], entity['Label'])
-            #stack.set_visible_child_name(entity['URI'])
-            #stack.show_all()
+
+            # TODO: Implement a short timeout to make sure you explicitly wanted to load the row
             self.load_page_async(entity)
         else:
             stack.set_visible_child_name(entity['URI'])

@@ -36,10 +36,9 @@
       <object class="GtkGrid" id="qualifiers">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="vexpand">True</property>
         <property name="column_homogeneous">True</property>
-        <child>
-          <placeholder/>
-        </child>
         <child>
           <placeholder/>
         </child>

@@ -12,8 +12,9 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">end</property>
-        <property name="valign">baseline</property>
+        <property name="valign">start</property>
         <property name="margin_start">10</property>
+        <property name="vexpand">True</property>
         <property name="label" translatable="yes">Label</property>
         <property name="justify">right</property>
         <property name="wrap">True</property>

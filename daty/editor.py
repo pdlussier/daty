@@ -28,7 +28,7 @@ require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
-from gi.repository.Gdk import KEY_Escape
+from gi.repository.Gdk import KEY_Escape, KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L, KEY_ISO_Level3_Shift, KEY_ISO_Level3_Lock, KEY_Tab, KEY_Menu, KEY_Up, KEY_Down, KEY_Right, KEY_Left
 from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
@@ -43,6 +43,10 @@ from .util import MyThread
 from .wikidata import Wikidata
 
 name = "ml.prevete.Daty"
+
+modifiers = [KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L,
+             KEY_ISO_Level3_Shift, KEY_ISO_Level3_Lock, KEY_Tab, KEY_Menu,
+             KEY_Up, KEY_Down, KEY_Right, KEY_Left]
 
 @Template.from_resource("/ml/prevete/Daty/gtk/editor.ui")
 class Editor(ApplicationWindow):
@@ -122,7 +126,8 @@ class Editor(ApplicationWindow):
                                         self.description,
                                         self.entity_search_entry,
                                         self.sidebar_search_entry,
-                                        load=self.load)
+                                        load=self.load,
+                                        wikidata=self.wikidata)
         self.sidebar_viewport.add(self.sidebar_list)
 
         # Init pages
@@ -142,28 +147,28 @@ class Editor(ApplicationWindow):
             Args:
                 entities (list): of dict having "URI", "Label", "Description" keys;
         """
-        for entity in entities:
+        for entity in entities[:-1]:
             self.download(entity, self.load_row_async)
-        # TODO: autoselect the row of the last entity
-
+        self.download(entities[-1], self.load_row_async, select=True)
         self.show()
 
-    def download(self, entity, callback):
+    def download(self, entity, callback, **kwargs):
         """Asynchronously download entity from wikidata
         
             Args:
                 entity (dict): have keys "URI", "Label", "Description"
         """
-        entity = cp(entity)
-        #   wikidata = cp(self.wikidata)
+        #entity = cp(entity)
+        #wikidata = cp(self.wikidata)
         def do_call():
-            entity['Data'] = cp(self.wikidata).download(entity['URI'])
-            idle_add(lambda: callback(entity))
+            #wikidata = Wikidata()
+            entity['Data'] = self.wikidata.download(entity['URI'], use_cache=False)
+            idle_add(lambda: callback(entity, **kwargs))
             return None
         thread = Thread(target = do_call)
         thread.start()
 
-    def load_row_async(self, entity):
+    def load_row_async(self, entity, **kwargs):
         """It creates sidebar passing downloaded data to its rows.
 
             Gets executed when download method has finished its task
@@ -171,21 +176,29 @@ class Editor(ApplicationWindow):
             Args:
                 entity (dict): have keys "URI", "Label", "Description", "Data"
         """
-        entity = cp(entity)
+        #entity = cp(entity)
         f = lambda : entity
         def do_call():
             entity = f()
-            idle_add(lambda: self.on_row_complete(entity))
+            idle_add(lambda: self.on_row_complete(entity, **kwargs))
         thread = MyThread(target = do_call)
         thread.start()
 
-    def on_row_complete(self, entity):
+    def on_row_complete(self, entity, **kwargs):
+        #wikidata = Wikidata()
         if not entity['Label']:
-            entity['Label'] = wikidata.get_label(entity['Data'])
+            entity['Label'] = self.wikidata.get_label(entity['Data'])
         if not entity['Description']:
-            entity['Description'] = wikidata.get_description(entity['Data'])
+            entity['Description'] = self.wikidata.get_description(entity['Data'])
+
         sidebar_entity = SidebarEntity(entity, description=True)
-        self.sidebar_list.add(sidebar_entity)
+        sidebar_entity.close_eventbox.connect("button-press-event",
+                                              self.close_eventbox_button_press_event_cb,
+                                              sidebar_entity)
+
+        self.sidebar_list.add(sidebar_entity, **kwargs)
+        #if 'last' in kwargs and kwargs["last"]:
+            #self.sidebar_list.select_row(sidebar_entity)
         self.sidebar_list.show_all()
 
     @Template.Callback()
@@ -336,29 +349,22 @@ class Editor(ApplicationWindow):
             window (Gtk.Window): it is self;
             event (Gdk.Event): the key press event.
         """
+        if event.keyval in modifiers:
+            return None
         focused = window.get_focus()
         sidebar_focused = self.single_column.get_visible_child_name() == 'sidebar'
-        if type(focused) == SearchEntry:
-            pass
-        elif type(focused) == ListBoxRow or sidebar_focused:
+        if type(focused) == ListBoxRow or sidebar_focused:
             if not self.sidebar_search_bar.get_search_mode():
                 self.sidebar_search_bar.set_search_mode(True)
             else:
                 self.sidebar_search_entry.grab_focus()
         else:
-            
-            if event.keyval == 65307:
+            if event.keyval == KEY_Escape:
                  if self.titlebar.get_selection_mode():
                      self.set_selection_mode(False)
-            # else if modifier
-            if event.keyval in [65027, 65289, 65505, 65509, 65513]:
-                pass
             else:
                 if not self.entity_search_bar.get_search_mode():
                     self.entity_search.set_active(True)
-                    #context = IMContext()
-                    #context.connect("commit", self.to_entity_search_entry)
-                    #context.filter_event()
                     self.entity_search_bar.set_search_mode(True)
 
     @Template.Callback()
@@ -372,3 +378,28 @@ class Editor(ApplicationWindow):
         if self.entities_search.get_active():
             self.entities_search.set_active(False)
 
+    def close_eventbox_button_press_event_cb(self, widget, event, sidebar_entity):
+        URI = sidebar_entity.entity["URI"]
+        try:
+            page = self.pages.get_child_by_name(URI)
+            page.destroy()
+        except Exception as e:
+            print ("page not loaded")
+        if len(self.sidebar_list.last) > 1:
+            self.sidebar_list.select_row(self.sidebar_list.last[-2])
+        else:
+            row = self.sidebar_list.get_row_at_index(0)
+            self.sidebar_list.select_row()
+            #raise e
+        #self.sidebar_list.last.remove(sidebar_entity)
+        i = self.sidebar_list.remove_row(sidebar_entity)
+
+    def get_neighbor(self, i, next=True):
+        f = lambda x: x + 1 if next else x - 1
+        while True:
+            try:
+                print(self.sidebar_list.get_children())
+                self.sidebar_list.get_row_at_index(i)
+                return True
+            except AttributeError as e:
+                i = f(i)

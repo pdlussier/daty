@@ -28,12 +28,13 @@ require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import EventType, KEY_Escape
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Stack, StyleContext, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, ListBoxRow, Stack, StyleContext, Template
 from pprint import pprint
 from threading import Thread
 from time import sleep
 
 #from .util import MyThread
+from .sidebarentity import SidebarEntity
 from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/entity.ui")
@@ -57,6 +58,10 @@ class Entity(Stack):
         provider.load_from_resource('/ml/prevete/Daty/gtk/entity.css')
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
 
+        if qualifier:
+            self.label.props.valign = 1
+            self.unit.props.valign = 1
+
         try:
             if snak['snaktype'] == 'novalue':
               self.label.set_text("No value")
@@ -75,10 +80,10 @@ class Entity(Stack):
               if dt == 'url':
                   url = dv['value']
                   label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
-                  self.label.set_markup(label)
+                  #self.label.set_markup(label)
+                  self.label.set_use_markup(True)
+                  self.set_text(label, url)
               if dt == 'quantity':
-                  # Unit
-                  #self.unit.props.set_no_show_all = False
                   unit = dv['value']['unit']
                   if unit.startswith('http'):
                       unit = dv['value']['unit'].split('/')[-1]
@@ -97,17 +102,14 @@ class Entity(Stack):
                       amount = amount + " - " + str(round(float(amount) - float(lb)))
                   self.label.set_text(amount)
               if dt == 'string':
-                  self.label.set_text(dv['value'])
-                  self.label.set_tooltip_text("Text")
+                  self.set_text(dv['value'], "Text")
               if dt == 'monolingualtext':
-                  self.label.set_text(dv['value']['text'])
-                  self.label.set_tooltip_text(dv['value']['language'])
+                  #TODO: better implement monolingual text
+                  self.set_text(dv['value']['text'], dv['value']['language'])
               if dt == 'commonsMedia':
-                  self.label.set_text(dv['value'])
-                  self.label.set_tooltip_text("Picture")
+                  self.set_text(dv['value'], "Picture")
               if dt == 'external-id':
-                  self.label.set_text(dv['value'])
-                  self.label.set_tooltip_text("External ID")
+                  self.set_text(dv['value'], "External ID")
               if dt == 'geo-shape':
                   #TODO: implement geo-shape
                   #print('geo-shape')
@@ -131,11 +133,15 @@ class Entity(Stack):
             print(type(err))
             print(err.__traceback__)
 
+        self.entry.connect("search-changed", self.entry_search_changed_cb)
+
+    def set_text(self, label, description):
+        self.label.set_text(label)
+        self.label.set_tooltip_text(description)
+        self.entry.set_text(label)
+
     def download(self, URI, callback, *cb_args):
-        #f = lambda : (cp(arg) for arg in cb_args)
-        #URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
-            #cb_args = list(f())
             entity, error = None, None
             try:
                 wikidata = Wikidata()
@@ -154,8 +160,6 @@ class Entity(Stack):
             print(error)
             print(type(error))
         if unit:
-            #wikidata = Wikidata()
-            #label = wikidata.get_label(unit)
             self.unit.set_text(unit["Label"])
             self.unit.set_visible(True)
             #del wikidata
@@ -167,12 +171,8 @@ class Entity(Stack):
             print(type(error))
             print(error)
         self.URI = URI
-        #wikidata = Wikidata()
-        #label = wikidata.get_label(entity)
-        #description = wikidata.get_description(entity)
-        self.label.set_text(entity["Label"])
-        self.label.set_tooltip_text(entity["Description"])
-        self.entry.set_text(entity["Label"])
+        self.set_text(entity["Label"], entity["Description"])
+        self.show_all()
         del entity
         #del wikidata
         return None
@@ -182,26 +182,31 @@ class Entity(Stack):
         if event.type == EventType._2BUTTON_PRESS:
             print("double click")   
         elif event.type == EventType.BUTTON_PRESS:
+            self.entry.set_visible(True)
             self.set_visible_child_name("entry")
             self.entry.grab_focus()
 
     @Template.Callback()
-    def entry_focus_in_event_cb(self, widget, event):
+    def entry_focus_in_event_cb(self, entry, event):
+        entry.props.margin_top = 3
+        entry.props.margin_bottom = 3
+        label = self.label.get_label()
+        description = self.label.get_tooltip_text()
         try:
+            from .entitypopover import EntityPopover
+            self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
+            self.search(entry.get_text())
             self.entity_popover.set_visible(True)
-        except:
-            label = self.label.get_label()
-            description = self.label.get_tooltip_text()
-            try:
-                from .entitypopover import EntityPopover
-                self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
-                self.entity_popover.set_visible(True)
-            except AttributeError as e:
-                print("no popover available for this type of value")
+        except AttributeError as e:
+            print("no popover available for this type of value")
 
     @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
         self.set_visible_child_name("view")
+        self.entry.set_visible(False)
+        self.entry.props.margin_top = 0
+        self.entry.props.margin_bottom = 0
+        self.entry.set_text(self.label.get_text())
         try:
             self.entity_popover.hide()
         except AttributeError as e:
@@ -212,14 +217,53 @@ class Entity(Stack):
         try:
             if event.keyval == KEY_Escape:
                 self.entry_focus_out_event_cb(widget, event)
-                #self.set_visible_child_name("view")
-                #self.entity_popover.hide()
         except AttributeError as e:
             print("no entity popover for this value")
-            
 
-    @Template.Callback()
-    def entry_changed_cb(self, entry):
-        #print(entry.get_text())
-        pass
+    def search(self, query):
+        try:
+            if query:
+                self.entity_popover
+                def do_call():
+                    results, error = None, None
+                    try:
+                        wikidata = Wikidata()
+                        results = wikidata.search(query)
+                        #results = f()
+                    except Exception as err:
+                        error = err
+
+                    idle_add(lambda: self.on_search_done(results, error))
+                thread = Thread(target = do_call)
+                thread.start()
+            else:
+                self.set_search_placeholder(True)
+        except AttributeError as e:
+            self.set_search_placeholder(True)
+
+    def on_search_done(self, results, error):
+        try:
+            listbox = self.entity_popover.label_listbox
+            listbox.foreach(listbox.remove)
+            for r in results:
+                if r['URI'] != self.URI:
+                    entity = SidebarEntity(r, URI=False)#,
+                    row = ListBoxRow()
+                    row.add(entity)
+                    listbox.add(row)
+            listbox.show_all()
+            self.set_search_placeholder(False)
+        except AttributeError as e:
+            print("this value type has no popover")
+            raise e
+
+    def set_search_placeholder(self, value):
+        try:
+            self.entity_popover.search_box.set_visible(value)
+            self.entity_popover.results.set_visible(not value)
+        except AttributeError as e:
+            pass
+
+    def entry_search_changed_cb(self, entry):
+        self.search(entry.get_text())
         

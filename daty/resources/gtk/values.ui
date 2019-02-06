@@ -2,22 +2,10 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <template class="Values" parent="GtkFrame">
+  <template class="Values" parent="GtkListBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="vexpand">True</property>
-    <property name="label_xalign">0</property>
-    <property name="shadow_type">out</property>
-    <child>
-      <object class="GtkListBox" id="list">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="vexpand">True</property>
-        <property name="selection_mode">none</property>
-      </object>
-    </child>
-    <child type="label_item">
-      <placeholder/>
-    </child>
+    <property name="selection_mode">none</property>
   </template>
 </interface>

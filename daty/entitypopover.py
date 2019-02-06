@@ -32,23 +32,27 @@ from .wikidata import Wikidata
 class EntityPopover(PopoverMenu):
     __gtype_name__ = "EntityPopover"
 
+    label = Template.Child("label")
+    label_listbox = Template.Child("label_listbox")
     description = Template.Child("description")
     new_window = Template.Child("new_window")
+    results = Template.Child("results")
+    search_box = Template.Child("search_box")
 
     def __init__(self, URI, label, description, *args, load=None, parent=None, **kwargs):
         PopoverMenu.__init__(self, *args, **kwargs)
 
         self.load = load
-        self.label = {"Label":label, "Description":description, "URI":URI}
+        self.entity = {"Label":label, "Description":description, "URI":URI}
 
         if parent:
             self.set_relative_to(parent)
-        #print(self.description)
+        self.label.set_text(label)
         self.description.set_text(description)
 
     @Template.Callback()
     def new_window_clicked_cb(self, widget):
-        self.load([self.label])
+        self.load([self.entity])
 
     def set_results(self, widget):
         pass          

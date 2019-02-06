@@ -32,15 +32,19 @@ class Triplet(Grid):
     __gtype_name__ = "Triplet"
 
     #properties = Template.Child("properties")
+    subject = Template.Child("subject")
+    property = Template.Child("property")
+    object = Template.Child("object")
 
     def __init__(self, *args, **kwargs):
         Grid.__init__(self, *args, **kwargs)
-
         self.show_all()
         #self.properties.add(Property())
 
-#    @Template.Callback()
-    #def key_press_event_cb(self, widget, event):
+    @Template.Callback()
+    def button_press_event_cb(self, widget, event):
+        print(widget)
+        print(event)
     #    if event.keyval == 65307:
     #        self.header_bar_stack.set_visible_child_name("open_entities")
     #        self.content_stack.set_visible_child_name("placeholder")

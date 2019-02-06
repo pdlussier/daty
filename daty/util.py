@@ -31,7 +31,6 @@ from pickle import load as pickle_load
 from re import IGNORECASE, compile, escape, sub
 from threading import BoundedSemaphore, Thread
 
-#TODO: check if threadLimiter is working
 threadLimiter = BoundedSemaphore(4)
 
 class MyThread(Thread):
@@ -42,6 +41,11 @@ class MyThread(Thread):
             super(MyThread, self).run()
         finally:
             threadLimiter.release()
+
+class EntitySet(list):
+    def add(self, element):
+        if not element["URI"] in (v["URI"] for v in self):
+            self.append(element)
 
 def save(variable, path):
     """Save variable on given path using Pickle

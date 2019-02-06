@@ -27,13 +27,13 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.GLib import idle_add, PRIORITY_LOW
-from gi.repository.Gtk import Label, ScrolledWindow, Template
+from gi.repository.Gtk import Frame, Label, ScrolledWindow, Template
 from threading import Thread
 
 from .property import Property
 from .value import Value
 from .values import Values
-from .wikidata import Wikidata
+#from .wikidata import Wikidata
 from .util import MyThread
 
 @Template.from_resource("/ml/prevete/Daty/gtk/page.ui")
@@ -44,10 +44,11 @@ class Page(ScrolledWindow):
     statements = Template.Child("statements")
     #wikidata = Wikidata()
  
-    def __init__(self, entity, *args, load=None, **kwargs):
+    def __init__(self, entity, *args, load=None, wikidata=None, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
       
         self.load = load
+        self.wikidata = wikidata
         #self.claims = entity['claims']
         claims = entity['claims']
 
@@ -56,12 +57,18 @@ class Page(ScrolledWindow):
 
         for i,P in enumerate(claims):
             self.download(P, self.load_property,
-                          i, claims[P], target=["Label", "Description"])
+                          i, target=["Label", "Description"])
+            N = len(claims[P])
+            if N > 5:
+                frame = ScrolledWindow()
+                frame.set_min_content_height(36*6)
+            else:
+                frame = Frame()
+            frame.set_shadow_type(2)
+            frame.set_visible(True)
             values = Values()
-            values.props.expand = True
-            values.props.hexpand = True
-            values.props.vexpand = True
-            self.statements.attach(values, 1, i, 2, 1)
+            frame.add(values)
+            self.statements.attach(frame, 1, i, 2, 1)
             for claim in claims[P]:
                 claim = claim.toJSON()
                 self.load_value_async(claim, values)
@@ -69,15 +76,10 @@ class Page(ScrolledWindow):
         #del entity
 
     def download(self, URI, callback, *cb_args, target=None):
-        #f = lambda : (cp(arg) for arg in cb_args)
-        #URI, wikidata = cp(URI), cp(self.wikidata)
         def do_call():
-            #cb_args = list(f())
-            wikidata = Wikidata()
             entity, error = None, None
             try:
-                entity = wikidata.download(URI, target=target)
-                del wikidata
+                entity = self.wikidata.download(URI, target=target)
             except Exception as err:
                 error = err
             idle_add(lambda: callback(URI, entity, error, *cb_args))#,
@@ -85,7 +87,7 @@ class Page(ScrolledWindow):
         thread = MyThread(target = do_call)
         thread.start()
 
-    def load_property(self, URI, prop, error, i, claims):
+    def load_property(self, URI, prop, error, i):
         try:
             if error:
                 print(error)
@@ -117,3 +119,5 @@ class Page(ScrolledWindow):
         values.add(value)
         values.show_all()
         return None
+
+    #TODO: make method to move properties from side to top when content_box is folded

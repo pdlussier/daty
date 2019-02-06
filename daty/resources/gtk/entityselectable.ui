@@ -22,10 +22,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin_start">18</property>
+                <property name="margin_start">3</property>
                 <property name="hexpand">False</property>
                 <property name="label" translatable="yes">Item</property>
                 <property name="wrap">True</property>
+                <property name="xalign">0</property>
                 <attributes>
                   <attribute name="font-desc" value="Cantarell Bold 10"/>
                 </attributes>
@@ -62,12 +63,11 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
-            <property name="margin_left">18</property>
-            <property name="margin_right">18</property>
-            <property name="margin_start">18</property>
+            <property name="margin_start">3</property>
             <property name="margin_end">18</property>
             <property name="justify">fill</property>
             <property name="wrap">True</property>
+            <property name="xalign">0</property>
             <attributes>
               <attribute name="font-desc" value="Cantarell 8"/>
             </attributes>

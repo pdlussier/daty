@@ -59,6 +59,7 @@ class Value(Grid):
             self.mainsnak.add(entity)
 
             if 'qualifiers' in claim:
+                self.qualifiers.props.margin_bottom = 6
                 claims = claim['qualifiers']
                 for i,P in enumerate(claims):
                     self.download(P, self.load_qualifiers, i, claims[P])
@@ -93,20 +94,20 @@ class Value(Grid):
                 print(error)
             #pprint(qualifier)
             qualifier = QualifierProperty(qualifier)
-            values = Values(frame=False)
-            values.props.expand = True
-            values.props.hexpand = True
-            values.props.vexpand = True
+            #values = Values(frame=False)
+            #values.props.expand = True
+            #values.props.hexpand = True
+            #values.props.vexpand = True
             self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
             for j, claim in enumerate(claims):
-                self.load_value_async(URI, claim, values, i+self.extra+j)
+                self.load_value_async(URI, claim, i+self.extra+j)
             self.extra += len(claims) - 1
             return None
         except Exception as e:
             print(URI)
             raise e
 
-    def load_value_async(self, URI, claim, values, j):
+    def load_value_async(self, URI, claim, j):
         #f = cp(URI), cp(claim)
         def do_call():
             #URI, claim = f
@@ -115,14 +116,14 @@ class Value(Grid):
                 pass
             except Exception as err:
                 error = err
-            idle_add(lambda: self.on_value_complete(claim, values, error, j))
+            idle_add(lambda: self.on_value_complete(claim, error, j))
         thread = MyThread(target = do_call)
         thread.start()
 
-    def on_value_complete(self, claim, values, error, j):
+    def on_value_complete(self, claim, error, j):
         if error:
             print(error)
-        value = Entity(claim, load=self.load)
+        value = Entity(claim, qualifier=True, load=self.load)
         self.set_font_deprecated(value)
         self.qualifiers.attach(value, 1, j, 2, 1)
         return None

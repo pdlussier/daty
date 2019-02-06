@@ -27,7 +27,7 @@ from bleach import clean
 from bs4 import BeautifulSoup
 from copy import deepcopy as copy
 from os import mkdir
-from os.path import join, getmtime
+from os.path import exists, join, getmtime
 from pprint import pprint
 from re import sub
 from requests import get
@@ -110,40 +110,51 @@ class Wikidata:
         Returns:
             (dict) the downloaded entity as a dict
         """
-        try:
-            from pywikibot import ItemPage, PropertyPage, Site
-            site = Site('wikidata', 'wikidata')
-            repo = site.data_repository()
-            path = join(self.config.dirs['cache'], uri)
-            mtime = getmtime(path)
-            if not use_cache or time() - mtime > 604800:
-                raise FileNotFoundError
-            entity = load(path)
-        except FileNotFoundError as e:
-            print("entity", uri, "not present in cache")
+        while True:
             try:
-                print("dowloading", uri)
-                if uri.startswith("P"):
-                    entity = PropertyPage(repo, uri).get()
-                if uri.startswith("Q") or uri.startswith("L"):
-                    entity = ItemPage(repo, uri).get()
-                save(entity, path)
-                #return entity
+                from pywikibot import ItemPage, PropertyPage, Site
+                site = Site('wikidata', 'wikidata')
+                repo = site.data_repository()
+                if target:
+                    path = join(self.config.dirs['cache'], uri + 'target')
+                else:
+                    path = join(self.config.dirs['cache'], uri)
+                if exists(path):
+                    mtime = getmtime(path)
+                    if (use_cache or time() - mtime < 604800):
+                        try:
+                            entity = load(path)
+                            break
+                        except AttributeError as e:
+                            pass
+                else:
+                    print("dowloading", uri)
+                    if uri.startswith("P"):
+                        entity = PropertyPage(repo, uri).get()
+                    elif uri.startswith("Q") or uri.startswith("L"):
+                        entity = ItemPage(repo, uri).get()
+                    else:
+                        print("Not supported")
+                        entity = {}
+                    if target:
+                        output = {}
+                        for t in target:
+                            if t == "Label":
+                                output["Label"] = self.get_label(entity)
+                            if t == "Description":
+                                output["Description"] = self.get_description(entity)
+                        entity = output
+                    save(entity, path)
+                    break
             except Exception as e:
                 if 'Page [[wikidata:' in str(e):
                     print(e)
-                    return {}
-        if target:
-            output = {}
-            for t in target:
-                if t == "Label":
-                    output["Label"] = self.get_label(entity)
-                if t == "Description":
-                    output["Description"] = self.get_description(entity)
-            return output
-        else:
-            return entity
-
+                    entity = {}
+                    break
+                else:
+                    print(uri)
+                    print(type(e))
+        return entity
 
     def get_label(self, entity, language='en'):
         """Get entity label
@@ -188,7 +199,7 @@ class Wikidata:
         Returns:
             ({"URI":, "Label":, "Description":} in results)
         """
-        pattern = 'https://www.wikidata.org/w/index.php?search='
+        pattern = 'https://www.wikidata.org/w/index.php?limit=20&search='
         page = get(pattern + query, timeout=10).content
         soup = BeautifulSoup(page, 'html.parser')
         results = []

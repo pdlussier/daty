@@ -34,6 +34,7 @@ from threading import Thread
 from .entityselectable import EntitySelectable
 from .triplet import Triplet
 from .wikidata import Wikidata
+from .util import EntitySet
 
 name = 'ml.prevete.Daty'
 
@@ -70,7 +71,7 @@ class Open(Window):
         self.set_icon_list(icons);
 
         self.verbose = verbose
-        #self.new_session = new_session
+        self.new_session = new_session
 
         if quit_cb:
             self.quit_cb = quit_cb
@@ -79,11 +80,10 @@ class Open(Window):
         self.show()
 
         constraint = ListBoxRow()
-        constraint.add(Triplet())
         self.constraint_listbox.add(constraint)
         self.constraint_listbox.show_all()
 
-        self.label_listbox.selected = []
+        self.label_listbox.selected = EntitySet()
 
         if new_session:
             self.header_bar.set_show_close_button(True)
@@ -92,7 +92,6 @@ class Open(Window):
         else:
             self.header_bar.set_show_close_button(False)
             self.back.set_visible(True)
-            #self.set_search_placeholder(False, search_stack="label_search")
 
         self.entities = self.label_listbox.selected
 
@@ -126,23 +125,31 @@ class Open(Window):
 
     @Template.Callback()
     def back_clicked_cb(self, widget):
-        self.on_quit(widget, None)
+        #self.on_quit(widget, None)
+        self.destroy()
         #self.set_search_placeholder(True)
 
     @Template.Callback()
     def placeholder_add_constraint_clicked_cb(self, widget):
         self.constraint_box.set_visible(True)
+        row = ListBoxRow()
+        self.constraint_listbox.add(row)
+        row.add(Triplet())
+        self.constraint_listbox.show_all()
         #self.set_search_placeholder()
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):
         # if Esc, set placeholder ot [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
         if event.keyval == 65307:
-            #self.set_search_placeholder(True)
+            if not self.search_entry.get_text():
+                self.destroy()
+                return None
             self.search_entry.set_text("")
 
     def on_search_done(self, results, error):
         self.label_listbox.foreach(self.label_listbox.remove)
+        #TODO: Implement selection mode and make single selection the default
         for r in results:
             entity = EntitySelectable(r,
                                       selected=self.label_listbox.selected,

@@ -54,6 +54,8 @@ class EntitySelectable(CheckButton):
             self.URI.destroy()
 
         if selected != None:
+            if entity["URI"] in (v["URI"] for v in selected):
+                self.set_active(True)
             args = [self.toggled_cb, selected]
             if open_button: args = args + [open_button]
             self.connect("toggled", *args)
@@ -68,7 +70,7 @@ class EntitySelectable(CheckButton):
                 keep track of parent listbox selected toggles.
         """
         if widget.get_active():
-            selected.append(self.entity)
+            selected.add(self.entity)
             try:
                 args[0].set_sensitive(True)
             except:
