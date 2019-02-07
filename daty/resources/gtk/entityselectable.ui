@@ -23,7 +23,7 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="margin_start">3</property>
-                <property name="hexpand">False</property>
+                <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Item</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
@@ -42,8 +42,14 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_start">3</property>
-                <property name="margin_end">18</property>
-                <property name="label" translatable="yes">(URI)</property>
+                <property name="margin_end">6</property>
+                <property name="label" translatable="yes">URI</property>
+                <attributes>
+                  <attribute name="font-desc" value="Cantarell 8"/>
+                </attributes>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>

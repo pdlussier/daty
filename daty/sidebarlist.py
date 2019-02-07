@@ -202,7 +202,8 @@ class SidebarList(ListBox):
         while True:
             row = self.get_row_at_index(i)
             if hasattr(row, 'box') and row.box.child == sidebar_entity:
-                self.last.remove(row)
+                try: self.last.remove(row)
+                except: pass
                 self.remove(row)
                 row.destroy()
                 try:
@@ -253,6 +254,9 @@ class SidebarList(ListBox):
                 entity_label (Gtk.Label): widget of entity title
                 entity_description(Gtk.Label)
         """
+        if not row:
+            print("No selection")
+            return None
 
         # Set last
         self.last.append(row)

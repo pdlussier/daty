@@ -47,7 +47,8 @@ class EntitySelectable(CheckButton):
         if widget:
             self.label.set_text(entity['Label'])
             self.description.set_text(entity['Description'])
-            self.URI.set_text('(' + entity['URI'] + ')')
+            #self.URI.set_text('(' + entity['URI'] + ')')
+            self.URI.set_text(entity['URI'])
         else:
             self.label.destroy()
             self.description.destroy()

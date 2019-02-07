@@ -1,90 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.0 -->
 <interface>
- <requires lib="gtk+" version="3.22"/>
- <template class="Entity" parent="GtkStack">
-  <property name="visible">True</property>
-  <property name="can_focus">False</property>
-  <property name="hexpand">True</property>
-  <property name="vexpand">True</property>
-  <child>
-   <object class="GtkGrid">
+  <requires lib="gtk+" version="3.22"/>
+  <template class="Entity" parent="GtkStack">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
     <child>
-     <object class="GtkLabel" id="unit">
-      <property name="can_focus">False</property>
-      <property name="no_show_all">True</property>
-      <property name="halign">start</property>
-      <property name="margin_left">4</property>
-      <property name="margin_start">4</property>
-      <property name="hexpand">True</property>
-      <property name="vexpand">True</property>
-      <property name="label" translatable="yes">unit</property>
-      <attributes>
-       <attribute name="font-desc" value="Cantarell 10"/>
-      </attributes>
-      <style>
-       <class name="dim-label"/>
-      </style>
-     </object>
-     <packing>
-      <property name="left_attach">1</property>
-      <property name="top_attach">0</property>
-     </packing>
-    </child>
-    <child>
-     <object class="GtkEventBox">
-      <property name="visible">True</property>
-      <property name="can_focus">False</property>
-      <property name="vexpand">True</property>
-      <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
-      <child>
-       <object class="GtkLabel" id="label">
+      <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">8</property>
-        <property name="margin_start">8</property>
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
-        <property name="label" translatable="yes">Label</property>
-        <property name="justify">fill</property>
-        <property name="wrap">True</property>
-        <property name="xalign">0</property>
-       </object>
-      </child>
-     </object>
-     <packing>
-      <property name="left_attach">0</property>
-      <property name="top_attach">0</property>
-     </packing>
+        <child>
+          <object class="GtkLabel" id="unit">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="halign">start</property>
+            <property name="margin_left">4</property>
+            <property name="margin_start">4</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="label" translatable="yes">unit</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell 10"/>
+            </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="vexpand">True</property>
+            <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
+            <child>
+              <object class="GtkLabel" id="label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">8</property>
+                <property name="margin_start">8</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="label" translatable="yes">Label</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="name">view</property>
+        <property name="title" translatable="yes">View</property>
+      </packing>
     </child>
-   </object>
-   <packing>
-    <property name="name">view</property>
-    <property name="title" translatable="yes">View</property>
-   </packing>
-  </child>
-  <child>
-   <object class="GtkSearchEntry" id="entry">
-    <property name="can_focus">True</property>
-    <property name="margin_start">6</property>
-    <property name="shadow_type">none</property>
-    <property name="primary_icon_name">edit-find-symbolic</property>
-    <property name="primary_icon_activatable">False</property>
-    <property name="primary_icon_sensitive">False</property>
-    <property name="no_show_all">True</property>
-    <signal name="focus-in-event" handler="entry_focus_in_event_cb" swapped="no"/>
-    <signal name="focus-out-event" handler="entry_focus_out_event_cb" swapped="no"/>
-    <signal name="key-release-event" handler="entry_key_release_event_cb" swapped="no"/>
-   </object>
-   <packing>
-    <property name="name">entry</property>
-    <property name="title" translatable="yes">Entry</property>
-    <property name="position">1</property>
-   </packing>
-  </child>
- </template>
+    <child>
+      <object class="GtkSearchEntry" id="entry">
+        <property name="can_focus">True</property>
+        <property name="no_show_all">True</property>
+        <property name="margin_start">6</property>
+        <property name="shadow_type">none</property>
+        <property name="primary_icon_name">edit-find-symbolic</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="primary_icon_sensitive">False</property>
+        <signal name="focus-in-event" handler="entry_focus_in_event_cb" swapped="no"/>
+        <signal name="focus-out-event" handler="entry_focus_out_event_cb" swapped="no"/>
+        <signal name="key-release-event" handler="entry_key_release_event_cb" swapped="no"/>
+      </object>
+      <packing>
+        <property name="name">entry</property>
+        <property name="title" translatable="yes">Entry</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </template>
 </interface>

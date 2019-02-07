@@ -191,7 +191,7 @@ class Editor(ApplicationWindow):
         if not entity['Description']:
             entity['Description'] = self.wikidata.get_description(entity['Data'])
 
-        sidebar_entity = SidebarEntity(entity, description=True)
+        sidebar_entity = SidebarEntity(entity, description=True, URI=False)
         sidebar_entity.close_eventbox.connect("button-press-event",
                                               self.close_eventbox_button_press_event_cb,
                                               sidebar_entity)
@@ -386,10 +386,13 @@ class Editor(ApplicationWindow):
         except Exception as e:
             print ("page not loaded")
         if len(self.sidebar_list.last) > 1:
+            print("selecting penultimate row")
             self.sidebar_list.select_row(self.sidebar_list.last[-2])
         else:
-            row = self.sidebar_list.get_row_at_index(0)
-            self.sidebar_list.select_row()
+            print("selecting first row")
+            #row = self.sidebar_list.get_row_at_index(0)
+            #self.sidebar_list.select_row()
+            pass
             #raise e
         #self.sidebar_list.last.remove(sidebar_entity)
         i = self.sidebar_list.remove_row(sidebar_entity)

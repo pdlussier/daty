@@ -43,6 +43,8 @@ class Triplet(Grid):
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
+        from .entitypopover import EntityPopover
+        self.entity_popover = EntityPopover(self.URI, label, description, parent=widget, load=self.load)
         print(widget)
         print(event)
     #    if event.keyval == 65307:

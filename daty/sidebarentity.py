@@ -25,10 +25,10 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import Grid, Template
+from gi.repository.Gtk import EventBox, Template
 
 @Template.from_resource("/ml/prevete/Daty/gtk/sidebarentity.ui")
-class SidebarEntity(Grid):
+class SidebarEntity(EventBox):
     __gtype_name__ = "SidebarEntity"
 
     close = Template.Child("close")
@@ -45,7 +45,7 @@ class SidebarEntity(Grid):
                 description (bool): whether to show description
                 URI (bool): whether to show entity URI
         """
-        Grid.__init__(self, *args)
+        EventBox.__init__(self, *args)
      
         self.entity = entity
  
@@ -59,17 +59,18 @@ class SidebarEntity(Grid):
             self.remove(self.description)
 
         if URI:
-            self.URI.set_text("".join(['(', entity['URI'], ')']))
+            #self.URI.set_text("".join(['(', entity['URI'], ')']))
+            self.URI.set_text(entity['URI'])
         else:
             self.URI.set_visible(False)
             self.remove(self.URI)
 
     @Template.Callback()
-    def close_eventbox_enter_notify_event_cb(self, widget, event):
+    def enter_notify_event_cb(self, widget, event):
         self.close.set_visible(True)
 
     @Template.Callback()
-    def close_eventbox_leave_notify_event_cb(self, widget, event):
+    def leave_notify_event_cb(self, widget, event):
         self.close.set_visible(False)
 
     def motion_notify_event(self, widget, event):
