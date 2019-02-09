@@ -5,33 +5,65 @@
   <template class="SidebarEntity" parent="GtkEventBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <signal name="enter-notify-event" handler="enter_notify_event_cb" swapped="no"/>
-    <signal name="leave-notify-event" handler="leave_notify_event_cb" swapped="no"/>
+    <property name="margin_start">3</property>
+    <property name="margin_end">3</property>
+    <property name="margin_top">2</property>
+    <property name="margin_bottom">2</property>
     <child>
-      <object class="GtkGrid">
-        <property name="height_request">30</property>
+      <object class="GtkBox" id="box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <signal name="motion-notify-event" handler="motion_notify_event_cb" swapped="no"/>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel" id="label">
+              <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="margin_start">8</property>
-                <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Item</property>
-                <property name="wrap">True</property>
-                <property name="ellipsize">end</property>
-                <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="font-desc" value="Cantarell Bold 10"/>
-                </attributes>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Item</property>
+                    <property name="wrap">True</property>
+                    <property name="ellipsize">end</property>
+                    <property name="xalign">0</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Cantarell Bold 10"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="URI">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="no_show_all">True</property>
+                    <property name="halign">end</property>
+                    <property name="valign">start</property>
+                    <property name="label" translatable="yes">URI</property>
+                    <property name="justify">right</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Cantarell 8"/>
+                    </attributes>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -40,79 +72,28 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="URI">
-                <property name="visible">True</property>
+              <object class="GtkLabel" id="description">
                 <property name="can_focus">False</property>
-                <property name="no_show_all">True</property>
-                <property name="halign">end</property>
-                <property name="margin_start">3</property>
-                <property name="margin_end">3</property>
-                <property name="label" translatable="yes">URI</property>
-                <property name="justify">right</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Description</property>
+                <property name="wrap">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
                 <attributes>
                   <attribute name="font-desc" value="Cantarell 8"/>
                 </attributes>
-                <style>
-                  <class name="dim-label"/>
-                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="description">
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="margin_start">8</property>
-            <property name="margin_end">8</property>
-            <property name="label" translatable="yes">Description</property>
-            <property name="wrap">True</property>
-            <property name="ellipsize">end</property>
-            <property name="width_chars">30</property>
-            <property name="max_width_chars">30</property>
-            <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Cantarell 8"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEventBox" id="close_eventbox">
-            <property name="width_request">17</property>
-            <property name="can_focus">False</property>
-            <property name="halign">end</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <signal name="enter-notify-event" handler="enter_notify_event_cb" swapped="no"/>
-            <signal name="leave-notify-event" handler="leave_notify_event_cb" swapped="no"/>
-            <child>
-              <object class="GtkImage" id="close">
-                <property name="can_focus">False</property>
-                <property name="no_show_all">True</property>
-                <property name="halign">end</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="icon_name">window-close-symbolic</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-            <property name="height">2</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    QualiferProperty
+#    Property
 #
 #    ----------------------------------------------------------------------
 #    Copyright © 2018  Pellegrino Prevete
@@ -22,26 +22,29 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import EventBox, Template
+from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconSize, Template
 
-from .util import set_text
-from .wikidata import Wikidata
+#from .wikidata import Wikidata
 
-@Template.from_resource("/ml/prevete/Daty/gtk/qualifierproperty.ui")
-class QualifierProperty(EventBox):
-    __gtype_name__ = "QualifierProperty"
+@Template.from_resource("/ml/prevete/Daty/gtk/roundedbutton.ui")
+class RoundedButton(Button):
+    __gtype_name__ = "RoundedButton"
 
-    label = Template.Child("label")
-    wikidata = Wikidata()
+    image = Template.Child("image")
 
-    def __init__(self, prop, *args, **kwargs):
-        EventBox.__init__(self, *args, **kwargs)
+    def __init__(self, callback=None, cb_args=[], image=None, *args, **kwargs):
+        Button.__init__(self, *args, **kwargs)
 
-        set_text(self.label, prop["Label"], prop["Description"])
+        # Styling
+        context = self.get_style_context()
+        provider = CssProvider()
+        provider.load_from_resource('/ml/prevete/Daty/gtk/roundedbutton.css')
+        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def set_label(self, label, tooltip):
-        self.label.set_text(label)
-        self.label.set_tooltip_text(tooltip)
+        if callback:
+            self.connect("clicked", callback, *cb_args)
+
+        if image:
+            self.image.set_from_icon_name(image, IconSize.BUTTON)

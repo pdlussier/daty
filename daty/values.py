@@ -47,6 +47,9 @@ class Values(ListBox):
  
     def add(self, widget):
         row = ListBoxRow()
+        context = row.get_style_context()
+        widget.context = context
+        widget.set_references()
         row.add(widget)
         super(Values, self).add(row)
         

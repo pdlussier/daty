@@ -37,9 +37,11 @@ from threading import Thread
 from .entityselectable import EntitySelectable
 from .loadingpage import LoadingPage
 from .open import Open
+from .overlayedlistboxrow import OverlayedListBoxRow
+from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
 from .sidebarlist import SidebarList
-from .util import MyThread
+from .util import MyThread, download
 from .wikidata import Wikidata
 
 name = "ml.prevete.Daty"
@@ -110,13 +112,12 @@ class Editor(ApplicationWindow):
         """
         ApplicationWindow.__init__(self, *args, **kwargs)
 
+        self.quit_cb = quit_cb
+
         # Set window icon
         icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
-
-        #self.common.set_visible(False)
-        self.quit_cb = quit_cb
 
         # Init sidebar
         self.sidebar_list = SidebarList(self.single_column,
@@ -148,25 +149,22 @@ class Editor(ApplicationWindow):
                 entities (list): of dict having "URI", "Label", "Description" keys;
         """
         for entity in entities[:-1]:
-            self.download(entity, self.load_row_async)
-        self.download(entities[-1], self.load_row_async, select=True)
+            download(entity, self.load_row_async,)
+        download(entities[-1], self.load_row_async, select=True)
         self.show()
 
-    def download(self, entity, callback, **kwargs):
-        """Asynchronously download entity from wikidata
-        
-            Args:
-                entity (dict): have keys "URI", "Label", "Description"
-        """
-        #entity = cp(entity)
-        #wikidata = cp(self.wikidata)
-        def do_call():
-            #wikidata = Wikidata()
-            entity['Data'] = self.wikidata.download(entity['URI'], use_cache=False)
-            idle_add(lambda: callback(entity, **kwargs))
-            return None
-        thread = Thread(target = do_call)
-        thread.start()
+#    def download(self, entity, callback, **kwargs):
+#        """Asynchronously download entity from wikidata
+#
+#            Args:
+#                entity (dict): have keys "URI", "Label", "Description"
+#        """
+#        def do_call():
+#            entity['Data'] = self.wikidata.download(entity['URI'], use_cache=False)
+#            idle_add(lambda: callback(entity, **kwargs))
+#            return None
+#        thread = Thread(target = do_call)
+#        thread.start()
 
     def load_row_async(self, entity, **kwargs):
         """It creates sidebar passing downloaded data to its rows.
@@ -185,20 +183,22 @@ class Editor(ApplicationWindow):
         thread.start()
 
     def on_row_complete(self, entity, **kwargs):
-        #wikidata = Wikidata()
+
+        # Build entity
         if not entity['Label']:
             entity['Label'] = self.wikidata.get_label(entity['Data'])
         if not entity['Description']:
             entity['Description'] = self.wikidata.get_description(entity['Data'])
 
-        sidebar_entity = SidebarEntity(entity, description=True, URI=False)
-        sidebar_entity.close_eventbox.connect("button-press-event",
-                                              self.close_eventbox_button_press_event_cb,
-                                              sidebar_entity)
+        sidebar_entity = SidebarEntity(entity, description=True, URI=True)
+        sidebar_entity.close.connect("clicked", self.entity_close_clicked_cb,
+                                     sidebar_entity)
 
-        self.sidebar_list.add(sidebar_entity, **kwargs)
-        #if 'last' in kwargs and kwargs["last"]:
-            #self.sidebar_list.select_row(sidebar_entity)
+        row = ListBoxRow()
+        row.child = sidebar_entity
+        row.add(sidebar_entity)
+
+        self.sidebar_list.add(row, **kwargs)
         self.sidebar_list.show_all()
 
     @Template.Callback()
@@ -352,8 +352,13 @@ class Editor(ApplicationWindow):
         if event.keyval in modifiers:
             return None
         focused = window.get_focus()
-        sidebar_focused = self.single_column.get_visible_child_name() == 'sidebar'
-        if type(focused) == ListBoxRow or sidebar_focused:
+        sidebar_entity_focused = type(focused) == ListBoxRow
+        sidebar_search_entry_focused = focused == self.sidebar_search_entry
+        sidebar_leaflet_focused = self.single_column.get_visible_child_name() == 'sidebar'
+
+        if sidebar_search_entry_focused:
+            pass
+        elif sidebar_entity_focused or sidebar_leaflet_focused:
             if not self.sidebar_search_bar.get_search_mode():
                 self.sidebar_search_bar.set_search_mode(True)
             else:
@@ -373,12 +378,7 @@ class Editor(ApplicationWindow):
             self.entity_search.set_active(False)
             self.entity_search_bar.set_search_mode(False)
 
-    @Template.Callback()
-    def sidebar_search_entry_stop_search_cb(self, widget):
-        if self.entities_search.get_active():
-            self.entities_search.set_active(False)
-
-    def close_eventbox_button_press_event_cb(self, widget, event, sidebar_entity):
+    def entity_close_clicked_cb(self, widget, sidebar_entity):
         URI = sidebar_entity.entity["URI"]
         try:
             page = self.pages.get_child_by_name(URI)
@@ -392,9 +392,6 @@ class Editor(ApplicationWindow):
             print("selecting first row")
             #row = self.sidebar_list.get_row_at_index(0)
             #self.sidebar_list.select_row()
-            pass
-            #raise e
-        #self.sidebar_list.last.remove(sidebar_entity)
         i = self.sidebar_list.remove_row(sidebar_entity)
 
     def get_neighbor(self, i, next=True):

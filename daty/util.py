@@ -25,6 +25,7 @@
 #from ast import literal_eval
 from copy import deepcopy as cp
 from gi.repository import GObject
+from gi.repository.GLib import idle_add
 from os import makedirs, umask
 from pickle import dump
 from pickle import load as pickle_load
@@ -98,6 +99,10 @@ def label_color(label, text=None, color='#e5a50a'):
     else:
         label.set_text(label.orig)
         
+def set_text(widget, text, tooltip):
+    widget.set_text(text)
+    widget.set_tooltip_text(tooltip)
+
 def mkdirs(newdir, mode=0o755):
     try:
         original_umask = umask(0)
@@ -212,6 +217,49 @@ def async_method(on_done = None):
       async_call(lambda: f(self, *args, **kwargs), lambda r, e: on_done(self, r, e))
     return run
   return wrapper
+
+def download(entity, callback, *cb_args, wikidata=None, use_cache=False, **kwargs):
+    """Asynchronously download entity from wikidata
+         Args:
+            entity (dict): have keys "URI", "Label", "Description"
+    """
+    if not wikidata:
+        from .wikidata import Wikidata
+        wikidata = Wikidata()
+    def do_call():
+        entity['Data'] = wikidata.download(entity['URI'], use_cache=use_cache)
+        idle_add(lambda: callback(entity, *cb_args, **kwargs))
+        return None
+    thread = Thread(target = do_call)
+    thread.start()
+
+def download_light(URI, callback, *cb_args, wikidata=None, target=["Label", "Description"]):
+    if not wikidata:
+        from .wikidata import Wikidata
+        wikidata = Wikidata()
+    def do_call():
+        entity, error = None, None
+        try:
+            entity = wikidata.download(URI, target=target)
+        except Exception as err:
+            error = err
+        idle_add(lambda: callback(URI, entity, error, *cb_args))
+    thread = MyThread(target = do_call)
+    thread.start()
+
+def search(query, callback, *cb_args, wikidata=None, **kwargs):
+    if not wikidata:
+        from .wikidata import Wikidata
+        wikidata = Wikidata()
+    def do_call():
+        results, error = None, None
+        try:
+            results = wikidata.search(query)
+        except Exception as err:
+            error = err
+        idle_add(lambda: callback(results, error, *cb_args, **kwargs))
+    thread = Thread(target = do_call)
+    thread.start()
 
 # def import_translations(lang):
 #     with open('po/'+lang+'.po', 'r') as g:

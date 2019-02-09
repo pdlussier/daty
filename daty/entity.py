@@ -35,6 +35,7 @@ from time import sleep
 
 #from .util import MyThread
 from .sidebarentity import SidebarEntity
+from .util import download_light, set_text
 from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/entity.ui")
@@ -76,18 +77,18 @@ class Entity(Stack):
                     URI = 'Q' + str(numeric_id)
                   if entity_type == 'property':
                     URI = 'P' + str(numeric_id)
-                  self.download(URI, self.load_entity)
+                  download_light(URI, self.load_entity)
               if dt == 'url':
                   url = dv['value']
                   label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
                   #self.label.set_markup(label)
-                  self.label.set_use_markup(True)
                   self.set_text(label, url)
+                  self.label.props.use_markup = True
               if dt == 'quantity':
                   unit = dv['value']['unit']
                   if unit.startswith('http'):
                       unit = dv['value']['unit'].split('/')[-1]
-                      self.download(unit, self.on_download_unit)
+                      download_light(unit, self.on_download_unit)
 
                   amount = dv['value']['amount']
                   ub = dv['value']['upperBound']
@@ -136,24 +137,8 @@ class Entity(Stack):
         self.entry.connect("search-changed", self.entry_search_changed_cb)
 
     def set_text(self, label, description):
-        self.label.set_text(label)
-        self.label.set_tooltip_text(description)
-        self.entry.set_text(label)
-
-    def download(self, URI, callback, *cb_args):
-        def do_call():
-            entity, error = None, None
-            try:
-                wikidata = Wikidata()
-                entity = wikidata.download(URI, target=["Label", "Description"])
-                del wikidata
-            except Exception as err:
-                error = err
-            idle_add(lambda: callback(URI, entity, error, *cb_args),
-                     priority=PRIORITY_LOW)
-            return None
-        thread = Thread(target = do_call)
-        thread.start()
+        set_text(self.label, label, description)
+        set_text(self.entry, label, description)
 
     def on_download_unit(self, URI, unit, error):
         if error:
@@ -162,7 +147,6 @@ class Entity(Stack):
         if unit:
             self.unit.set_text(unit["Label"])
             self.unit.set_visible(True)
-            #del wikidata
             del unit
             return None
 
@@ -174,7 +158,6 @@ class Entity(Stack):
         self.set_text(entity["Label"], entity["Description"])
         self.show_all()
         del entity
-        #del wikidata
         return None
 
     @Template.Callback()

@@ -2,12 +2,7 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <object class="GtkImage">
-    <property name="can_focus">False</property>
-    <property name="halign">end</property>
-    <property name="icon_name">focus-windows-symbolic</property>
-  </object>
-  <object class="GtkImage" id="image1">
+  <object class="GtkImage" id="icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">pan-end-symbolic</property>
@@ -16,13 +11,13 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkButton" id="expander">
+      <object class="GtkButton" id="button">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="halign">end</property>
         <property name="vexpand">True</property>
-        <property name="image">image1</property>
+        <property name="image">icon</property>
         <property name="relief">none</property>
         <property name="always_show_image">True</property>
       </object>
@@ -36,9 +31,23 @@
       <object class="GtkGrid" id="qualifiers">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
         <property name="vexpand">True</property>
         <property name="column_homogeneous">True</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
         <child>
           <placeholder/>
         </child>

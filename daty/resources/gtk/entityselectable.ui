@@ -22,6 +22,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
+                <property name="valign">start</property>
                 <property name="margin_start">3</property>
                 <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Item</property>
@@ -41,8 +42,10 @@
               <object class="GtkLabel" id="URI">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">start</property>
                 <property name="margin_start">3</property>
                 <property name="margin_end">6</property>
+                <property name="margin_top">3</property>
                 <property name="label" translatable="yes">URI</property>
                 <attributes>
                   <attribute name="font-desc" value="Cantarell 8"/>

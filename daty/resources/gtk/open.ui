@@ -8,11 +8,16 @@
     <property name="can_focus">False</property>
     <property name="icon_name">go-previous-symbolic</property>
   </object>
+  <object class="GtkImage" id="pan-down">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">pan-down-symbolic</property>
+  </object>
   <template class="Open" parent="GtkWindow">
     <property name="can_focus">False</property>
     <property name="window_position">center</property>
-    <property name="default_width">800</property>
-    <property name="default_height">600</property>
+    <property name="default_width">1366</property>
+    <property name="default_height">768</property>
     <property name="gravity">center</property>
     <signal name="key-press-event" handler="key_press_event_cb" object="content_stack" swapped="no"/>
     <child>
@@ -397,6 +402,7 @@ some constraint</property>
           </object>
           <packing>
             <property name="pack_type">end</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -414,9 +420,4 @@ some constraint</property>
       </object>
     </child>
   </template>
-  <object class="GtkImage" id="pan-down">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">pan-down-symbolic</property>
-  </object>
 </interface>

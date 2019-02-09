@@ -128,7 +128,7 @@ class Wikidata:
                         except AttributeError as e:
                             pass
                 else:
-                    print("dowloading", uri)
+                    print("light-downloading" if target else "dowloading", uri)
                     if uri.startswith("P"):
                         entity = PropertyPage(repo, uri).get()
                     elif uri.startswith("Q") or uri.startswith("L"):
@@ -143,6 +143,8 @@ class Wikidata:
                                 output["Label"] = self.get_label(entity)
                             if t == "Description":
                                 output["Description"] = self.get_description(entity)
+                            if t == "Data":
+                                output["Data"] = entity
                         entity = output
                     save(entity, path)
                     break

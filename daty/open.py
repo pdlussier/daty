@@ -28,10 +28,13 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.GLib import idle_add
-from gi.repository.Gtk import Align, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
+from gi.repository.Gtk import Align, Button, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
 from threading import Thread
 
 from .entityselectable import EntitySelectable
+from .overlayedlistboxrow import OverlayedListBoxRow
+
+from .roundedbutton import RoundedButton
 from .triplet import Triplet
 from .wikidata import Wikidata
 from .util import EntitySet
@@ -72,6 +75,7 @@ class Open(Window):
 
         self.verbose = verbose
         self.new_session = new_session
+        self.load = load
 
         if quit_cb:
             self.quit_cb = quit_cb
@@ -80,7 +84,6 @@ class Open(Window):
         self.show()
 
         constraint = ListBoxRow()
-        self.constraint_listbox.add(constraint)
         self.constraint_listbox.show_all()
 
         self.label_listbox.selected = EntitySet()
@@ -132,17 +135,17 @@ class Open(Window):
     @Template.Callback()
     def placeholder_add_constraint_clicked_cb(self, widget):
         self.constraint_box.set_visible(True)
-        row = ListBoxRow()
+        row = OverlayedListBoxRow(RoundedButton(), Triplet())
         self.constraint_listbox.add(row)
-        row.add(Triplet())
         self.constraint_listbox.show_all()
         #self.set_search_placeholder()
+
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):
         # if Esc, set placeholder ot [Right Alt, Tab, Esc, Maiusc, Control, Bloc Maiusc, Left Alt]
         if event.keyval == 65307:
-            if not self.search_entry.get_text():
+            if not self.search_entry.get_text() and not self.new_session:
                 self.destroy()
                 return None
             self.search_entry.set_text("")

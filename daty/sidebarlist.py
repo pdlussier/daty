@@ -115,7 +115,7 @@ class SidebarList(ListBox):
         text = entry.get_text()
         for row in self.get_children():
             if row.get_children():
-                child = row.box.child
+                child = row.child
                 entity = child.entity
                 if text.lower() in entity["Label"].lower() or text.lower() in entity["Description"].lower():
                     row.set_visible(True)
@@ -135,6 +135,8 @@ class SidebarList(ListBox):
             Args:
                 value (bool): whether to activate selection mode
         """
+        #TODO: add custom titlebar
+        #self.header_bar.add_custom_titlebar
         self.selected = []
         self.foreach(self.set_checkbutton, value)
 
@@ -146,10 +148,10 @@ class SidebarList(ListBox):
                 value (bool): whether to add or remove checkbutton.
         """
         if row.get_children():
-            child = row.box.child
+            child = row.child
             entity = child.entity
             if value:
-                row.box.remove(child)
+                row.remove(child)
                 row.check = EntitySelectable(entity,
                                              widget=False, 
                                              selected=self.selected)
@@ -160,7 +162,7 @@ class SidebarList(ListBox):
                 row.check.destroy()
                 del row.check
  
-    def add(self, widget, select=False):
+    def add(self, row, select=False):
         """Add widget to a new row
 
             Overrides Gtk.Container.add
@@ -179,11 +181,11 @@ class SidebarList(ListBox):
                 self.remove(last_row)
 
         # Create new row and add to self
-        row = ListBoxRow()
-        row.box = Box()
-        row.add(row.box)
-        row.box.child = widget
-        row.box.add(row.box.child)
+#        row = ListBoxRow()
+#        row.box = Box()
+#        row.add(row.box)
+#        row.box.child = widget
+#        row.box.add(row.box.child)
         
         super(SidebarList, self).add(row)
 
@@ -201,17 +203,10 @@ class SidebarList(ListBox):
         i = 0
         while True:
             row = self.get_row_at_index(i)
-            if hasattr(row, 'box') and row.box.child == sidebar_entity:
+            if hasattr(row, 'child') and row.child == sidebar_entity:
                 try: self.last.remove(row)
                 except: pass
                 self.remove(row)
-                row.destroy()
-                try:
-                    row = self.get_row_at_index(i+1)
-                    self.remove(row)
-                    row.destroy()
-                except:
-                    return i-2
                 return i
             i += 1
 
@@ -255,8 +250,10 @@ class SidebarList(ListBox):
                 entity_description(Gtk.Label)
         """
         if not row:
-            print("No selection")
-            return None
+            row = self.get_row_at_index(0)
+            print("selecting first row")
+            self.select_row(row)
+            #return None
 
         # Set last
         self.last.append(row)
@@ -272,7 +269,7 @@ class SidebarList(ListBox):
 
 
         # Get entity from SidebarEntity child
-        sidebar_entity = row.box.child
+        sidebar_entity = row.child
         entity = sidebar_entity.entity
 
         # Set titlebar

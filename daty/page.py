@@ -34,7 +34,7 @@ from .property import Property
 from .value import Value
 from .values import Values
 #from .wikidata import Wikidata
-from .util import MyThread
+from .util import MyThread, download_light
 
 @Template.from_resource("/ml/prevete/Daty/gtk/page.ui")
 class Page(ScrolledWindow):
@@ -56,8 +56,7 @@ class Page(ScrolledWindow):
             self.image.set_visible(False)
 
         for i,P in enumerate(claims):
-            self.download(P, self.load_property,
-                          i, target=["Label", "Description"])
+            download_light(P, self.load_property, i)
             N = len(claims[P])
             if N > 5:
                 frame = ScrolledWindow()
@@ -72,20 +71,6 @@ class Page(ScrolledWindow):
             for claim in claims[P]:
                 claim = claim.toJSON()
                 self.load_value_async(claim, values)
-
-        #del entity
-
-    def download(self, URI, callback, *cb_args, target=None):
-        def do_call():
-            entity, error = None, None
-            try:
-                entity = self.wikidata.download(URI, target=target)
-            except Exception as err:
-                error = err
-            idle_add(lambda: callback(URI, entity, error, *cb_args))#,
-                     #priority=PRIORITY_LOW)
-        thread = MyThread(target = do_call)
-        thread.start()
 
     def load_property(self, URI, prop, error, i):
         try:

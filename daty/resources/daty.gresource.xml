@@ -10,15 +10,18 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/property.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">gtk/qualifierproperty.ui</file>
     <file compressed="true">gtk/property.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/qualifierproperty.ui</file>
     <file compressed="true">gtk/qualifiersnak.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/roundedbutton.ui</file>
+    <file compressed="true">gtk/roundedbutton.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarentity.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/statements.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/triplet.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/usersetup.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/value.ui</file>
+    <file compressed="true">gtk/value.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/values.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/aboutdaty.ui</file>
   </gresource>

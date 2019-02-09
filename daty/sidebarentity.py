@@ -25,19 +25,23 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import EventBox, Template
+require_version('Gdk', '3.0')
+from gi.repository.Gdk import NotifyType
+from gi.repository.Gtk import EventBox, Revealer, Template
+
+from .roundedbutton import RoundedButton
+from .util import set_text
 
 @Template.from_resource("/ml/prevete/Daty/gtk/sidebarentity.ui")
 class SidebarEntity(EventBox):
     __gtype_name__ = "SidebarEntity"
 
-    close = Template.Child("close")
-    close_eventbox = Template.Child("close_eventbox")
+    box = Template.Child("box")
     label = Template.Child("label")
     description = Template.Child("description")
     URI = Template.Child("URI")
 
-    def __init__(self, entity, *args, description=True, URI=True):
+    def __init__(self, entity, *args, description=True, URI=True, close=True):
         """Widget representing an entity in the sidebar
 
             Args:
@@ -49,30 +53,38 @@ class SidebarEntity(EventBox):
      
         self.entity = entity
  
-        self.label.set_text(entity["Label"])
-        self.label.set_tooltip_text(entity["Label"])
+        set_text(self.label, entity["Label"], entity["Label"])
 
         if description:
-            self.description.set_text(entity['Description'])
-            self.description.set_tooltip_text(entity["Description"])
+            set_text(self.description, entity['Description'], entity['Description'])
         else:
-            self.remove(self.description)
+            self.description.destroy()
 
         if URI:
-            #self.URI.set_text("".join(['(', entity['URI'], ')']))
-            self.URI.set_text(entity['URI'])
+            set_text(self.URI, entity['URI'], entity['URI'])
         else:
-            self.URI.set_visible(False)
-            self.remove(self.URI)
+            self.URI.destroy()
 
-    @Template.Callback()
+        if close:
+            self.close = RoundedButton()
+            self.close.set_visible(False)
+            self.box.pack_end(self.close, False, True, 0)
+            self.enter_connection = self.connect("enter-notify-event", self.enter_notify_event_cb)
+            self.leave_connection = self.connect("leave-notify-event", self.leave_notify_event_cb)
+            self.close_enter_connection = self.close.connect("leave-notify-event", self.close_leave_notify_event_cb)
+
     def enter_notify_event_cb(self, widget, event):
         self.close.set_visible(True)
+        self.URI.set_visible(False)
 
-    @Template.Callback()
     def leave_notify_event_cb(self, widget, event):
-        self.close.set_visible(False)
+        if event.detail == NotifyType(2):
+            self.disconnect(self.enter_connection)
+            self.disconnect(self.leave_connection)
+        else:
+            self.close.set_visible(False)
+            self.URI.set_visible(True)
 
-    def motion_notify_event(self, widget, event):
-        print(widget)
-        print(event)
+    def close_leave_notify_event_cb(self, widget, event):
+        self.enter_connection = self.connect("enter-notify-event", self.enter_notify_event_cb)
+        self.leave_connection = self.connect("leave-notify-event", self.leave_notify_event_cb)
