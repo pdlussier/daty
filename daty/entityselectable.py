@@ -33,7 +33,9 @@ class EntitySelectable(CheckButton):
     description = Template.Child("description")
     URI = Template.Child("URI")
 
-    def __init__(self, entity, *args, widget=True, selected=None, open_button=None):
+    def __init__(self, entity, *args,
+                 widget=True, selected=None, open_button=None,
+                 select_entities=None):
         """Search result widget in 'open new entity' dialog
 
             Args:
@@ -47,7 +49,6 @@ class EntitySelectable(CheckButton):
         if widget:
             self.label.set_text(entity['Label'])
             self.description.set_text(entity['Description'])
-            #self.URI.set_text('(' + entity['URI'] + ')')
             self.URI.set_text(entity['URI'])
         else:
             self.label.destroy()
@@ -59,6 +60,7 @@ class EntitySelectable(CheckButton):
                 self.set_active(True)
             args = [self.toggled_cb, selected]
             if open_button: args = args + [open_button]
+            if select_entities: args = args + [select_entities]
             self.connect("toggled", *args)
         self.show_all()
 
@@ -74,12 +76,21 @@ class EntitySelectable(CheckButton):
             selected.add(self.entity)
             try:
                 args[0].set_sensitive(True)
-            except:
-                pass
+                args[1].set_label(" ".join(["Selected",
+                                            str(len(selected)),
+                                            "entities"]))
+            except Exception as e:
+                raise e
+                #pass
         else:
             selected.remove(self.entity)
-            if not selected:
-                try:
+            try:
+                if not selected:
                     args[0].set_sensitive(False)
-                except:
-                    pass
+                    args[1].set_label("Click on entities to select them")
+                else:
+                    args[1].set_label(" ".join(["Selected",
+                                                str(len(selected)),
+                                                "entities"]))
+            except:
+                pass

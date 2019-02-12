@@ -11,7 +11,74 @@
   <object class="GtkImage" id="pan-down">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">pan-down-symbolic</property>
+    <property name="icon_name">go-down-symbolic</property>
+  </object>
+  <object class="GtkButton" id="select_entities">
+    <property name="label" translatable="yes">Click on entities to select them</property>
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="receives_default">True</property>
+    <property name="image">pan-down</property>
+    <property name="relief">none</property>
+    <property name="image_position">right</property>
+    <property name="always_show_image">True</property>
+    <signal name="clicked" handler="select_entities_clicked_cb" swapped="no"/>
+  </object>
+  <object class="GtkPopoverMenu" id="select_menu">
+    <property name="can_focus">False</property>
+    <property name="relative_to">select_entities</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">8</property>
+        <property name="margin_end">8</property>
+        <property name="margin_top">8</property>
+        <property name="margin_bottom">8</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="select_all">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
+            <property name="text" translatable="yes">Select All</property>
+            <signal name="clicked" handler="select_all_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="deselect_all">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Deselect all entities shown in the results</property>
+            <property name="text" translatable="yes">Select None</property>
+            <signal name="clicked" handler="deselect_all_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">submenu0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkImage" id="select-icon">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">object-select-symbolic</property>
   </object>
   <template class="Open" parent="GtkWindow">
     <property name="can_focus">False</property>
@@ -19,160 +86,12 @@
     <property name="default_width">1366</property>
     <property name="default_height">768</property>
     <property name="gravity">center</property>
-    <signal name="key-press-event" handler="key_press_event_cb" object="content_stack" swapped="no"/>
+    <signal name="key-press-event" handler="key_press_event_cb" swapped="no"/>
     <child>
-      <object class="GtkStack" id="content_stack">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <child>
-          <object class="GtkStack" id="search_stack">
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkBox" id="label_search">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkSearchBar">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="search_mode_enabled">True</property>
-                    <child>
-                      <object class="GtkSearchEntry" id="search_entry_old">
-                        <property name="width_request">300</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="primary_icon_name">edit-find-symbolic</property>
-                        <property name="primary_icon_activatable">False</property>
-                        <property name="primary_icon_sensitive">False</property>
-                        <signal name="search-changed" handler="search_entry_search_changed_cb" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="name">label_search</property>
-                <property name="title" translatable="yes">Label Search</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="constraint_search">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkSearchBar">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="search_mode_enabled">True</property>
-                    <child>
-                      <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">center</property>
-                        <property name="column_spacing">6</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Select</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="label" translatable="yes">variable</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="image">pan-down</property>
-                            <property name="image_position">right</property>
-                            <property name="always_show_image">True</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="HdyColumn">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">18</property>
-                    <property name="margin_bottom">18</property>
-                    <property name="maximum_width">500</property>
-                    <property name="linear_growth_width">30</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">6</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Seleziona uno o più d'uno tra i termini delle seguenti espressioni per aprire tutte le entità che le soddisfano.</property>
-                            <property name="justify">fill</property>
-                            <property name="wrap">True</property>
-                            <property name="wrap_mode">word-char</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="name">constraints</property>
-                <property name="title" translatable="yes">Constraints</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="name">search</property>
-            <property name="title" translatable="yes">Search</property>
-          </packing>
-        </child>
+        <property name="orientation">vertical</property>
         <child>
           <object class="HdyColumn" id="search_placeholder">
             <property name="visible">True</property>
@@ -184,6 +103,8 @@
               <object class="GtkGrid" id="page">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_start">18</property>
+                <property name="margin_end">18</property>
                 <property name="vexpand">False</property>
                 <child>
                   <object class="GtkBox" id="search_box">
@@ -268,15 +189,16 @@ some constraint</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <child>
-                      <object class="GtkButton" id="placeholder_add_constraint">
+                      <object class="GtkButton" id="add_constraint">
                         <property name="label" translatable="yes">Add constraint</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Add constraint of the triplet form "Subject" "has property" "object".</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
-                        <signal name="clicked" handler="placeholder_add_constraint_clicked_cb" swapped="no"/>
+                        <signal name="clicked" handler="add_constraint_clicked_cb" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -335,12 +257,12 @@ some constraint</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkListBox" id="label_listbox">
+                          <object class="GtkListBox" id="results_listbox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="vexpand">True</property>
                             <property name="selection_mode">multiple</property>
-                            <signal name="row-activated" handler="label_listbox_row_activated_cb" swapped="no"/>
+                            <signal name="row-activated" handler="results_listbox_row_activated_cb" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -356,66 +278,123 @@ some constraint</property>
             </child>
           </object>
           <packing>
-            <property name="name">placeholder</property>
-            <property name="title" translatable="yes">Search Placeholder</property>
-            <property name="position">1</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
-      </object>
-    </child>
-    <child type="titlebar">
-      <object class="GtkHeaderBar" id="header_bar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title" translatable="yes">Daty</property>
-        <property name="subtitle" translatable="yes">Open entities</property>
-        <property name="show_close_button">True</property>
         <child>
-          <object class="GtkButton" id="open_session">
-            <property name="label" translatable="yes">Load saved session</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Open a pre-existing session</property>
-            <accelerator key="o" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
-          </object>
-        </child>
-        <child>
-          <object class="GtkStack">
-            <property name="visible">True</property>
+          <object class="GtkBox" id="bottom_bar">
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkButton" id="open_button">
                 <property name="label" translatable="yes">Open</property>
+                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Open the selected entities in the editor</property>
+                <property name="halign">end</property>
+                <property name="margin_start">6</property>
+                <property name="margin_end">6</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
                 <accelerator key="Return" signal="clicked"/>
                 <style>
                   <class name="suggested-action"/>
                 </style>
               </object>
               <packing>
-                <property name="name">Open</property>
-                <property name="title" translatable="yes">Open</property>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="HdyTitleBar" id="titlebar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
-          <object class="GtkButton" id="back">
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">back-icon</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="back_clicked_cb" swapped="no"/>
+          <object class="GtkHeaderBar" id="header_bar">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="title" translatable="yes">Daty</property>
+            <property name="subtitle" translatable="yes">Open entities</property>
+            <property name="show_close_button">True</property>
+            <child>
+              <object class="GtkButton" id="open_session">
+                <property name="label" translatable="yes">Load saved session</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Open a pre-existing session</property>
+                <accelerator key="o" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="back">
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Close this window and come back to the editor</property>
+                <property name="image">back-icon</property>
+                <property name="always_show_image">True</property>
+                <signal name="clicked" handler="back_clicked_cb" swapped="no"/>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="select">
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Select</property>
+                <property name="image">select-icon</property>
+                <signal name="clicked" handler="select_clicked_cb" swapped="no"/>
+              </object>
+              <packing>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="cancel">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Exit from selection mode</property>
+                <signal name="clicked" handler="select_clicked_cb" swapped="no"/>
+                <accelerator key="o" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+              </object>
+              <packing>
+                <property name="pack_type">end</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>

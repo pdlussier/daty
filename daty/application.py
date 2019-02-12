@@ -32,10 +32,11 @@ from gi.repository.Gtk import Application, Builder
 from sys import argv
 
 #from .aboutdaty import AboutDaty
+name = "ml.prevete.Daty"
 
 class Daty(Application):
     def __init__(self, *args, new_session=True, entities=[], **kwargs):
-        super().__init__(*args, application_id="ml.prevete.Daty",
+        super().__init__(*args, application_id=name,
                          flags=ApplicationFlags.HANDLES_COMMAND_LINE,
                          **kwargs)
         self.entities=entities

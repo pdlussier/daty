@@ -256,8 +256,8 @@ def search(query, callback, *cb_args, wikidata=None, **kwargs):
         try:
             results = wikidata.search(query)
         except Exception as err:
-            error = err
-        idle_add(lambda: callback(results, error, *cb_args, **kwargs))
+            raise err
+        idle_add(lambda: callback(results, *cb_args, **kwargs))
     thread = Thread(target = do_call)
     thread.start()
 
