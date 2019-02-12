@@ -126,18 +126,30 @@ class Open(Window):
 
     @Template.Callback()
     def back_clicked_cb(self, widget):
-        #self.on_quit(widget, None)
         self.destroy()
-        #self.set_search_placeholder(True)
 
     @Template.Callback()
     def add_constraint_clicked_cb(self, widget):
         self.constraint_box.set_visible(True)
-        row = OverlayedListBoxRow(RoundedButton(), Triplet())
+        triplet = Triplet(load=self.load)
+        triplet.connect("triplet-ready", self.triplet_ready_cb)
+        row = OverlayedListBoxRow(triplet)
+
+        close_button = RoundedButton(callback=self.triplet_delete,
+                                     cb_args=[row])
+        close_button.set_visible(True)
+        row.revealer.add(close_button)
         self.constraint_listbox.add(row)
         self.constraint_listbox.show_all()
-        #self.set_search_placeholder()
 
+    def triplet_delete(self, widget, row):
+        row.destroy()
+        if not self.constraint_listbox.get_children():
+            self.constraint_box.set_visible(False)
+
+    def triplet_ready_cb(self, triplet, event):
+        print(triplet)
+        print(event)
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):
@@ -156,9 +168,10 @@ class Open(Window):
             if self.titlebar.get_selection_mode():
                 entity = EntitySelectable(r,
                                           selected=self.entities,
-                                          open_button=self.open_button)
+                                          open_button=self.open_button,
+                                          select_entities=self.select_entities)
             else:
-                entity = SidebarEntity(r, close=False)
+                entity = SidebarEntity(r, button=False)
             row = ListBoxRow()
             row.child = entity
             row.add(entity)
@@ -204,7 +217,7 @@ class Open(Window):
                                       open_button=self.open_button,
                                       select_entities=self.select_entities)
         else:
-            entity = SidebarEntity(entity, description=True, close=False)
+            entity = SidebarEntity(entity, description=True, button=False)
         row.child.destroy()
         row.add(entity)
         row.child = entity

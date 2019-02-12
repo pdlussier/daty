@@ -34,7 +34,10 @@ class RoundedButton(Button):
 
     image = Template.Child("image")
 
-    def __init__(self, callback=None, cb_args=[], image=None, *args, **kwargs):
+    def __init__(self, *args, image=None,
+                              tooltip=None,
+                              callback=None,
+                              cb_args={}, **kwargs):
         Button.__init__(self, *args, **kwargs)
 
         # Styling
@@ -48,3 +51,6 @@ class RoundedButton(Button):
 
         if image:
             self.image.set_from_icon_name(image, IconSize.BUTTON)
+
+        if tooltip:
+            self.set_tooltip_text(tooltip)

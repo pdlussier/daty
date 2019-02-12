@@ -154,10 +154,10 @@ class Entity(Stack):
         if error:
             print(type(error))
             print(error)
+        self.entity = entity
         self.URI = URI
         self.set_text(entity["Label"], entity["Description"])
         self.show_all()
-        del entity
         return None
 
     @Template.Callback()
@@ -177,7 +177,7 @@ class Entity(Stack):
         description = self.label.get_tooltip_text()
         try:
             from .entitypopover import EntityPopover
-            self.entity_popover = EntityPopover(self.URI, label, description, parent=self, load=self.load)
+            self.entity_popover = EntityPopover(self.entity, parent=self, load=self.load)
             self.search(entry.get_text())
             self.entity_popover.set_visible(True)
         except AttributeError as e:

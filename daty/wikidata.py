@@ -101,7 +101,7 @@ class Wikidata:
         results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def download(self, uri, use_cache=True, target=None):
+    def download(self, URI, use_cache=True, target=None):
         """
 
         Args:
@@ -116,9 +116,9 @@ class Wikidata:
                 site = Site('wikidata', 'wikidata')
                 repo = site.data_repository()
                 if target:
-                    path = join(self.config.dirs['cache'], uri + 'target')
+                    path = join(self.config.dirs['cache'], URI + 'target')
                 else:
-                    path = join(self.config.dirs['cache'], uri)
+                    path = join(self.config.dirs['cache'], URI)
                 if exists(path):
                     mtime = getmtime(path)
                     if (use_cache or time() - mtime < 604800):
@@ -128,11 +128,11 @@ class Wikidata:
                         except AttributeError as e:
                             pass
                 else:
-                    print("light-downloading" if target else "dowloading", uri)
-                    if uri.startswith("P"):
-                        entity = PropertyPage(repo, uri).get()
-                    elif uri.startswith("Q") or uri.startswith("L"):
-                        entity = ItemPage(repo, uri).get()
+                    print("light-downloading" if target else "dowloading", URI)
+                    if URI.startswith("P"):
+                        entity = PropertyPage(repo, URI).get()
+                    elif URI.startswith("Q") or URI.startswith("L"):
+                        entity = ItemPage(repo, URI).get()
                     else:
                         print("Not supported")
                         entity = {}
@@ -149,13 +149,18 @@ class Wikidata:
                     save(entity, path)
                     break
             except Exception as e:
+                from pywikibot.exceptions import EntityTypeUnknownException
                 if 'Page [[wikidata:' in str(e):
                     print(e)
                     entity = {}
                     break
                 else:
-                    print(uri)
-                    print(type(e))
+                    if type(e) == EntityTypeUnknownException:
+                        print(URI, "pywikibot meaningful error")
+                    else:
+                        print(URI)
+                        raise e
+        entity["URI"] = URI
         return entity
 
     def get_label(self, entity, language='en'):

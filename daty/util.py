@@ -99,8 +99,11 @@ def label_color(label, text=None, color='#e5a50a'):
     else:
         label.set_text(label.orig)
         
-def set_text(widget, text, tooltip):
-    widget.set_text(text)
+def set_text(widget, text, tooltip, markup=False):
+    if markup:
+        widget.set_markup(text)
+    else:
+        widget.set_text(text)
     widget.set_tooltip_text(tooltip)
 
 def mkdirs(newdir, mode=0o755):

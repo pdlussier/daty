@@ -1,5 +1,5 @@
 /*
-   roundedbutton.css
+   sidebarentity.css
 
    ----------------------------------------------------------------------
    Copyright © 2018  Pellegrino Prevete
@@ -21,7 +21,7 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-.rounded_button{
+.sidebar_button {
     padding-bottom:1px;
     padding-top:1px;
     padding-left:4px;

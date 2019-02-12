@@ -2,10 +2,15 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <object class="GtkImage" id="image1">
+  <object class="GtkImage" id="open_new_window_icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">focus-windows-symbolic</property>
+  </object>
+  <object class="GtkImage" id="select_variable_icon">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">edit-select-symbolic</property>
   </object>
   <template class="EntityPopover" parent="GtkPopoverMenu">
     <property name="width_request">300</property>
@@ -19,12 +24,12 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="entity_grid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">3</property>
             <property name="margin_end">3</property>
-            <property name="margin_top">3</property>
+            <property name="margin_bottom">3</property>
             <property name="hexpand">True</property>
             <child>
               <object class="GtkLabel" id="description">
@@ -54,7 +59,7 @@
                 <property name="focus_on_click">False</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Open entity</property>
-                <property name="image">image1</property>
+                <property name="image">open_new_window_icon</property>
                 <property name="relief">none</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="new_window_clicked_cb" swapped="no"/>
@@ -95,7 +100,6 @@
             <property name="can_focus">True</property>
             <property name="margin_start">3</property>
             <property name="margin_end">3</property>
-            <property name="margin_top">3</property>
             <property name="margin_bottom">3</property>
             <property name="vexpand">True</property>
             <property name="hscrollbar_policy">never</property>
@@ -105,9 +109,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkListBox" id="label_listbox">
+                  <object class="GtkListBox" id="results_listbox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <signal name="row-activated" handler="results_listbox_row_activated_cb" swapped="no"/>
                   </object>
                 </child>
               </object>
@@ -115,7 +120,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
+            <property name="top_attach">3</property>
           </packing>
         </child>
         <child>
@@ -155,7 +160,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="search_label">
+                  <object class="GtkLabel" id="search_title">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="valign">start</property>
@@ -174,13 +179,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="search_subtitle">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="valign">start</property>
+                    <property name="margin_top">2</property>
                     <property name="margin_bottom">10</property>
                     <property name="vexpand">True</property>
-                    <property name="label" translatable="yes">Search for something</property>
+                    <property name="label" translatable="yes">Search for entities</property>
                     <attributes>
                       <attribute name="font-desc" value="Cantarell 8"/>
                     </attributes>
@@ -205,7 +211,7 @@
           </object>
           <packing>
             <property name="left_attach">0</property>
-            <property name="top_attach">3</property>
+            <property name="top_attach">4</property>
           </packing>
         </child>
         <child>
@@ -214,6 +220,8 @@
             <property name="margin_start">3</property>
             <property name="margin_end">3</property>
             <property name="margin_top">3</property>
+            <property name="margin_bottom">3</property>
+            <property name="hexpand">True</property>
             <property name="primary_icon_name">edit-find-symbolic</property>
             <property name="primary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">False</property>
@@ -222,6 +230,86 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid" id="variable_grid">
+            <property name="can_focus">False</property>
+            <property name="margin_start">3</property>
+            <property name="margin_end">3</property>
+            <property name="margin_bottom">3</property>
+            <child>
+              <object class="GtkButton" id="record_variable">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="hexpand">True</property>
+                <property name="relief">none</property>
+                <signal name="clicked" handler="record_variable_clicked_cb" swapped="no"/>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="variable_title">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Variable&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                        <property name="xalign">0</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="variable_subtitle">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Record new variable</property>
+                        <property name="xalign">0</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Cantarell 8"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="select_variable">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Set variable as selection for the query</property>
+                <property name="image">select_variable_icon</property>
+                <property name="relief">none</property>
+                <signal name="clicked" handler="select_variable_clicked_cb" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
           </packing>
         </child>
       </object>

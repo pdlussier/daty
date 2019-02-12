@@ -31,8 +31,10 @@ from threading import Thread
 from time import sleep
 
 class OverlayedListBoxRow(ListBoxRow):
-    def __init__(self, top_widget, widget, halign=Align.END, valign=Align.FILL):
+    def __init__(self, widget, top_widget=None, halign=Align.END, valign=Align.FILL):
         ListBoxRow.__init__(self)
+
+        self.top_widget = top_widget
 
         self.eventbox = EventBox()
         self.overlay = Overlay()
@@ -41,7 +43,6 @@ class OverlayedListBoxRow(ListBoxRow):
         self.add(self.eventbox)
         self.eventbox.add(self.overlay)
         self.overlay.add_overlay(self.revealer)
-        self.revealer.add(top_widget)
         self.add_widget(widget)
 
         self.revealer.set_transition_type (RevealerTransitionType.NONE)
@@ -51,6 +52,9 @@ class OverlayedListBoxRow(ListBoxRow):
 
         self.enter_connection = self.eventbox.connect("enter-notify-event", self.enter_notify_event_cb)
         self.leave_connection = self.eventbox.connect("leave-notify-event", self.leave_notify_event_cb)
+
+        if top_widget:
+            self.revealer.add(self.top_widget)
 
     def add_widget(self, widget):
         self.child = widget

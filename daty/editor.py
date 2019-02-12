@@ -153,19 +153,6 @@ class Editor(ApplicationWindow):
         download(entities[-1], self.load_row_async, select=True)
         self.show()
 
-#    def download(self, entity, callback, **kwargs):
-#        """Asynchronously download entity from wikidata
-#
-#            Args:
-#                entity (dict): have keys "URI", "Label", "Description"
-#        """
-#        def do_call():
-#            entity['Data'] = self.wikidata.download(entity['URI'], use_cache=False)
-#            idle_add(lambda: callback(entity, **kwargs))
-#            return None
-#        thread = Thread(target = do_call)
-#        thread.start()
-
     def load_row_async(self, entity, **kwargs):
         """It creates sidebar passing downloaded data to its rows.
 
@@ -174,7 +161,6 @@ class Editor(ApplicationWindow):
             Args:
                 entity (dict): have keys "URI", "Label", "Description", "Data"
         """
-        #entity = cp(entity)
         f = lambda : entity
         def do_call():
             entity = f()
@@ -191,8 +177,8 @@ class Editor(ApplicationWindow):
             entity['Description'] = self.wikidata.get_description(entity['Data'])
 
         sidebar_entity = SidebarEntity(entity, description=True, URI=True)
-        sidebar_entity.close.connect("clicked", self.entity_close_clicked_cb,
-                                     sidebar_entity)
+        sidebar_entity.button.connect("clicked", self.entity_close_clicked_cb,
+                                      sidebar_entity)
 
         row = ListBoxRow()
         row.child = sidebar_entity
@@ -308,14 +294,9 @@ class Editor(ApplicationWindow):
                 self.content_box.remove(self.common)
                 self.content_stack.add_titled(self.common, "common", "Common")
 
-            else: 
-                # WIP: self.sub_header_bar.set_title("test")
+            else:
                 # Set the switcher to something else
                 self.entity_stack.set_visible_child_name("entity_button")
-
-                # Show sub header properties
-                #print(dir(self.sub_header_bar.props))
-                #.remove(self.entity_stack)
 
                 # Move common page from content stack to third column
                 self.content_stack.remove(self.common)
@@ -379,20 +360,17 @@ class Editor(ApplicationWindow):
             self.entity_search_bar.set_search_mode(False)
 
     def entity_close_clicked_cb(self, widget, sidebar_entity):
+        row = sidebar_entity.get_parent()
+        print(row)
         URI = sidebar_entity.entity["URI"]
+        self.sidebar_list.last = list(filter(lambda x: x != row,
+                                             self.sidebar_list.last))
+        row.destroy()
         try:
             page = self.pages.get_child_by_name(URI)
             page.destroy()
         except Exception as e:
             print ("page not loaded")
-        if len(self.sidebar_list.last) > 1:
-            print("selecting penultimate row")
-            self.sidebar_list.select_row(self.sidebar_list.last[-2])
-        else:
-            print("selecting first row")
-            #row = self.sidebar_list.get_row_at_index(0)
-            #self.sidebar_list.select_row()
-        i = self.sidebar_list.remove_row(sidebar_entity)
 
     def get_neighbor(self, i, next=True):
         f = lambda x: x + 1 if next else x - 1

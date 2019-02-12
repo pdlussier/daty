@@ -180,13 +180,6 @@ class SidebarList(ListBox):
             if not last_row.get_children():
                 self.remove(last_row)
 
-        # Create new row and add to self
-#        row = ListBoxRow()
-#        row.box = Box()
-#        row.add(row.box)
-#        row.box.child = widget
-#        row.box.add(row.box.child)
-        
         super(SidebarList, self).add(row)
 
         # Select if 'autoselect'
@@ -198,17 +191,6 @@ class SidebarList(ListBox):
         row.props.activatable = False
         row.props.selectable = False
         super(SidebarList, self).add(row)
-     
-    def remove_row(self, sidebar_entity):
-        i = 0
-        while True:
-            row = self.get_row_at_index(i)
-            if hasattr(row, 'child') and row.child == sidebar_entity:
-                try: self.last.remove(row)
-                except: pass
-                self.remove(row)
-                return i
-            i += 1
 
     def load_page_async(self, entity):
         entity = cp(entity)
@@ -250,10 +232,13 @@ class SidebarList(ListBox):
                 entity_description(Gtk.Label)
         """
         if not row:
-            row = self.get_row_at_index(0)
-            print("selecting first row")
+            if len(self.last) >= 1:
+                row = self.last[-1]
+            else:
+                row = self.get_row_at_index(0)
+            print(self.last)
             self.select_row(row)
-            #return None
+            return None
 
         # Set last
         self.last.append(row)
@@ -261,12 +246,6 @@ class SidebarList(ListBox):
         # Set view for folded mode
         content_leaflet.set_visible_child_name("content_stack")
         titlebar_leaflet.set_visible_child_name("sub_header_bar")
-        #sub_header_bar = [c for c in titlebar_leaflet.get_children()
-        #                  if c.get_name() == 'sub_header_bar'][-1]
-        #entity_back = [c for c in sub_header_bar
-        #               if c.get_name() == 'entity_back'][-1]
-        #entity_back.set_visible(True)
-
 
         # Get entity from SidebarEntity child
         sidebar_entity = row.child
