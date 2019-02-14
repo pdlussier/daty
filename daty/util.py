@@ -44,9 +44,21 @@ class MyThread(Thread):
             threadLimiter.release()
 
 class EntitySet(list):
+    def __init__(self, triplet=False):
+        self.triplet = triplet
+
     def add(self, element):
-        if not element["URI"] in (v["URI"] for v in self):
-            self.append(element)
+        if element['URI']:
+            same_URI = element['URI'] in (v['URI'] for v in self)
+            if not same_URI:
+                self.append(element)
+        else:
+            if not element["Label"] in (v["Label"] for v in self):
+                self.append(element)
+            else:
+                for v in self:
+                    if element["Label"] == v["Label"]:
+                        v = element
 
 def save(variable, path):
     """Save variable on given path using Pickle
@@ -85,20 +97,40 @@ def chmod_recursively(path, mode=0o755):
         print(current_path)
         chmod(current_path, mode)
 
-def label_color(label, text=None, color='#e5a50a'):
+def label_color(label, text=None, color='#e5a50a', bold=False):
     label_text = label.get_text()
     try: label.orig == True
     except Exception as e:
         label.orig = cp(label_text)
     if text:
-        colored = "".join(["<b><span color='", color, "'>", text, "</span></b>"])
+        colored = "".join(["<b><span color='",
+                           color,
+                           "'>",
+                           text,
+                           "</span></b>"])
         cu_text = compile(escape(text), IGNORECASE)
         label_text = cu_text.sub(colored, label_text)
-        label.set_text(label_text) 
-        label.set_use_markup(True)
+    elif bold:
+        label_text = "".join(["<b>", label.orig, "</b>"])
     else:
-        label.set_text(label.orig)
-        
+        label_text = label.orig
+    label.set_markup(label_text)
+
+def pango_label(label, weight=""):
+    label_text = label.get_text()
+    try: label.orig == True
+    except Exception as e:
+        label.orig = cp(label_text)
+    if weight:
+        label_text = "".join(["<span weight='",
+                              weight,
+                              "'>",
+                              label_text,
+                              "</span>"])
+    else:
+        label_text = label.orig
+    label.set_markup(label_text)
+
 def set_text(widget, text, tooltip, markup=False):
     if markup:
         widget.set_markup(text)

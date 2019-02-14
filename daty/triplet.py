@@ -26,10 +26,11 @@
 from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.GObject import SignalFlags as sf
-from gi.repository.GObject import TYPE_NONE, TYPE_BOOLEAN, TYPE_STRING
+from gi.repository.GObject import TYPE_NONE, TYPE_BOOLEAN, TYPE_PYOBJECT, TYPE_STRING
 from gi.repository.Gtk import Grid, Template
 
 from .entitypopover import EntityPopover
+from .util import pango_label, set_text
 
 @Template.from_resource("/ml/prevete/Daty/gtk/triplet.ui")
 class Triplet(Grid):
@@ -37,40 +38,76 @@ class Triplet(Grid):
     __gsignals__ = {'triplet-ready':(sf.RUN_LAST,
                                      TYPE_NONE,
                                      (TYPE_BOOLEAN,)),
-                    'variable-selected':(sf.RUN_LAST,
-                                         TYPE_NONE,
-                                         (TYPE_STRING,))}
+                    'default-variable-selected':(sf.RUN_LAST,
+                                                 TYPE_NONE,
+                                                 (TYPE_PYOBJECT,)),
+                    'object-selected':(sf.RUN_LAST,
+                                       TYPE_NONE,
+                                       (TYPE_PYOBJECT,))}
 
     subject = Template.Child("subject")
+    subject_title = Template.Child("subject_title")
+    subject_description = Template.Child("subject_description")
     property = Template.Child("property")
+    property_title = Template.Child("property_title")
+    property_description = Template.Child("property_description")
     object = Template.Child("object")
+    object_title = Template.Child("object_title")
+    object_description = Template.Child("object_description")
 
-    def __init__(self, load=None, *args, **kwargs):
+    def __init__(self, load=None, variables=None, *args, **kwargs):
         Grid.__init__(self, *args, **kwargs)
 
         self.load = load
+        self.variables = variables
+        self.subject.title = self.subject_title
+        self.subject.description = self.subject_description
+        self.property.title = self.property_title
+        self.property.description = self.property_description
+        self.object.title = self.object_title
+        self.object.description = self.object_description
+
         for widget in (self.subject, self.property, self.object):
-            widget.entity_popover = EntityPopover({"Label":"",
-                                                   "Description":"",
-                                                   "URI":""},
+            widget.entity = {"Label":"", "Description":"", "URI":""}
+            widget.entity_popover = EntityPopover(widget.entity,
                                                   parent=widget,
                                                   load=self.load,
-                                                  search=widget)
+                                                  variables=self.variables)
             widget.entity_popover.connect("closed",
                                           self.entity_popover_closed_cb)
-            widget.entity_popover.connect("variable-selected",
-                                          self.variable_selected_cb)
+            widget.entity_popover.connect("default-variable-selected",
+                                          self.default_variable_selected_cb)
+            widget.entity_popover.connect("object-selected",
+                                          self.object_selected_cb)
 
         self.show_all()
+
+    def set_widget(self, widget, entity):
+        set_text(widget.title, entity["Label"], entity["Label"])
+        pango_label(widget.title, 'bold')
+        set_text(widget.description, entity["Description"], entity["Description"])
+        self.show_all()
+
+    def set_selected(self, widget, value):
+        if value:
+            pango_label(widget.title, 'ultrabold')
+        else:
+            pango_label(widget.title, 'bold')
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
         widget.entity_popover.set_visible(True)
 
     def entity_popover_closed_cb(self, popover):
-        widget = popover.get_relative_to()
-        widget.entity = popover.entity
         self.emit('triplet-ready', True)
 
-    def variable_selected_cb(self, entity_popover, variable):
-        self.emit('variable-selected', variable)
+    def default_variable_selected_cb(self, popover, entity):
+        widget = self.object_selected_cb(popover, entity)
+        pango_label(widget.title, 'ultrabold')
+        self.emit('default-variable-selected', widget.entity)
+
+    def object_selected_cb(self, popover, entity):
+        widget = popover.get_relative_to()
+        self.set_widget(widget, entity)
+        self.emit("object-selected", entity)
+        return widget

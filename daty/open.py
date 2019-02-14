@@ -27,9 +27,7 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
-from gi.repository.GLib import idle_add
-from gi.repository.Gtk import Align, Button, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
-from threading import Thread
+from gi.repository.Gtk import IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
 
 from .entityselectable import EntitySelectable
 from .overlayedlistboxrow import OverlayedListBoxRow
@@ -81,6 +79,7 @@ class Open(Window):
         self.load = load
         self.results_listbox.selected = EntitySet()
         self.entities = self.results_listbox.selected
+        self.variables = EntitySet(triplet=False)
         self.hb_title = self.header_bar.get_title()
         self.hb_subtitle = self.header_bar.get_subtitle()
 
@@ -131,8 +130,10 @@ class Open(Window):
     @Template.Callback()
     def add_constraint_clicked_cb(self, widget):
         self.constraint_box.set_visible(True)
-        triplet = Triplet(load=self.load)
+        triplet = Triplet(load=self.load, variables=self.variables)
         triplet.connect("triplet-ready", self.triplet_ready_cb)
+        triplet.connect("default-variable-selected", self.triplet_default_variable_selected_cb)
+        #triplet.connect("entity-", self.triplet_variable_action_cb)
         row = OverlayedListBoxRow(triplet)
 
         close_button = RoundedButton(callback=self.triplet_delete,
@@ -148,8 +149,34 @@ class Open(Window):
             self.constraint_box.set_visible(False)
 
     def triplet_ready_cb(self, triplet, event):
-        print(triplet)
-        print(event)
+        if self.variables:
+            objets_foreach()
+        print("triplet closed, analyze triplets")
+
+    def objects_foreach(self, function, *args):
+        for row in constraint_box:
+            triplet = row.child
+            for t in [triplet.subject, triplet.property, triplet.object]:
+                function(t, *args)
+
+    def triplet_default_variable_selected_cb(self, triplet, entity):
+        print("hi")
+        for row in self.constraint_listbox:
+            triplet = row.child
+            for t in [triplet.subject, triplet.property, triplet.object]:
+                if 'Variable' in t.entity:
+                    if t.entity["Label"] == entity["Label"]:
+                        t.entity["Description"] = "selected query variable"
+                        triplet.set_widget(t, t.entity)
+                        triplet.set_selected(t, True)
+                    else:
+                        t.entity["Variable"] = False
+                        t.entity["Description"] = "query variable"
+                        triplet.set_widget(t, t.entity)
+                        triplet.set_selected(t, False)
+                        pprint(t.entity)
+
+#    def triplet_
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):
