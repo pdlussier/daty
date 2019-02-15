@@ -55,6 +55,7 @@ class EntitySelectable(CheckButton):
             self.description.destroy()
             self.URI.destroy()
 
+        #TODO: implement selected as signal in cointaining listbox
         if selected != None:
             if entity["URI"] in (v["URI"] for v in selected):
                 self.set_active(True)

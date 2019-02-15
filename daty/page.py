@@ -33,7 +33,6 @@ from threading import Thread
 from .property import Property
 from .value import Value
 from .values import Values
-#from .wikidata import Wikidata
 from .util import MyThread, download_light
 
 @Template.from_resource("/ml/prevete/Daty/gtk/page.ui")
@@ -42,14 +41,12 @@ class Page(ScrolledWindow):
 
     image = Template.Child("image")
     statements = Template.Child("statements")
-    #wikidata = Wikidata()
- 
-    def __init__(self, entity, *args, load=None, wikidata=None, **kwargs):
+
+    def __init__(self, entity, *args, load=None, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
       
+        #TODO: replace with signals
         self.load = load
-        self.wikidata = wikidata
-        #self.claims = entity['claims']
         claims = entity['claims']
 
         if not 'P18' in claims:

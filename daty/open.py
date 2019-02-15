@@ -30,6 +30,7 @@ require_version('Handy', '0.0')
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
 from pprint import pprint
 
+from .constraintlist import ConstraintList
 from .entityselectable import EntitySelectable
 from .overlayedlistboxrow import OverlayedListBoxRow
 from .roundedbutton import RoundedButton
@@ -52,7 +53,7 @@ class Open(Window):
     cancel = Template.Child("cancel")
     constraint_box = Template.Child("constraint_box")
     constraint_button_box = Template.Child("constraint_button_box")
-    constraint_listbox = Template.Child("constraint_listbox")
+#    constraint_listbox = Template.Child("constraint_listbox")
     open_session = Template.Child("open_session")
     page = Template.Child("page")
     open_button = Template.Child("open_button")
@@ -83,6 +84,9 @@ class Open(Window):
         self.variables = EntitySet(triplet=False)
         self.hb_title = self.header_bar.get_title()
         self.hb_subtitle = self.header_bar.get_subtitle()
+
+        self.constraint_listbox = ConstraintList()
+        self.constraint_box.add(self.constraint_listbox)
 
         if quit_cb:
             self.quit_cb = quit_cb
