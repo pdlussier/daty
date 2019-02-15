@@ -16,7 +16,7 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">center</property>
+            <property name="valign">start</property>
             <property name="vexpand">True</property>
             <child>
               <object class="GtkLabel" id="subject_title">
@@ -24,9 +24,10 @@
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">&lt;b&gt;Subject&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;subject&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
                 <property name="justify">center</property>
+                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <style>
                   <class name="selected"/>
@@ -41,10 +42,10 @@
               <object class="GtkLabel" id="subject_description">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Any entity that satisfy</property>
-                <property name="xalign">0</property>
+                <property name="label" translatable="yes">any entity that satisfy</property>
+                <property name="justify">center</property>
+                <property name="wrap">True</property>
                 <attributes>
                   <attribute name="font-desc" value="Cantarell 8"/>
                 </attributes>
@@ -71,14 +72,14 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">center</property>
             <property name="vexpand">True</property>
             <child>
               <object class="GtkLabel" id="property_title">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;Property&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;property&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -90,7 +91,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Es. child</property>
+                <property name="label" translatable="yes">es. child</property>
+                <property name="justify">center</property>
+                <property name="wrap">True</property>
                 <attributes>
                   <attribute name="font-desc" value="Cantarell 8"/>
                 </attributes>
@@ -117,14 +120,15 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">center</property>
+            <property name="valign">start</property>
             <property name="vexpand">True</property>
             <child>
               <object class="GtkLabel" id="object_title">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;Object&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;object&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -136,7 +140,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Es. Mozart</property>
+                <property name="label" translatable="yes">es. Mozart</property>
+                <property name="justify">center</property>
+                <property name="wrap">True</property>
                 <attributes>
                   <attribute name="font-desc" value="Cantarell 8"/>
                 </attributes>

@@ -43,6 +43,9 @@ class Triplet(Grid):
                                                  (TYPE_PYOBJECT,)),
                     'object-selected':(sf.RUN_LAST,
                                        TYPE_NONE,
+                                       (TYPE_PYOBJECT,)),
+                    'variable-deleted':(sf.RUN_LAST,
+                                       TYPE_NONE,
                                        (TYPE_PYOBJECT,))}
 
     subject = Template.Child("subject")
@@ -67,20 +70,27 @@ class Triplet(Grid):
         self.object.title = self.object_title
         self.object.description = self.object_description
 
-        for widget in (self.subject, self.property, self.object):
+        self.members = (self.subject, self.property, self.object)
+
+        for widget in self.members:
             widget.entity = {"Label":"", "Description":"", "URI":""}
-            widget.entity_popover = EntityPopover(widget.entity,
+            widget.popover = EntityPopover(widget.entity,
                                                   parent=widget,
                                                   load=self.load,
                                                   variables=self.variables)
-            widget.entity_popover.connect("closed",
-                                          self.entity_popover_closed_cb)
-            widget.entity_popover.connect("default-variable-selected",
+            widget.popover.connect("closed",
+                                          self.popover_closed_cb)
+            widget.popover.connect("default-variable-selected",
                                           self.default_variable_selected_cb)
-            widget.entity_popover.connect("object-selected",
+            widget.popover.connect("object-selected",
                                           self.object_selected_cb)
+            widget.popover.connect("variable-deleted",
+                                          self.variable_deleted_cb)
 
         self.show_all()
+
+    def variable_deleted_cb(self, popover, entity):
+        self.emit("variable-deleted", entity)
 
     def set_widget(self, widget, entity):
         set_text(widget.title, entity["Label"], entity["Label"])
@@ -96,9 +106,9 @@ class Triplet(Grid):
 
     @Template.Callback()
     def button_press_event_cb(self, widget, event):
-        widget.entity_popover.set_visible(True)
+        widget.popover.set_visible(True)
 
-    def entity_popover_closed_cb(self, popover):
+    def popover_closed_cb(self, popover):
         self.emit('triplet-ready', True)
 
     def default_variable_selected_cb(self, popover, entity):

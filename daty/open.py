@@ -28,6 +28,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
 from gi.repository.Gtk import IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
+from pprint import pprint
 
 from .entityselectable import EntitySelectable
 from .overlayedlistboxrow import OverlayedListBoxRow
@@ -131,8 +132,9 @@ class Open(Window):
     def add_constraint_clicked_cb(self, widget):
         self.constraint_box.set_visible(True)
         triplet = Triplet(load=self.load, variables=self.variables)
+        triplet.connect("default-variable-selected", self.triplets_default_variable_selected_cb)
         triplet.connect("triplet-ready", self.triplet_ready_cb)
-        triplet.connect("default-variable-selected", self.triplet_default_variable_selected_cb)
+        triplet.connect("variable-deleted", self.triplet_variable_deleted_cb)
         #triplet.connect("entity-", self.triplet_variable_action_cb)
         row = OverlayedListBoxRow(triplet)
 
@@ -143,40 +145,55 @@ class Open(Window):
         self.constraint_listbox.add(row)
         self.constraint_listbox.show_all()
 
+    def triplet_variable_deleted_cb(self, triplet, entity):
+        output = self.objects_foreach(self.object_delete, entity)
+        for object in (o for o in output if o):
+            object.entity["Label"] = "deleted variable"
+            object.entity["Description"] = "deleted variable"
+            object.entity["URI"] = ""
+            del object.entity["Variable"]
+            triplet.set_widget(object, object.entity)
+
+
+    def object_delete(self, triplet, object, entity):
+        if object.entity == entity:
+            return object
+
+    def objects_foreach(self, function, *args):
+        output = []
+        for row in self.constraint_listbox:
+            triplet = row.child
+            for object in triplet.members:
+                output.append(function(triplet, object, *args))
+        return output
+
     def triplet_delete(self, widget, row):
         row.destroy()
         if not self.constraint_listbox.get_children():
             self.constraint_box.set_visible(False)
 
     def triplet_ready_cb(self, triplet, event):
-        if self.variables:
-            objets_foreach()
-        print("triplet closed, analyze triplets")
+        print("Open: popover closed")
 
-    def objects_foreach(self, function, *args):
-        for row in constraint_box:
-            triplet = row.child
-            for t in [triplet.subject, triplet.property, triplet.object]:
-                function(t, *args)
+    def object_is_default_variable(self, triplet, object, entity):
+        print("Object:")
+        pprint(object.entity)
+        if 'Variable' in object.entity:
+            if object.entity["Label"] == entity["Label"]:
+                object.entity["Variable"] = True
+                object.entity["Description"] = "selected query variable"
+                triplet.set_widget(object, object.entity)
+                triplet.set_selected(object, True)
+            else:
+                object.entity["Variable"] = False
+                object.entity["Description"] = "query variable"
+                triplet.set_widget(object, object.entity)
+                triplet.set_selected(object, False)
+        object.popover.search_entry.set_text("")
 
-    def triplet_default_variable_selected_cb(self, triplet, entity):
-        print("hi")
-        for row in self.constraint_listbox:
-            triplet = row.child
-            for t in [triplet.subject, triplet.property, triplet.object]:
-                if 'Variable' in t.entity:
-                    if t.entity["Label"] == entity["Label"]:
-                        t.entity["Description"] = "selected query variable"
-                        triplet.set_widget(t, t.entity)
-                        triplet.set_selected(t, True)
-                    else:
-                        t.entity["Variable"] = False
-                        t.entity["Description"] = "query variable"
-                        triplet.set_widget(t, t.entity)
-                        triplet.set_selected(t, False)
-                        pprint(t.entity)
-
-#    def triplet_
+    def triplets_default_variable_selected_cb(self, triplet, entity):
+        print("Open: triplets default variable selected callback")
+        self.objects_foreach(self.object_is_default_variable, entity)
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):

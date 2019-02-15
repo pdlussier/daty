@@ -38,12 +38,15 @@ class SidebarEntity(EventBox):
 
     #box = Template.Child("box")
     button = Template.Child("button")
+    button1 = Template.Child("button1")
     image_button = Template.Child("image_button")
+    image_button1 = Template.Child("image_button1")
     label = Template.Child("label")
     description = Template.Child("description")
     URI = Template.Child("URI")
 
-    def __init__(self, entity, *args, description=True, URI=True, button=True):
+    def __init__(self, entity, *args, description=True, URI=True, button=True,
+                 button1=False):
         """Widget representing an entity in the sidebar
 
             Args:
@@ -53,12 +56,26 @@ class SidebarEntity(EventBox):
         """
         EventBox.__init__(self, *args)
 
-        context = self.button.get_style_context()
-        provider = CssProvider()
-        provider.load_from_resource('/ml/prevete/Daty/gtk/sidebarentity.css')
-        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+        if button:
+            context = self.button.get_style_context()
+            provider = CssProvider()
+            provider.load_from_resource('/ml/prevete/Daty/gtk/sidebarentity.css')
+            context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+            self.enter_connection = self.connect("enter-notify-event",
+                                                 self.enter_notify_event_cb)
+            self.leave_connection = self.connect("leave-notify-event",
+                                                 self.leave_notify_event_cb)
+            self.button.connect("leave-notify-event",
+                                self.button_leave_notify_event_cb)
+        if button1:
+            context = self.button1.get_style_context()
+            context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+            self.button1.connect("leave-notify-event",
+                                 self.button_leave_notify_event_cb)
+
 
         self.entity = entity
+        self.enable_button1 = button1
  
         set_text(self.label, entity["Label"], entity["Label"])
 
@@ -72,13 +89,10 @@ class SidebarEntity(EventBox):
         else:
             self.URI.destroy()
 
-        if button:
-            self.enter_connection = self.connect("enter-notify-event", self.enter_notify_event_cb)
-            self.leave_connection = self.connect("leave-notify-event", self.leave_notify_event_cb)
-            self.button_enter_connection = self.button.connect("leave-notify-event", self.button_leave_notify_event_cb)
-
     def enter_notify_event_cb(self, widget, event):
         self.button.set_visible(True)
+        if self.enable_button1:
+            self.button1.set_visible(True)
         self.URI.set_visible(False)
 
     def leave_notify_event_cb(self, widget, event):
@@ -87,6 +101,8 @@ class SidebarEntity(EventBox):
             self.disconnect(self.leave_connection)
         else:
             self.button.set_visible(False)
+            if self.enable_button1:
+                self.button1.set_visible(False)
             self.URI.set_visible(True)
 
     def button_leave_notify_event_cb(self, widget, event):

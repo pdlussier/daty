@@ -126,6 +126,35 @@
             <property name="position">1</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="button1">
+            <property name="can_focus">False</property>
+            <property name="receives_default">True</property>
+            <property name="events">GDK_BUTTON_PRESS_MASK</property>
+            <property name="no_show_all">True</property>
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <property name="margin_end">3</property>
+            <child>
+              <object class="GtkImage" id="image_button1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">window-close-symbolic</property>
+                <property name="icon_size">2</property>
+              </object>
+            </child>
+            <style>
+              <class name="sidebar_button"/>
+              <class name="circular"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
       </object>
     </child>
   </template>
