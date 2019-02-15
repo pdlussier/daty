@@ -27,7 +27,7 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
-from gi.repository.Gtk import IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
 from pprint import pprint
 
 from .entityselectable import EntitySelectable
@@ -133,10 +133,14 @@ class Open(Window):
         self.constraint_box.set_visible(True)
         triplet = Triplet(load=self.load, variables=self.variables)
         triplet.connect("default-variable-selected", self.triplets_default_variable_selected_cb)
-        triplet.connect("triplet-ready", self.triplet_ready_cb)
+        triplet.connect("object-selected", self.triplets_check_cb)
         triplet.connect("variable-deleted", self.triplet_variable_deleted_cb)
-        #triplet.connect("entity-", self.triplet_variable_action_cb)
         row = OverlayedListBoxRow(triplet)
+        context = row.get_style_context()
+        provider = CssProvider()
+        provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
+        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+        context.add_class('unreferenced')
 
         close_button = RoundedButton(callback=self.triplet_delete,
                                      cb_args=[row])
@@ -172,7 +176,8 @@ class Open(Window):
         if not self.constraint_listbox.get_children():
             self.constraint_box.set_visible(False)
 
-    def triplet_ready_cb(self, triplet, event):
+
+    def triplets_check_cb(self, triplet, event):
         print("Open: popover closed")
 
     def object_is_default_variable(self, triplet, object, entity):

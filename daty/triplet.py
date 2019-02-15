@@ -78,8 +78,8 @@ class Triplet(Grid):
                                                   parent=widget,
                                                   load=self.load,
                                                   variables=self.variables)
-            widget.popover.connect("closed",
-                                          self.popover_closed_cb)
+            #widget.popover.connect("closed",
+            #                              self.popover_closed_cb)
             widget.popover.connect("default-variable-selected",
                                           self.default_variable_selected_cb)
             widget.popover.connect("object-selected",

@@ -36,7 +36,7 @@ from .util import set_text
 class SidebarEntity(EventBox):
     __gtype_name__ = "SidebarEntity"
 
-    #box = Template.Child("box")
+    box = Template.Child("box")
     button = Template.Child("button")
     button1 = Template.Child("button1")
     image_button = Template.Child("image_button")

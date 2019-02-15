@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    SidebarList
+#    ConstraintList
 #
 #    ----------------------------------------------------------------------
 #    Copyright © 2018  Pellegrino Prevete
@@ -23,19 +23,20 @@
 #
 
 
-from copy import deepcopy as cp
+#from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.GLib import idle_add
-from gi.repository.Gtk import ListBox, ListBoxRow, Separator, Template
-#from re import IGNORECASE, compile, escape, sub
+from gi.repository.Gtk import Box, ListBox, ListBoxRow, Separator, Template
+#from threading import Thread
+from re import IGNORECASE, compile, escape, sub
 
 from .entityselectable import EntitySelectable
 from .page import Page
-#from .property import Property
+from .property import Property
 from .sidebarentity import SidebarEntity
-#from .values import Values
+from .values import Values
 from .util import MyThread, label_color
+#from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/sidebarlist.ui")
 class SidebarList(ListBox):
@@ -44,9 +45,9 @@ class SidebarList(ListBox):
     def __init__(self,
                  content_leaflet,
                  titlebar_leaflet,
-                 stack, 
+                 stack,
                  entity_label,
-                 entity_description, 
+                 entity_description,
                  entity_search_entry,
                  sidebar_search_entry,
                  autoselect=False,
@@ -54,14 +55,14 @@ class SidebarList(ListBox):
                  wikidata=None,
                  *args, **kwargs):
         """Sidebar ListBox
-        
+
         Args:
             stack (Gtk.Stack): entities stack;
             entity_label (Gtk.Label): title of the visible entity;
             description_label (Gtk.Label): description of the visible entity;
             autoselect (bool): whether to select the first element
                 by default.
-           
+
         """
         ListBox.__init__(self, *args, **kwargs)
 
@@ -121,7 +122,7 @@ class SidebarList(ListBox):
                     label_color(child.description, text)
                 else:
                     row.set_visible(False)
-                   
+
     def update_header(self, row, before, *args):
         """See GTK+ Documentation"""
         if before:
@@ -149,14 +150,17 @@ class SidebarList(ListBox):
             child = row.child
             entity = child.entity
             if value:
+                row.remove(child)
                 row.check = EntitySelectable(entity,
                                              widget=False,
                                              selected=self.selected)
-                child.box.pack_start(row.check, False, False, 0)
-                row.child.box.child_set_property(row.check, 'position', 0)
+                row.box.add(row.check)
+                row.box.add(child)
             else:
+                row.box.remove(row.check)
                 row.check.destroy()
- 
+                del row.check
+
     def add(self, row, select=False):
         """Add widget to a new row
 
@@ -204,11 +208,11 @@ class SidebarList(ListBox):
         return None
 
     def sidebar_row_selected_cb(self,
-                                listbox, 
+                                listbox,
                                 row,
-                                content_leaflet, 
+                                content_leaflet,
                                 titlebar_leaflet,
-                                stack, 
+                                stack,
                                 entity_label,
                                 entity_description,
                                 load=None):
@@ -219,7 +223,7 @@ class SidebarList(ListBox):
 
             Args:
                 listbox (Gtk.ListBox): the listbox class, so self;
-                row (Gtk.ListBoxRow): the selected row, which has 
+                row (Gtk.ListBoxRow): the selected row, which has
                 for only child a SidebarEntity object;
                 stack (Gtk.Stack): the stack which has to switch
                 visible child.
