@@ -169,7 +169,7 @@ class Open(Window):
 
     def objects_foreach(self, function, *args):
         output = []
-        for row in self.constraint_listbox:
+        for row in (r for r in self.constraint_listbox if hasattr(r, 'child')):
             triplet = row.child
             for object in triplet.members:
                 output.append(function(triplet, object, *args))
