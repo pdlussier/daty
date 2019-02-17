@@ -182,7 +182,7 @@ class Open(Window):
 
 
     def triplets_check_cb(self, triplet, event):
-        print("Open: popover closed")
+        print("Open: ")
 
     def object_is_default_variable(self, triplet, object, entity):
         print("Object:")
