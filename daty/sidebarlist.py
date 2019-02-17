@@ -196,7 +196,7 @@ class SidebarList(ListBox):
         thread.start()
 
     def on_page_complete(self, entity):
-        page = Page(entity['Data'], load=self.load, wikidata=self.wikidata)
+        page = Page(entity['Data'], load=self.load)
         self.stack.add_titled(page, entity['URI'], entity['Label'])
         self.stack.set_visible_child_name(entity['URI'])
         self.entity_search_entry.connect("search-changed", self.entity_search_entry_changed_cb)
