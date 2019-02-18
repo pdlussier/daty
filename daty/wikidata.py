@@ -70,6 +70,7 @@ class Wikidata:
         # Check that var is in the statements
         if not var in (var for s in statements for role,var in s.items()):
             print("WARNING: var not contained in constraints!")
+            return []
 
         # Convert var and statements vars to SPARQL
         var = "?" + var["Label"]
@@ -79,19 +80,24 @@ class Wikidata:
                 x = s[role]
                 if not "URI" in x.keys() or x["URI"] == "":
                     s[role] = "?" + x["Label"]
-                elif role == "o":
+                elif x["URI"].startswith("Q"):
                     s[role] = "wd:" + x["URI"]
-                elif role == "p":
+                elif x["URI"].startswith("P"):
                     s[role] = "wdt:" + x["URI"]
 
         # Form the SPARQL statements
         expr = ""
         for s in statements:
+            #print("s", s['s'])
+            #print("p", s['p'])
+            print('o', s['o'])
             expr = expr.join([s['s'], " ", s['p'], " ", s['o'], ".\n"])
 
         # Do the query
         query = sub('statements', expr, template)
         query = sub('var', var, query)
+
+        print(query)
         sparql = SparqlQuery()
 
         # Return results

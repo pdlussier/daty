@@ -173,7 +173,7 @@ class EntityPopover(PopoverMenu):
     Template.Callback()
     def new_window_clicked_cb(self, widget, *cb_args):
         if cb_args:
-            self.load(cb_args)
+            self.load(list(cb_args))
         else:
             self.load([self.entity])
 
@@ -197,6 +197,7 @@ class EntityPopover(PopoverMenu):
             set_text(self.variable_subtitle,
                      self.entity["Description"],
                      self.entity["Description"])
+            print("EntityPopover: variable_set_default_clicked_cb")
             self.emit("default-variable-selected", self.entity)
         self.hide()
 
@@ -206,7 +207,7 @@ class EntityPopover(PopoverMenu):
         self.hide()
 
     def variable_record_clicked_cb(self, widget):
-        "Variable record button: clicked"
+        print("Variable record button: clicked")
         print("Variable record callback: I am setting the popover entity to the query",
         self.search_entry.get_text())
         self.entity["Variable"] = False
@@ -224,10 +225,11 @@ class EntityPopover(PopoverMenu):
             self.entity[field] = entity[field]
         if entity["URI"] and self.is_variable(self.entity):
             del self.entity["Variable"]
-        self.emit("object-selected", self.entity)
         if self.is_default_variable(self.entity):
             print("The entity is default, emitting default variable selected signal")
             self.emit("default-variable-selected", self.entity)
+        else:
+            self.emit("object-selected", self.entity)
         self.hide()
 
     @Template.Callback()
@@ -241,8 +243,6 @@ class EntityPopover(PopoverMenu):
     def visibility_notify_event_cb(self, popover):
         if popover.get_visible():
             if self.variables:
-                print(self.variables)
-                print("I am trying to show variables")
                 self.variable_grid.set_visible(False)
                 self.search_box.set_visible(False)
                 self.variables_set_results()

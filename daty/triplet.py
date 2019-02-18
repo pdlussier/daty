@@ -112,12 +112,13 @@ class Triplet(Grid):
         self.emit('triplet-ready', True)
 
     def default_variable_selected_cb(self, popover, entity):
-        widget = self.object_selected_cb(popover, entity)
+        widget = self.object_selected_cb(popover, entity, emit=False)
         pango_label(widget.title, 'ultrabold')
         self.emit('default-variable-selected', widget.entity)
 
-    def object_selected_cb(self, popover, entity):
+    def object_selected_cb(self, popover, entity, emit=True):
         widget = popover.get_relative_to()
         self.set_widget(widget, entity)
-        self.emit("object-selected", entity)
+        if emit:
+            self.emit("object-selected", entity)
         return widget

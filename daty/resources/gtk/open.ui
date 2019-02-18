@@ -163,7 +163,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Search for entities in the database&lt;/b&gt;
 or restrict the domain among those that satisfy
-some constraint</property>
+some filter</property>
                         <property name="use_markup">True</property>
                         <property name="justify">center</property>
                         <property name="wrap">True</property>
@@ -191,11 +191,11 @@ some constraint</property>
                     <property name="vexpand">True</property>
                     <child>
                       <object class="GtkButton" id="add_constraint">
-                        <property name="label" translatable="yes">Add constraint</property>
+                        <property name="label" translatable="yes">Add filter</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="tooltip_text" translatable="yes">Add constraint of the triplet form "Subject" "has property" "object".</property>
+                        <property name="tooltip_text" translatable="yes">Add filter in the form "Subject" "has property" "object".</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
@@ -230,7 +230,7 @@ some constraint</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_bottom">6</property>
-                        <property name="label" translatable="yes">Constraints</property>
+                        <property name="label" translatable="yes">Filters</property>
                         <attributes>
                           <attribute name="font-desc" value="Cantarell Bold 10"/>
                         </attributes>

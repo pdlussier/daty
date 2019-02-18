@@ -1,15 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <template class="LoadingPage" parent="GtkImage">
+  <object class="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixel_size">128</property>
-    <property name="icon_name">content-loading-symbolic</property>
-    <property name="icon_size">3</property>
-    <style>
-      <class name="dim-label"/>
-    </style>
-  </template>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkImage" id="LoadingPage">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="valign">end</property>
+        <property name="vexpand">True</property>
+        <property name="pixel_size">128</property>
+        <property name="icon_name">content-loading-symbolic</property>
+        <property name="icon_size">3</property>
+        <style>
+          <class name="dim-label"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Loading</property>
+        <attributes>
+          <attribute name="font-desc" value="Cantarell Bold 12"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="valign">start</property>
+        <property name="vexpand">True</property>
+        <property name="label" translatable="yes">Downloading entity</property>
+        <attributes>
+          <attribute name="font-desc" value="Cantarell 8"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+  </object>
 </interface>

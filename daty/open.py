@@ -37,7 +37,7 @@ from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
 from .triplet import Triplet
 from .wikidata import Wikidata
-from .util import EntitySet, search
+from .util import EntitySet, download_light, search, select
 
 name = 'ml.prevete.Daty'
 
@@ -80,6 +80,7 @@ class Open(Window):
         self.new_session = new_session
         self.load = load
         self.results_listbox.selected = EntitySet()
+        self.filtered_results = EntitySet()
         self.entities = self.results_listbox.selected
         self.variables = EntitySet(triplet=False)
         self.hb_title = self.header_bar.get_title()
@@ -140,11 +141,11 @@ class Open(Window):
         triplet.connect("object-selected", self.triplets_check_cb)
         triplet.connect("variable-deleted", self.triplet_variable_deleted_cb)
         row = OverlayedListBoxRow(triplet)
-        context = row.get_style_context()
+        row.context = row.get_style_context()
         provider = CssProvider()
         provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
-        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
-        context.add_class('unreferenced')
+        row.context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+        row.context.add_class('unreferenced')
 
         close_button = RoundedButton(callback=self.triplet_delete,
                                      cb_args=[row])
@@ -161,6 +162,7 @@ class Open(Window):
             object.entity["URI"] = ""
             del object.entity["Variable"]
             triplet.set_widget(object, object.entity)
+        self.triplets_check_cb(triplet, entity)
 
 
     def object_delete(self, triplet, object, entity):
@@ -177,16 +179,66 @@ class Open(Window):
 
     def triplet_delete(self, widget, row):
         row.destroy()
-        if not self.constraint_listbox.get_children():
+        if not [r for r in self.constraint_listbox if hasattr(r, 'child')]:
             self.constraint_box.set_visible(False)
 
 
-    def triplets_check_cb(self, triplet, event):
-        print("Open: ")
+    def triplets_check_cb(self, triplet, entity):
+        print("Open: checking triplet")
+        triplets = []
+        statements = []
+        for row in (r for r in self.constraint_listbox if hasattr(r, 'child')):
+            triplet = row.child
+            entities = [o.entity for o in triplet.members]
+            ready = all('Variable' in e or e['URI'] for e in entities)
+            #triplets.append(ready)
+            if ready:
+                statements.append({'s':entities[0],
+                                   'p':entities[1],
+                                   'o':entities[2]})
+                try:
+                    row.context.remove_class('unreferenced')
+                except:
+                    pass
+            else:
+                row.context.add_class("unreferenced")
+        var = [s[r] for s in statements for r in s if "Variable" in s[r] and s[r]["Variable"]]
+        if var: var = var[-1]
+        if statements and var:
+            select(var, statements, self.on_select_done)
+            self.set_search_placeholder(False)
+        else:
+            if not self.search_entry.get_text():
+                self.set_search_placeholder(True)
+
+    def on_download_done(self, URI, entity, error):
+        entity = SidebarEntity(entity, button=False)
+        row = ListBoxRow()
+        row.child = entity
+        row.add(entity)
+        self.results_listbox.add(row)
+        self.results_listbox.show_all()
+
+    def on_select_done(self, results):
+        if self.results != results:
+            self.results_listbox.foreach(self.results_listbox.remove)
+            self.filtered_results = results
+            if len(results) > 20:
+                results = results[:20]
+            for URI in results:
+                download_light(URI, self.on_download_done)
+        #print(results)
+
+    def object_is_empty(self, triplet, object):
+        is_var = 'Variable' in object.entity
+        has_uri = 'URI' in object.entity and object.entity['URI']
+        return any([is_var, has_uri])
+
+    def is_default_variable_set(self, triplet, object):
+        if 'Variable' in object.entity and object.entity["Variable"]:
+            return object.entity
 
     def object_is_default_variable(self, triplet, object, entity):
-        print("Object:")
-        pprint(object.entity)
         if 'Variable' in object.entity:
             if object.entity["Label"] == entity["Label"]:
                 object.entity["Variable"] = True
@@ -203,6 +255,7 @@ class Open(Window):
     def triplets_default_variable_selected_cb(self, triplet, entity):
         print("Open: triplets default variable selected callback")
         self.objects_foreach(self.object_is_default_variable, entity)
+        triplet.emit("object-selected", entity)
 
     @Template.Callback()
     def key_press_event_cb(self, widget, event):

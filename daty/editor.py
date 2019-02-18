@@ -152,6 +152,7 @@ class Editor(ApplicationWindow):
             download(entity, self.load_row_async,)
         download(entities[-1], self.load_row_async, select=True)
         self.show()
+        self.present()
 
     def load_row_async(self, entity, **kwargs):
         """It creates sidebar passing downloaded data to its rows.

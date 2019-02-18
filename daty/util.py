@@ -296,6 +296,20 @@ def search(query, callback, *cb_args, wikidata=None, **kwargs):
     thread = Thread(target = do_call)
     thread.start()
 
+def select(var, statements, callback, *cb_args, wikidata=None, **kwargs):
+    if not wikidata:
+        from .wikidata import Wikidata
+        wikidata = Wikidata()
+    def do_call():
+        results, error = None, None
+        try:
+            results = wikidata.select(var, statements)
+        except Exception as err:
+            raise err
+        idle_add(lambda: callback(results, *cb_args, **kwargs))
+    thread = Thread(target = do_call)
+    thread.start()
+
 # def import_translations(lang):
 #     with open('po/'+lang+'.po', 'r') as g:
 #         content = literal_eval(g.read())
