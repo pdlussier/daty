@@ -75,8 +75,12 @@ class Wikidata:
         # Convert var and statements vars to SPARQL
         var = "?" + var["Label"]
 
+        print("Select: statements")
         for s in statements:
+            pprint(s)
             for role in s:
+                print("Role")
+                pprint(role)
                 x = s[role]
                 if not "URI" in x.keys() or x["URI"] == "":
                     s[role] = "?" + x["Label"]
@@ -84,19 +88,22 @@ class Wikidata:
                     s[role] = "wd:" + x["URI"]
                 elif x["URI"].startswith("P"):
                     s[role] = "wdt:" + x["URI"]
+                pprint(s[role])
 
-        # Form the SPARQL statements
+        print("Select: Form the SPARQL statements")
         expr = ""
         for s in statements:
-            #print("s", s['s'])
-            #print("p", s['p'])
+            print("s", s['s'])
+            print("p", s['p'])
             print('o', s['o'])
-            expr = expr.join([s['s'], " ", s['p'], " ", s['o'], ".\n"])
+            expr = "".join([expr, s['s'], " ", s['p'], " ", s['o'], ".\n"])
+            print(expr)
 
         # Do the query
         query = sub('statements', expr, template)
         query = sub('var', var, query)
 
+        #print(expr)
         print(query)
         sparql = SparqlQuery()
 

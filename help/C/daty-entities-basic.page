@@ -1,0 +1,22 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="daty-entities-basic">
+
+  <info>
+    <link type="guide" xref="index#using-daty" group="first"/>
+    <desc>Learn the basics of how to work with entities in daty.</desc>
+    <revision pkgversion="3.8" date="2013-03-07" status="final"/>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.com</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <title><media type="image" mime="image/png" its:translate="no" src="figures/daty.png"></media>
+    Entity basics</title>
+
+  <p>If you are new to <app>daty</app>, these topics will help you with
+  entities.</p>
+  <links type="topic" groups="first second third fourth fifth sixth" style="2column"/>
+</page>

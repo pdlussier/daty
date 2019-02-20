@@ -1,0 +1,64 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="overview">
+
+  <info>
+    <link type="guide" xref="index#introduction"/>
+    <link type="seealso" xref="daty-open-entities"/>
+    <link type="seealso" xref="daty-close-entity"/>
+    <desc>A brief introduction to Daty.</desc>
+    <revision pkgversion="1.0" date="2018-02-19" status="review"/>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+	<title><media type="image" mime="image/png" its:translate="no" src="figures/daty.png"></media>
+	Overview</title>
+
+    <p>Daty is a lightweight <link href="https://wikidata.org">Wikidata</link> editor and reader for the <link href="https://gnome.org">GNOME</link> desktop.</p>
+
+    <p>The program is available for <link href="https://gitlab.gnome.org/World/Daty">
+    download</link> for GNU/Linux and Microsoft Windows (soon for Mac OS, too).</p>
+
+    <p>In this <em>beta</em> editing is disabled, so you can mainly use it to surf the project and do database queries graphically.</p>
+
+    <p>Daty permits to open several <em>entities</em> with a single query through the use of <em>filters</em>. A filter in this context is pretty much
+    a phrase of the form <em>some subject</em> has <em>property</em> <em>object</em>, whose components can be <em>entities</em>, <em>properties</em>
+    or <em>variables</em></p>.
+
+    <p>The main Daty window is divided into several areas:</p>
+
+    <media type="image" mime="image/png" src="figures/daty-editor.png"/>
+
+    <section id="entities-list">
+    <title>Entities list</title>
+    <p>The <em>entities list</em> at the left displays all the <em>entities</em> currently
+    open in the editor.</p>
+
+    <p>In the context of Wikidata, an <em>entity</em> is a clearly identifiable concept or object, or an instance (an example of) of a clearly
+    identifiable concept or object. For example, in Wikidata we can have items for both the concept of planet (Q634) and an instance of a planet, Earth (Q2).</p>
+
+    <p>Some commands in Daty can act on a group of entities. To enter <em>selection mode</em>, click on the <em>select</em> button in the headerbar.</p>
+
+    <p>If you just selected an entity in the Entities list, you can start typing to filter entities in the list.</p>
+    </section>
+
+    <section id="entity-page">
+    <title>Entity Page</title>
+    <p>The <em>entity page</em> displays the properties and the values valid for the currently selected entity in <em>Entities list</em>.</p>
+
+    <p>In the next version, you will be able to click on the values to change their contents.</p>
+
+    <p>When the page of an entity is too big to be easily read, you can search for a specific property or value by clicking the <em>search</em> button in the
+    headerbar or just starting typing.</p>
+    </section>
+
+    <section id="common-page">
+    <title>Common Page</title>
+    <p>The <em>common page</em> will display all properties and values common to the entities you pinned in <em>selection mode</em>.</p>
+    </section>
+
+</page>
+

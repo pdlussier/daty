@@ -1,0 +1,28 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic"
+      id="limits">
+
+  <info>
+    <link type="guide" xref="index#contribute"/>
+    <link type="seealso" xref="overview"/>
+    <desc>Known limitations and roadmap.</desc>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+
+  <title>Limitations</title>
+
+  <p>Daty is still in early development. Daty uses pywikibot as backend,
+  thus it does not support lexemes.</p>
+
+  <p>Editing will be enabled in the next version.</p>
+
+  <p>To learn more about the features we're working on and the future
+  of Daty, please visit Daty's <link
+  href="https://gitlab.gnome.org/World/Daty/boards">issues board</link>.</p>
+
+</page>

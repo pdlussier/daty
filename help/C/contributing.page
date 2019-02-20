@@ -1,0 +1,26 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="contributing">
+
+  <info>
+    <link type="guide" xref="index#contribute"/>
+    <link type="next" xref="bugs" />
+  </info>
+
+  <title>Contribute to Daty</title>
+
+  <p>Want to help improve Daty? There are a number of ways you can
+  contribute:</p>
+
+  <list>
+    <item><p><link
+    href="https://gitlab.gnome.org/World/Daty/issues">Bug
+    reporting</link>—report new bugs or request new features</p></item>
+    <item><p><link href="https://gitlab.gnome.org/World/Daty/issues?label_name%5B%5D=Design+ideas">User Experience Design</link>—research and develop Geary’s user experience</p></item>
+    <item><p><link href="https://gitlab.gnome.org/World/Daty/issues">Development</link>—fix bugs and add new features</p></item>
+    <!-- <item><p><link href="https://wiki.gnome.org/Apps/Geary/Translating">Translating</link>—translate Geary’s user interface and user manual into new languages</p></item> -->
+    <!-- <item><p><link href="https://wiki.gnome.org/Apps/Geary/Contact">Join the discussion</link>—on the mailing list or IRC channel</p></item> -->
+  </list>
+
+  <p>Thanks for your help making Daty better!</p>
+</page>

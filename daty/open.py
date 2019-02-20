@@ -22,13 +22,16 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-#import asyncio
 from copy import deepcopy as cp
 from gi import require_version
+require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit
+from gi.repository.Gdk import CURRENT_TIME
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit, show_uri
+from platform import system
 from pprint import pprint
+from re import search as re_search
 
 from .constraintlist import ConstraintList
 from .entityselectable import EntitySelectable
@@ -47,13 +50,16 @@ class Open(Window):
 
     wikidata = Wikidata()
 
+    app_menu = Template.Child("app_menu")
     back = Template.Child("back")
     bottom_bar = Template.Child("bottom_bar")
     header_bar = Template.Child("header_bar")
     cancel = Template.Child("cancel")
     constraint_box = Template.Child("constraint_box")
+    constraint_viewport = Template.Child("constraint_viewport")
     constraint_button_box = Template.Child("constraint_button_box")
-#    constraint_listbox = Template.Child("constraint_listbox")
+    help = Template.Child("help")
+    help_menu = Template.Child("help_menu")
     open_session = Template.Child("open_session")
     page = Template.Child("page")
     open_button = Template.Child("open_button")
@@ -87,7 +93,7 @@ class Open(Window):
         self.hb_subtitle = self.header_bar.get_subtitle()
 
         self.constraint_listbox = ConstraintList()
-        self.constraint_box.add(self.constraint_listbox)
+        self.constraint_viewport.add(self.constraint_listbox)
 
         if quit_cb:
             self.quit_cb = quit_cb
@@ -110,6 +116,8 @@ class Open(Window):
     def set_search_placeholder(self, value):
         self.title.set_visible(value)
         self.subtitle.set_visible(value)
+        self.help.set_visible(value)
+        self.help_menu.set_visible(not value)
         self.select.set_visible(not value)
         #self.open_button.set_visible(not value)
         self.results.set_visible(not value)
@@ -132,6 +140,30 @@ class Open(Window):
     @Template.Callback()
     def back_clicked_cb(self, widget):
         self.destroy()
+
+    @Template.Callback()
+    def app_menu_clicked_cb(self, widget):
+        if self.app_menu.get_visible():
+            self.app_menu.hide()
+        else:
+            self.app_menu.set_visible(True)
+
+    @Template.Callback()
+    def help_clicked_cb(self, widget):
+        print("chitemmuort")
+        print(system())
+        if system() == 'Linux':
+            show_uri (None, "help:daty", CURRENT_TIME)
+        if system() == 'Windows':
+            from webbrowser import open
+            #open(https://)
+
+    @Template.Callback()
+    def on_about(self, widget):
+        print("cazzi")
+        from .aboutdaty import AboutDaty
+        about_dialog = AboutDaty(transient_for=self, modal=True)
+        about_dialog.present()
 
     @Template.Callback()
     def add_constraint_clicked_cb(self, widget):
@@ -212,12 +244,15 @@ class Open(Window):
                 self.set_search_placeholder(True)
 
     def on_download_done(self, URI, entity, error):
-        entity = SidebarEntity(entity, button=False)
-        row = ListBoxRow()
-        row.child = entity
-        row.add(entity)
-        self.results_listbox.add(row)
-        self.results_listbox.show_all()
+        if not entity:
+            print("problematic URI", URI)
+        else:
+            entity = SidebarEntity(entity, button=False)
+            row = ListBoxRow()
+            row.child = entity
+            row.add(entity)
+            self.results_listbox.add(row)
+            self.results_listbox.show_all()
 
     def on_select_done(self, results):
         if self.results != results:
@@ -226,7 +261,13 @@ class Open(Window):
             if len(results) > 20:
                 results = results[:20]
             for URI in results:
-                download_light(URI, self.on_download_done)
+                if re_search("^[QP]([0-9]|[A-Z]|-)+([0-9]|[A-Z])$", URI):
+                    download_light(URI, self.on_download_done)
+                else:
+                    entity = {"Label":URI,
+                              "Description":"String",
+                              "URI":""}
+                    self.on_download_done(URI, entity, "")
         #print(results)
 
     def object_is_empty(self, triplet, object):
@@ -266,31 +307,32 @@ class Open(Window):
                 return None
             self.search_entry.set_text("")
 
-    def on_search_done(self, results):
-        self.results_listbox.foreach(self.results_listbox.remove)
+    def on_search_done(self, results, query):
+        if query == self.search_entry.get_text():
+            self.results_listbox.foreach(self.results_listbox.remove)
 
-        #TODO: Implement selection mode and make single selection the default
-        for r in results:
-            if self.titlebar.get_selection_mode():
-                entity = EntitySelectable(r,
-                                          selected=self.entities,
-                                          open_button=self.open_button,
-                                          select_entities=self.select_entities)
-            else:
-                entity = SidebarEntity(r, button=False)
-            row = ListBoxRow()
-            row.child = entity
-            row.add(entity)
-            self.results_listbox.add(row)
-        self.results_listbox.show_all()
-        self.set_search_placeholder(False)
+            #TODO: Implement selection mode and make single selection the default
+            for r in results:
+                if self.titlebar.get_selection_mode():
+                    entity = EntitySelectable(r,
+                                              selected=self.entities,
+                                              open_button=self.open_button,
+                                              select_entities=self.select_entities)
+                else:
+                    entity = SidebarEntity(r, button=False)
+                row = ListBoxRow()
+                row.child = entity
+                row.add(entity)
+                self.results_listbox.add(row)
+            self.results_listbox.show_all()
+            self.set_search_placeholder(False)
 
 
     @Template.Callback()
     def search_entry_search_changed_cb(self, entry):
         query = entry.get_text()
         if query:
-            search(entry.get_text(), self.on_search_done)
+            search(entry.get_text(), self.on_search_done, query)
         else:
             self.set_search_placeholder(True)
 

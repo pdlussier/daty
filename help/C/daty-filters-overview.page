@@ -1,0 +1,74 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="daty-filters-overview">
+
+  <info>
+    <link type="guide" xref="daty-filters-basic"/>
+    <link type="seealso" xref="daty-open-entities"/>
+    <link type="seealso" xref="daty-close-entity"/>
+    <desc>A brief introduction to filters.</desc>
+    <revision pkgversion="1.0" date="2018-02-20" status="review"/>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+  <title>Filters</title>
+
+  <p>Since Wikidata contains more than 53.000.000 entities, it can be difficult
+  to find a specific item just searching for its <em>label</em>.</p>
+
+  <p>For example, if you want to edit the page of <em>John Smith
+  (Q16014988)</em>, anglican priest, label search would return a huge list of
+  omonymous to be scrolled manually in order to find the right one.</p>
+
+  <p>Supposing you already know that your John Smith is an english priest,
+  you can restrict the search field using a filter.</p>
+
+  <section id="sparql-query">
+    <title>SPARQL queries</title>
+
+    <p><link href="https://en.wikipedia.org/wiki/SPARQL">SPARQL</link>
+    is a semantic query language for databases like Wikidata.
+    In its simplest form, a SPARQL query is a <em>phrase</em> like:</p>
+
+    <code>
+    SELECT thing WHERE
+
+      thing "has property" "some specific value"
+    </code>
+
+    <p>So if, as in the above example, we want to search for all the <em>English
+    Anglican priests</em>, the query to form is:</p>
+
+    <code>
+    SELECT person WHERE
+
+      person "has country of citizenship" "England"
+      person "has occupation" "priest"
+    </code>
+
+    <p>In the previous query, the content of the word <code>person</code> is
+    <em>unknown</em> while the <code>"</code>-encapsulated words refer to
+    <em>specific</em> items or properties.</p>
+
+    <p>Of course one can combine phrases
+    with one or more unknown <em>variables</em> to form complex sentences.
+
+    For example, to retrieve the grandparents of Beethoven we can use the
+    following query:</p>
+
+    <code>
+    SELECT grandparent WHERE
+
+      parent "has child" "Beethoven"
+      grandparent "has child" parent
+    </code>
+
+    <p>Daty provides a simple graphical interface to form SPARQL
+    queries which uses the <link href="https://query.wikidata.org">
+    Wikidata query service</link>.</p>
+  </section>
+
+</page>

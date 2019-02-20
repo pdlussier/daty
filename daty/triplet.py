@@ -78,14 +78,14 @@ class Triplet(Grid):
                                                   parent=widget,
                                                   load=self.load,
                                                   variables=self.variables)
-            #widget.popover.connect("closed",
-            #                              self.popover_closed_cb)
             widget.popover.connect("default-variable-selected",
                                           self.default_variable_selected_cb)
             widget.popover.connect("object-selected",
                                           self.object_selected_cb)
             widget.popover.connect("variable-deleted",
                                           self.variable_deleted_cb)
+
+        self.property.popover.search_entry.set_text("property:")
 
         self.show_all()
 
@@ -105,7 +105,7 @@ class Triplet(Grid):
             pango_label(widget.title, 'bold')
 
     @Template.Callback()
-    def button_press_event_cb(self, widget, event):
+    def widget_clicked_cb(self, widget):
         widget.popover.set_visible(True)
 
     def popover_closed_cb(self, popover):

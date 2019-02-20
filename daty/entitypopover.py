@@ -94,43 +94,48 @@ class EntityPopover(PopoverMenu):
                 self.set_search_placeholder(True)
 
     def on_search_done(self, results, query, *args, **kwargs):
-        try:
-            set_text(self.variable_title, query, query)
-            pango_label(self.variable_title, 'bold')
-            self.variables_set_results(query=query)
-            listbox = self.results_listbox
-            for r in results:
-                if r['URI'] != self.entity['URI']:
-                    entity = SidebarEntity(r, URI=False, button=True)
-                    entity.image_button.set_from_icon_name('focus-windows-symbolic', IconSize.BUTTON)
-                    entity.button.connect("clicked", self.new_window_clicked_cb, r)
+        if query == self.search_entry.get_text():
+            try:
+                set_text(self.variable_title, query, query)
+                pango_label(self.variable_title, 'bold')
+                self.variables_set_results(query=query)
+                listbox = self.results_listbox
+                for r in results:
+                    if r['URI'] != self.entity['URI']:
+                        entity = SidebarEntity(r, URI=False, button=True)
+                        entity.image_button.set_from_icon_name('focus-windows-symbolic', IconSize.BUTTON)
+                        entity.button.connect("clicked", self.new_window_clicked_cb, r)
 
-                    row = ListBoxRow()
-                    row.child = entity
-                    row.add(entity)
-                    listbox.add(row)
-            listbox.show_all()
-            self.set_search_placeholder(False)
-        except Exception as e:
-            raise e
+                        row = ListBoxRow()
+                        row.child = entity
+                        row.add(entity)
+                        listbox.add(row)
+                listbox.show_all()
+                self.set_search_placeholder(False)
+            except Exception as e:
+                raise e
 
     def variables_set_results(self, query=""):
         listbox = self.results_listbox
         listbox.foreach(listbox.remove)
+        if hasattr(self.variable_record, 'connection'):
+            self.variable_record.disconnect(self.variable_record.connection)
         exact_match = [v for v in self.variables if v["Label"] == query]
         if exact_match:
             label = "Select variable"
+            self.variable_record.connection = self.variable_record.connect("clicked",
+                                                                           self.object_selected_cb,
+                                                                           exact_match[-1])
             selected = any(v["Variable"] for v in exact_match)
             if selected:
                 pango_label(self.variable_title, 'ultrabold')
-            self.variable_record.connect("clicked", self.object_selected_cb,
-                                         exact_match[-1])
         else:
             label = "Record new variable"
-            self.variable_record.connect("clicked", self.variable_record_clicked_cb)
+            self.variable_record.connection = self.variable_record.connect("clicked",
+                                                                           self.variable_record_clicked_cb)
         set_text(self.variable_subtitle, label, label)
 
-        for v in [v for v in self.variables if v["Label"]]:
+        for v in [v for v in self.variables if v["Label"] and "Variable" in v]:
             if query in v["Label"] and not query == v["Label"]:
                 row = ListBoxRow()
                 if query:
@@ -141,8 +146,10 @@ class EntityPopover(PopoverMenu):
                                            v)
                     entity.image_button1.set_from_icon_name('edit-select-symbolic',
                                                             IconSize.BUTTON)
+                    entity.button1.set_tooltip_text("Select variable for the query")
                 entity.button.connect("clicked", self.delete_variable_clicked_cb,
                                       row, v)
+                entity.button.set_tooltip_text("Delete variable")
                 row.child = entity
                 if v["Variable"]:
                     pango_label(entity.label, 'ultrabold')

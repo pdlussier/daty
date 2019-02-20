@@ -1,0 +1,23 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="daty-filters-new">
+
+  <info>
+    <link type="guide" xref="daty-filters-basic"/>
+    <link type="seealso" xref="daty-open-entities"/>
+    <link type="seealso" xref="daty-close-entity"/>
+    <desc>How to create a filter.</desc>
+    <revision pkgversion="1.0" date="2018-02-20" status="review"/>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+    <title>Create a new filter</title>
+    <p>Click on the <gui>New filter</gui> button. The filter box will then appear
+    and an empty filter will be displayed.</p>
+
+    <media type="image" mime="image/png" src="figures/new-filter.png"/>
+
+</page>

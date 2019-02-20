@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="guide"
+      style="2column task"
+      id="index">
+
+  <info>
+    <title type="link">Daty Wikidata Editor</title>
+    <desc>Home page of the Daty help guide.</desc>
+    <revision pkgversion="1.0" date="2018-02-19" status="review"/>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+
+    <title><media type="image" mime="image/png" its:translate="no" src="figures/daty.png"></media>
+        Daty Wikidata Editor
+    </title>
+
+    <section id="introduction" style="2column">
+        <title>Introduction</title>
+    </section>
+
+    <section id="using-daty" style="2column">
+        <title>Using Daty</title>
+    </section>
+
+    <section id="contribute" style="2column">
+        <title>Contributing and bug reporting</title>
+    </section>
+
+</page>

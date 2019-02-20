@@ -57,6 +57,7 @@ class SidebarEntity(EventBox):
         EventBox.__init__(self, *args)
 
         if button:
+            self.button.set_tooltip_text("Close entity")
             context = self.button.get_style_context()
             provider = CssProvider()
             provider.load_from_resource('/ml/prevete/Daty/gtk/sidebarentity.css')

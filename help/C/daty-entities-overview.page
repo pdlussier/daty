@@ -1,0 +1,47 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="daty-entities">
+
+  <info>
+    <link type="guide" xref="daty-entities-basic"/>
+    <link type="seealso" xref="daty-close-file"/>
+    <link type="seealso" xref="overview"/>
+    <desc>A brief overview on entities.</desc>
+    <revision pkgversion="1.0" date="2019-02-19" status="review"/>
+
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <title>Entities</title>
+
+  <p>In Wikidata, an entity can be an <em>Item</em> or a <em>Property</em>.</p>
+
+  <list>
+      <item><p>An <em>Item</em> should represent a clearly identifiable concept or object, or an
+      instance of a clearly identifiable concept or object. For example, in
+      Wikidata we can have items for both the concept of planet (Q634) and an
+      instance of a planet, Earth (Q2).</p>
+
+      <p>Items can and should also be linked to each other. Each item has a unique
+      identifier (starting with a Q prefix) and its own page in the Wikidata main
+      namespace.</p></item>
+
+      <item><p>A <em>Property</em> describe the data value of a statement and can be thought of
+      as a category of data, for example "color" for the data value "blue".
+      Properties, when paired with values, form a <em>statement</em>.</p></item>
+  </list>
+
+  <p>Both items and properties should contain at least a <em>Label</em> and a
+  description in one or more languages.</p>
+
+  <p>You can find more informations about
+  <link href="https://www.wikidata.org/wiki/Help:Items">items</link> and
+  <link href="https://www.wikidata.org/wiki/Help:Properties">properties</link> on
+  the Wikidata <link href="https://wikidata.org/wiki/Help:Contents">help</link>.</p>
+
+</page>

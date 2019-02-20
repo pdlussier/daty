@@ -3,10 +3,25 @@
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <requires lib="libhandy" version="0.0"/>
+  <object class="GtkImage" id="app_menu_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">open-menu-symbolic</property>
+  </object>
   <object class="GtkImage" id="back-icon">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">go-previous-symbolic</property>
+  </object>
+  <object class="GtkImage" id="help_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">help-browser-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">help-browser-symbolic</property>
   </object>
   <object class="GtkImage" id="pan-down">
     <property name="visible">True</property>
@@ -107,6 +122,7 @@
                 <property name="margin_start">18</property>
                 <property name="margin_end">18</property>
                 <property name="vexpand">False</property>
+                <property name="row_spacing">10</property>
                 <child>
                   <object class="GtkBox" id="search_box">
                     <property name="visible">True</property>
@@ -161,8 +177,8 @@
                       <object class="GtkLabel" id="subtitle">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Search for entities in the database&lt;/b&gt;
-or restrict the domain among those that satisfy
+                        <property name="label" translatable="yes">&lt;b&gt;Search for an &lt;a href="https://www.wikidata.org/wiki/Help:Items"&gt;entity&lt;/a&gt; in the database&lt;/b&gt;
+or restrict the results among those that satisfy
 some filter</property>
                         <property name="use_markup">True</property>
                         <property name="justify">center</property>
@@ -191,11 +207,11 @@ some filter</property>
                     <property name="vexpand">True</property>
                     <child>
                       <object class="GtkButton" id="add_constraint">
-                        <property name="label" translatable="yes">Add filter</property>
+                        <property name="label" translatable="yes">New filter</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="tooltip_text" translatable="yes">Add filter in the form "Subject" "has property" "object".</property>
+                        <property name="tooltip_text" translatable="yes">Create filter in the form "Subject" "has property" "object".</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="hexpand">True</property>
@@ -210,36 +226,7 @@ some filter</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
-                    <property name="top_attach">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFrame" id="constraint_box">
-                    <property name="name">constraint_box</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">12</property>
-                    <property name="vexpand">True</property>
-                    <property name="label_xalign">0</property>
-                    <property name="label_yalign">1</property>
-                    <property name="shadow_type">etched-out</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child type="label">
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_bottom">6</property>
-                        <property name="label" translatable="yes">Filters</property>
-                        <attributes>
-                          <attribute name="font-desc" value="Cantarell Bold 10"/>
-                        </attributes>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">5</property>
+                    <property name="top_attach">7</property>
                   </packing>
                 </child>
                 <child>
@@ -269,6 +256,84 @@ some filter</property>
                     <property name="left_attach">0</property>
                     <property name="top_attach">2</property>
                     <property name="height">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="constraint_box">
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Filters</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Cantarell Bold 10"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="filters_help">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Filters' help</property>
+                            <property name="image">image1</property>
+                            <property name="relief">none</property>
+                            <signal name="clicked" handler="filters_help_clicked_cb" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="shadow_type">out</property>
+                        <child>
+                          <object class="GtkViewport" id="constraint_viewport">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">5</property>
+                    <property name="height">2</property>
                   </packing>
                 </child>
               </object>
@@ -365,6 +430,35 @@ some filter</property>
               </packing>
             </child>
             <child>
+              <object class="GtkButton" id="app_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Application menu</property>
+                <property name="image">app_menu_image</property>
+                <signal name="clicked" handler="app_menu_clicked_cb" swapped="no"/>
+              </object>
+              <packing>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="help">
+                <property name="label" translatable="yes">Help</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">help_image</property>
+                <property name="always_show_image">True</property>
+                <signal name="clicked" handler="help_clicked_cb" swapped="no"/>
+              </object>
+              <packing>
+                <property name="pack_type">end</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkButton" id="select">
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -374,7 +468,7 @@ some filter</property>
               </object>
               <packing>
                 <property name="pack_type">end</property>
-                <property name="position">2</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -388,7 +482,7 @@ some filter</property>
               </object>
               <packing>
                 <property name="pack_type">end</property>
-                <property name="position">3</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </object>
@@ -396,4 +490,51 @@ some filter</property>
       </object>
     </child>
   </template>
+  <object class="GtkPopoverMenu" id="app_menu">
+    <property name="can_focus">False</property>
+    <property name="relative_to">app_button</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">8</property>
+        <property name="margin_end">8</property>
+        <property name="margin_top">8</property>
+        <property name="margin_bottom">8</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkModelButton" id="help_menu">
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
+            <property name="text" translatable="yes">Help</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="about">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
+            <property name="text" translatable="yes">About</property>
+            <signal name="clicked" handler="on_about" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
 </interface>
