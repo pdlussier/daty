@@ -151,18 +151,23 @@ class Open(Window):
             self.app_menu.set_visible(True)
 
     @Template.Callback()
-    def help_clicked_cb(self, widget):
-        print("chitemmuort")
-        print(system())
+    def filters_help_clicked_cb(self, widget):
         if system() == 'Linux':
             show_uri (None, "help:daty", CURRENT_TIME)
         if system() == 'Windows':
             from webbrowser import open
-            #open(https://)
+            open('http://daty.prevete.ml')
+
+    @Template.Callback()
+    def help_clicked_cb(self, widget):
+        if system() == 'Linux':
+            show_uri (None, "help:daty", CURRENT_TIME)
+        if system() == 'Windows':
+            from webbrowser import open
+            open('http://daty.prevete.ml')
 
     @Template.Callback()
     def on_about(self, widget):
-        print("cazzi")
         from .aboutdaty import AboutDaty
         about_dialog = AboutDaty(transient_for=self, modal=True)
         about_dialog.present()
