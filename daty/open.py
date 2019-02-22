@@ -66,7 +66,9 @@ class Open(Window):
     page = Template.Child("page")
     open_button = Template.Child("open_button")
     results = Template.Child("results")
+    results_stack = Template.Child("results_stack")
     results_listbox = Template.Child("results_listbox")
+    results_nope_query = Template.Child("results_nope_query")
     select = Template.Child("select")
     select_entities = Template.Child("select_entities")
     select_menu = Template.Child("select_menu")
@@ -135,7 +137,7 @@ class Open(Window):
         if value:
             self.page.child_set_property(child, "width", 2)
             if not self.filters_box.get_visible():
-                self.filters_button_box.props.valign = 1
+                self.filter_new_box.props.valign = 1
         else:
             self.page.child_set_property(child, "width", 1)
             if not self.filters_box.get_visible():
@@ -253,6 +255,7 @@ class Open(Window):
         var = [s[r] for s in statements for r in s if "Variable" in s[r] and s[r]["Variable"]]
         if var: var = var[-1]
         if statements and var:
+
             select(var, statements, self.on_select_done)
             self.set_search_placeholder(False)
         else:
@@ -329,7 +332,11 @@ class Open(Window):
         if query == self.search_entry.get_text():
             self.results_listbox.foreach(self.results_listbox.remove)
 
-            #TODO: Implement selection mode and make single selection the default
+            if results == []:
+                self.results_stack.set_visible_child_name("results_nope")
+                set_text(self.results_nope_query, query, query)
+            else:
+                self.results_stack.set_visible_child_name("results_listbox")
             for r in results:
                 if self.titlebar.get_selection_mode():
                     entity = EntitySelectable(r,
