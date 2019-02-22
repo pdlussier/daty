@@ -58,6 +58,7 @@ class Open(Window):
     constraint_box = Template.Child("constraint_box")
     constraint_viewport = Template.Child("constraint_viewport")
     constraint_button_box = Template.Child("constraint_button_box")
+    filters_subtitle = Template.Child("filters_subtitle")
     help = Template.Child("help")
     help_menu = Template.Child("help_menu")
     open_session = Template.Child("open_session")
@@ -116,6 +117,7 @@ class Open(Window):
     def set_search_placeholder(self, value):
         self.title.set_visible(value)
         self.subtitle.set_visible(value)
+        self.filters_subtitle.set_visible(value)
         self.help.set_visible(value)
         self.help_menu.set_visible(not value)
         self.select.set_visible(not value)
@@ -307,7 +309,9 @@ class Open(Window):
                 return None
             self.search_entry.set_text("")
 
-    def on_search_done(self, results, query):
+    def on_search_done(self, results, error, query):
+        if error:
+            print("connection error")
         if query == self.search_entry.get_text():
             self.results_listbox.foreach(self.results_listbox.remove)
 

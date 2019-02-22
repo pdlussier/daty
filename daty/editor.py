@@ -333,12 +333,17 @@ class Editor(ApplicationWindow):
         """
         if event.keyval in modifiers:
             return None
+        print(focused)
         focused = window.get_focus()
         sidebar_entity_focused = type(focused) == ListBoxRow
         sidebar_search_entry_focused = focused == self.sidebar_search_entry
+        entity_popover_search_entry_focused = type(focused) == SearchEntry()
         sidebar_leaflet_focused = self.single_column.get_visible_child_name() == 'sidebar'
-
+        print(focused)
         if sidebar_search_entry_focused:
+            pass
+        if entity_popover_search_entry_focused:
+            print("test")
             pass
         elif sidebar_entity_focused or sidebar_leaflet_focused:
             if not self.sidebar_search_bar.get_search_mode():

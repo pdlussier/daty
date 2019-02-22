@@ -287,12 +287,16 @@ def search(query, callback, *cb_args, wikidata=None, **kwargs):
         from .wikidata import Wikidata
         wikidata = Wikidata()
     def do_call():
-        results, error = None, None
+        results, error = [], None
         try:
             results = wikidata.search(query)
         except Exception as err:
-            raise err
-        idle_add(lambda: callback(results, *cb_args, **kwargs))
+            from requests.exceptions import ConnectionError
+            if type(err) == ConnectionError:
+                error = err
+            else:
+                raise err
+        idle_add(lambda: callback(results, error, *cb_args, **kwargs))
     thread = Thread(target = do_call)
     thread.start()
 

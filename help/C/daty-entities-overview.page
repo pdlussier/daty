@@ -6,7 +6,7 @@
   <info>
     <link type="guide" xref="daty-entities-basic"/>
     <link type="seealso" xref="daty-close-file"/>
-    <link type="seealso" xref="overview"/>
+    <link type="next" xref="daty-entities-open"/>
     <desc>A brief overview on entities.</desc>
     <revision pkgversion="1.0" date="2019-02-19" status="review"/>
 

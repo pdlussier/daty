@@ -231,8 +231,8 @@ class Wikidata:
                         "Description":clean(r.find(name='span', attrs={'class':'wb-itemlink-description'}).text)} for r in results)
         except Exception as e:
             results = []
-            if verbose:
-                print(e)
+            #if verbose:
+            #    print(e)
         if self.verbose:
             pprint(results)
         return results

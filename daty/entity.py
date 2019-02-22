@@ -226,7 +226,7 @@ class Entity(Stack):
 
     def on_search_done(self, results, error):
         try:
-            listbox = self.entity_popover.label_listbox
+            listbox = self.entity_popover.results_listbox
             listbox.foreach(listbox.remove)
             for r in results:
                 if r['URI'] != self.URI:

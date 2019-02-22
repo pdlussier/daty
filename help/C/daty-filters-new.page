@@ -3,9 +3,9 @@
       id="daty-filters-new">
 
   <info>
-    <link type="guide" xref="daty-filters-basic"/>
-    <link type="seealso" xref="daty-open-entities"/>
-    <link type="seealso" xref="daty-close-entity"/>
+    <link type="guide" xref="daty-filters-basic" groups='second'/>
+    <link type="previous" xref="daty-filters-overview"/>
+    <link type="next" xref="daty-filters-delete"/>
     <desc>How to create a filter.</desc>
     <revision pkgversion="1.0" date="2018-02-20" status="review"/>
     <credit type="author">
@@ -14,10 +14,59 @@
     </credit>
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
-    <title>Create a new filter</title>
-    <p>Click on the <gui>New filter</gui> button. The filter box will then appear
-    and an empty filter will be displayed.</p>
+    <title>New filter</title>
+    <p>Click on the <gui>New filter</gui> button in the <gui>Open entities</gui>
+    dialog. The filter box will then appear and an empty filter will be displayed.</p>
 
     <media type="image" mime="image/png" src="figures/new-filter.png"/>
+
+    <p>Uncompiled or partially compiled filters are displayed with a red background.</p>
+
+    <p>Click on the elements of the triplet to set their values through the
+    <gui>entity selection popover</gui>.</p>
+
+    <section id="variables">
+      <title>Variables</title>
+      <list>
+        <item><p>To record a new variable and set it as the value of the element, write
+        its name in the <gui>entity selection popover</gui> search entry and press the
+        <gui>Record new variable</gui> button.</p>
+
+        <media type="image" mime="image/png" src="figures/new-variable.png"/>
+        </item>
+        <item><p>To record a new variable ad set as the default (i.e. its elements will
+        be the results) for the query, press the <gui>record and set default variable</gui>
+        button:</p>
+
+        <media type="image" mime="image/png" src="figures/set-new-variable-as-default.png"/>
+        </item>
+
+        <item><p>To set an already recorded variable as default, hover its row in
+        the <gui>entity selection popover</gui> with the mouse and press the <gui>select variable</gui> button
+        <media type="image" mime="image/png" src="figures/set-variable-as-default.png"/></p>
+        <note style="tip"><p>Remember: queries that do not contain a selected variable
+        won't be executed</p></note>
+        </item>
+
+        <item><p>To delete a variable, hover its row in the <gui>entity
+        selection popover</gui> with the mouse and press the <gui>delete variable</gui> button
+        <media type="image" mime="image/png" src="figures/variable-delete.png"/></p>
+        </item>
+
+       </list>
+    </section>
+    <section id="items">
+      <title>Items</title>
+      <p>To select an item, search for its label in the <gui>entity selection
+      popover</gui> search entry and click on corresponding item in the results.</p>
+    </section>
+    <section id="properties">
+      <title>Properties</title>
+      <p>To select a property, search for its label in the <gui>entity selection
+      popover</gui> search entry and click on the corresponding property in the results.</p>
+
+      <note style="tip"><p>You can filter properties in search results prefixing
+      <em>property:</em> to your query (as in <code>property:child</code>)</p></note>
+    </section>
 
 </page>

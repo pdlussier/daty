@@ -1,12 +1,11 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       type="topic" style="task"
-      id="daty-open-entities">
+      id="daty-entities-open">
 
   <info>
     <link type="guide" xref="daty-entities-basic"/>
-    <link type="seealso" xref="daty-close-file"/>
-    <link type="seealso" xref="overview"/>
+    <link type="next" xref="daty-entities-close"/>
     <desc>Open entities to start working on them.</desc>
     <revision pkgversion="1.0" date="2019-02-19" status="review"/>
 
@@ -27,7 +26,7 @@
 
   <media type="image" mime="image/png" src="figures/open-dialog.png"/>
 
-  <p>To search for an entity, type it in the search entry,
+  <p>To search for an entity by its label, type it in the search entry,
   then click on the result to open it in the editor.</p>
 
   <section id="open-multiple-entities">

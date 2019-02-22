@@ -16,13 +16,13 @@
 
   <title>Limitations</title>
 
-  <p>Daty is still in early development. Daty uses pywikibot as backend,
-  thus it does not support lexemes.</p>
+  <p>Daty is still in early development. Not all confirmed features are available,
+  editing among others.</p>
 
-  <p>Editing will be enabled in the next version.</p>
+  <p>Also, since it uses pywikibot as backend, it does not support lexemes.</p>
 
-  <p>To learn more about the features we're working on and the future
-  of Daty, please visit Daty's <link
+  <p>To learn more about the features we are working on and the future
+  of Daty, please visit project's <link
   href="https://gitlab.gnome.org/World/Daty/boards">issues board</link>.</p>
 
 </page>

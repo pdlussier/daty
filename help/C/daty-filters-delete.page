@@ -1,0 +1,21 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="daty-filters-delete">
+
+  <info>
+    <link type="guide" xref="daty-filters-basic" groups='third'/>
+    <link type="previous" xref="daty-filters-new"/>
+    <desc>How to delete a filter.</desc>
+    <revision pkgversion="1.0" date="2018-02-20" status="review"/>
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+    <title>Delete filter</title>
+    <p>Hover with the mouse the filter you want to delete and press the
+    <gui>delete filter</gui> button
+    <media type="image" mime="image/png" src="figures/variable-delete.png"/>
+    .</p>
+</page>

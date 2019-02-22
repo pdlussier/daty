@@ -4,8 +4,8 @@
 
   <info>
     <link type="guide" xref="index#introduction"/>
-    <link type="seealso" xref="daty-open-entities"/>
-    <link type="seealso" xref="daty-close-entity"/>
+    <link type="seealso" xref="daty-entities-basic"/>
+    <link type="seealso" xref="daty-filters-basic"/>
     <desc>A brief introduction to Daty.</desc>
     <revision pkgversion="1.0" date="2018-02-19" status="review"/>
     <credit type="author">
@@ -14,8 +14,7 @@
     </credit>
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
-	<title><media type="image" mime="image/png" its:translate="no" src="figures/daty.png"></media>
-	Overview</title>
+	<title>Overview</title>
 
     <p>Daty is a lightweight <link href="https://wikidata.org">Wikidata</link> editor and reader for the <link href="https://gnome.org">GNOME</link> desktop.</p>
 
@@ -61,4 +60,3 @@
     </section>
 
 </page>
-

@@ -1,0 +1,25 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      type="topic" style="task"
+      id="daty-entities-close">
+
+  <info>
+    <link type="guide" xref="daty-entities-basic"/>
+    <link type="prev" xref="daty-entities-open"/>
+    <desc>Close an entity.</desc>
+    <revision pkgversion="1.0" date="2019-02-19" status="review"/>
+
+    <credit type="author">
+      <name>Pellegrino Prevete</name>
+      <email>pellegrinoprevete@gmail.org</email>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <title>Close an entity</title>
+
+  <p>To close an entity, hover its row in the <gui>Entities list</gui> with the
+  mouse and press the <gui>close entity</gui> button
+  <media type="image" mime="image/png" src="figures/variable-delete.png"/>.</p>
+
+</page>

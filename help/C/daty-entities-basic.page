@@ -13,8 +13,7 @@
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 
-  <title><media type="image" mime="image/png" its:translate="no" src="figures/daty.png"></media>
-    Entity basics</title>
+  <title>Entities basics</title>
 
   <p>If you are new to <app>daty</app>, these topics will help you with
   entities.</p>

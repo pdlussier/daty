@@ -3,9 +3,8 @@
       id="daty-filters-overview">
 
   <info>
-    <link type="guide" xref="daty-filters-basic"/>
-    <link type="seealso" xref="daty-open-entities"/>
-    <link type="seealso" xref="daty-close-entity"/>
+    <link type="guide" xref="daty-filters-basic" groups='first'/>
+    <link type="next" xref="daty-filters-new"/>
     <desc>A brief introduction to filters.</desc>
     <revision pkgversion="1.0" date="2018-02-20" status="review"/>
     <credit type="author">
@@ -36,7 +35,7 @@
     <code>
     SELECT thing WHERE
 
-      thing "has property" "some specific value"
+      thing 	"has property" 			"some specific value"
     </code>
 
     <p>So if, as in the above example, we want to search for all the <em>English
@@ -45,8 +44,8 @@
     <code>
     SELECT person WHERE
 
-      person "has country of citizenship" "England"
-      person "has occupation" "priest"
+      person	"has country of citizenship"	"England"
+      person	"has occupation"		"priest"
     </code>
 
     <p>In the previous query, the content of the word <code>person</code> is
@@ -62,13 +61,15 @@
     <code>
     SELECT grandparent WHERE
 
-      parent "has child" "Beethoven"
-      grandparent "has child" parent
+      parent 		"has child" 		"Beethoven"
+      grandparent 	"has child" 		parent
     </code>
 
-    <p>Daty provides a simple graphical interface to form SPARQL
-    queries which uses the <link href="https://query.wikidata.org">
+    <p>Daty provides a simple graphical interface to form SPARQL queries (i.e.
+    <em>filters</em>), which uses the <link href="https://query.wikidata.org">
     Wikidata query service</link>.</p>
   </section>
+
+<p>To learn how to set a filter in daty, go to the next page.<p>
 
 </page>

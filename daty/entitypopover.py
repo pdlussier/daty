@@ -93,7 +93,7 @@ class EntityPopover(PopoverMenu):
             else:
                 self.set_search_placeholder(True)
 
-    def on_search_done(self, results, query, *args, **kwargs):
+    def on_search_done(self, results, error, query, *args, **kwargs):
         if query == self.search_entry.get_text():
             try:
                 set_text(self.variable_title, query, query)
