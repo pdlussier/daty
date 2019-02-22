@@ -31,6 +31,7 @@ from gi.repository.Gdk import CURRENT_TIME
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit, show_uri
 from platform import system
 from pprint import pprint
+from re import sub
 from re import search as re_search
 
 from .constraintlist import ConstraintList
@@ -40,7 +41,7 @@ from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
 from .triplet import Triplet
 from .wikidata import Wikidata
-from .util import EntitySet, download_light, search, select
+from .util import EntitySet, download_light, search, select, set_text
 
 name = 'ml.prevete.Daty'
 
@@ -55,9 +56,9 @@ class Open(Window):
     bottom_bar = Template.Child("bottom_bar")
     header_bar = Template.Child("header_bar")
     cancel = Template.Child("cancel")
-    constraint_box = Template.Child("constraint_box")
-    constraint_viewport = Template.Child("constraint_viewport")
-    constraint_button_box = Template.Child("constraint_button_box")
+    filters_box = Template.Child("filters_box")
+    filters_viewport = Template.Child("filters_viewport")
+    filter_new_box = Template.Child("filter_new_box")
     filters_subtitle = Template.Child("filters_subtitle")
     help = Template.Child("help")
     help_menu = Template.Child("help_menu")
@@ -93,8 +94,8 @@ class Open(Window):
         self.hb_title = self.header_bar.get_title()
         self.hb_subtitle = self.header_bar.get_subtitle()
 
-        self.constraint_listbox = ConstraintList()
-        self.constraint_viewport.add(self.constraint_listbox)
+        self.filters_listbox = ConstraintList()
+        self.filters_viewport.add(self.filters_listbox)
 
         if quit_cb:
             self.quit_cb = quit_cb
@@ -108,7 +109,13 @@ class Open(Window):
             self.back.set_visible(True)
 
         self.open_button.connect('clicked', self.open_button_clicked_cb, load)
-
+        text = """<b>Search for an <a href="url">entity</a> in the database</b>"""
+        if system() == 'Linux':
+            url = "help:daty/daty-entities"
+        if system() == 'Windows':
+            url = "http://daty.prevete.ml/daty-entities.html"
+        text = sub('url', url, text)
+        set_text(self.subtitle, text, url, markup=True)
 
     def on_quit(self, widget, event):
         self.quit_cb()
@@ -127,12 +134,12 @@ class Open(Window):
         child.set_property("vexpand", value)
         if value:
             self.page.child_set_property(child, "width", 2)
-            if not self.constraint_box.get_visible():
-                self.constraint_button_box.props.valign = 1
+            if not self.filters_box.get_visible():
+                self.filters_button_box.props.valign = 1
         else:
             self.page.child_set_property(child, "width", 1)
-            if not self.constraint_box.get_visible():
-                self.constraint_button_box.props.valign = 0
+            if not self.filters_box.get_visible():
+                self.filter_new_box.props.valign = 0
 
     def open_button_clicked_cb(self, widget, load):
         if self.entities != []:
@@ -153,10 +160,10 @@ class Open(Window):
     @Template.Callback()
     def filters_help_clicked_cb(self, widget):
         if system() == 'Linux':
-            show_uri (None, "help:daty", CURRENT_TIME)
+            show_uri (None, "help:daty/daty-filters-overview", CURRENT_TIME)
         if system() == 'Windows':
             from webbrowser import open
-            open('http://daty.prevete.ml')
+            open('http://daty.prevete.ml/daty-filters-overview.html')
 
     @Template.Callback()
     def help_clicked_cb(self, widget):
@@ -173,8 +180,9 @@ class Open(Window):
         about_dialog.present()
 
     @Template.Callback()
-    def add_constraint_clicked_cb(self, widget):
-        self.constraint_box.set_visible(True)
+    def filter_new_clicked_cb(self, widget):
+        self.filters_box.set_visible(True)
+        self.filters_subtitle.set_visible(False)
         triplet = Triplet(load=self.load, variables=self.variables)
         triplet.connect("default-variable-selected", self.triplets_default_variable_selected_cb)
         triplet.connect("object-selected", self.triplets_check_cb)
@@ -190,8 +198,8 @@ class Open(Window):
                                      cb_args=[row])
         close_button.set_visible(True)
         row.revealer.add(close_button)
-        self.constraint_listbox.add(row)
-        self.constraint_listbox.show_all()
+        self.filters_listbox.add(row)
+        self.filters_listbox.show_all()
 
     def triplet_variable_deleted_cb(self, triplet, entity):
         output = self.objects_foreach(self.object_delete, entity)
@@ -210,7 +218,7 @@ class Open(Window):
 
     def objects_foreach(self, function, *args):
         output = []
-        for row in (r for r in self.constraint_listbox if hasattr(r, 'child')):
+        for row in (r for r in self.filters_listbox if hasattr(r, 'child')):
             triplet = row.child
             for object in triplet.members:
                 output.append(function(triplet, object, *args))
@@ -218,15 +226,16 @@ class Open(Window):
 
     def triplet_delete(self, widget, row):
         row.destroy()
-        if not [r for r in self.constraint_listbox if hasattr(r, 'child')]:
-            self.constraint_box.set_visible(False)
+        if not [r for r in self.filters_listbox if hasattr(r, 'child')]:
+            self.filters_box.set_visible(False)
+            self.filters_subtitle.set_visible(value)
 
 
     def triplets_check_cb(self, triplet, entity):
         print("Open: checking triplet")
         triplets = []
         statements = []
-        for row in (r for r in self.constraint_listbox if hasattr(r, 'child')):
+        for row in (r for r in self.filters_listbox if hasattr(r, 'child')):
             triplet = row.child
             entities = [o.entity for o in triplet.members]
             ready = all('Variable' in e or e['URI'] for e in entities)
