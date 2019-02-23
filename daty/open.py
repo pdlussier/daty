@@ -34,7 +34,7 @@ from pprint import pprint
 from re import sub
 from re import search as re_search
 
-from .constraintlist import ConstraintList
+from .filterslist import FiltersList
 from .entityselectable import EntitySelectable
 from .overlayedlistboxrow import OverlayedListBoxRow
 from .roundedbutton import RoundedButton
@@ -68,6 +68,8 @@ class Open(Window):
     results = Template.Child("results")
     results_listbox = Template.Child("results_listbox")
     results_nope_query = Template.Child("results_nope_query")
+    results_number_box = Template.Child("results_number_box")
+    results_number = Template.Child("results_number")
     select = Template.Child("select")
     select_entities = Template.Child("select_entities")
     select_menu = Template.Child("select_menu")
@@ -95,7 +97,10 @@ class Open(Window):
         self.hb_title = self.header_bar.get_title()
         self.hb_subtitle = self.header_bar.get_subtitle()
 
-        self.filters_listbox = ConstraintList()
+        self.search_entry_connection = self.search_entry.connect("search-changed",
+                                                                 self.search_entry_search_changed_cb)
+
+        self.filters_listbox = FiltersList()
         self.filters_viewport.add(self.filters_listbox)
 
         if quit_cb:
@@ -229,7 +234,11 @@ class Open(Window):
         row.destroy()
         if not [r for r in self.filters_listbox if hasattr(r, 'child')]:
             self.filters_box.set_visible(False)
-            self.filters_subtitle.set_visible(value)
+            self.filters_subtitle.set_visible(True)
+            self.search_entry.disconnect(self.search_entry_connection)
+            self.search_entry_connection = self.search_entry.connect("search-changed",
+                                                                     self.search_entry_search_changed_cb)
+            self.results_number_box.set_visible(False)
 
 
     def triplets_check_cb(self, triplet, entity):
@@ -258,6 +267,9 @@ class Open(Window):
             select(var, statements, self.on_select_done)
             self.set_search_placeholder(False)
         else:
+            self.search_entry.disconnect(self.search_entry_connection)
+            self.search_entry_connection = self.search_entry.connect("search-changed",
+                                                                     self.search_entry_search_changed_cb)
             if not self.search_entry.get_text():
                 self.set_search_placeholder(True)
 
@@ -275,14 +287,29 @@ class Open(Window):
     def on_select_done(self, results):
         if not results:
             self.results.set_visible_child_name("results_filters_nope")
+            self.search_entry.disconnect(self.search_entry_connection)
+            self.search_entry_connection = self.search_entry.connect("search-changed",
+                                                                     self.search_entry_search_changed_cb)
+            self.results_number_box.set_visible(False)
         if results:
+            n = len(results)
+            self.search_entry.disconnect(self.search_entry_connection)
+            self.search_entry_connection = self.search_entry.connect("search-changed",
+                                                                     self.search_entry_filters_search_changed_cb)
             self.results.set_visible_child_name("results_scrolled_window")
-            if self.results != results:
-                self.results_listbox.foreach(self.results_listbox.remove)
+            self.results_number_box.set_visible(True)
+            set_text(self.results_number, str(n), str(n))
+            if self.filtered_results != results:
                 self.filtered_results = results
+                self.results_listbox.foreach(self.results_listbox.remove)
                 if len(results) > 20:
-                    results = results[:20]
-                for URI in results:
+                    partial_results = results[:20]
+                    #for r in self.filtered_results[:20]:
+
+
+                else:
+                    partial_results = results
+                for URI in partial_results:
                     if re_search("^[QP]([0-9]|[A-Z]|-)+([0-9]|[A-Z])$", URI):
                         download_light(URI, self.on_download_done)
                     else:
@@ -359,13 +386,29 @@ class Open(Window):
                 self.set_search_placeholder(False)
 
 
-    @Template.Callback()
+#    @Template.Callback()
     def search_entry_search_changed_cb(self, entry):
         query = entry.get_text()
+        print("Label search:", query)
         if query:
             search(entry.get_text(), self.on_search_done, query)
         else:
             self.set_search_placeholder(True)
+
+    def search_entry_filters_search_changed_cb(self, entry):
+        query = entry.get_text().lower()
+        print("Search entry filter:", query)
+        n = 0
+        for row in self.results_listbox:
+            entity = row.child.entity
+            #print(entity.keys())
+            if query in entity['Label'].lower() or query in entity['Description'].lower():
+                row.set_visible(True)
+                n += 1
+            else:
+                row.set_visible(False)
+        self.results_number_box.set_visible(True)
+        set_text(self.results_number, str(n), str(n))
 
     @Template.Callback()
     def results_listbox_row_activated_cb(self, widget, row):

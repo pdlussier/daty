@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#    ConstraintList
+#    FiltersList
 #
 #    ----------------------------------------------------------------------
 #    Copyright © 2018  Pellegrino Prevete
@@ -28,9 +28,9 @@ from gi.repository.Gtk import ListBox, ListBoxRow, Separator, Template
 
 from .util import MyThread, label_color
 
-@Template.from_resource("/ml/prevete/Daty/gtk/constraintlist.ui")
-class ConstraintList(ListBox):
-    __gtype_name__ = "ConstraintList"
+@Template.from_resource("/ml/prevete/Daty/gtk/filterslist.ui")
+class FiltersList(ListBox):
+    __gtype_name__ = "FiltersList"
 
     def __init__(self,
                  *args, **kwargs):
@@ -71,7 +71,7 @@ class ConstraintList(ListBox):
             if not last_row.get_children():
                 self.remove(last_row)
 
-        super(ConstraintList, self).add(row)
+        super(FiltersList, self).add(row)
 
         # Select if 'autoselect'
         if (len(self.get_children()) >= 1) or select:
@@ -81,5 +81,5 @@ class ConstraintList(ListBox):
         row = ListBoxRow()
         row.props.activatable = False
         row.props.selectable = False
-        super(ConstraintList, self).add(row)
+        super(FiltersList, self).add(row)
         self.show_all()

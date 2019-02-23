@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/ml/prevete/Daty">
-    <file compressed="true" preprocess="xml-stripblanks">gtk/constraintlist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/editor.ui</file>
     <file compressed="true">gtk/entity.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entity.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entityselectable.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entitypopover.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/filterslist.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/loadingpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>

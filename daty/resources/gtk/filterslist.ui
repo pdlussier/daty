@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <template class="ConstraintList" parent="GtkListBox">
+  <template class="FiltersList" parent="GtkListBox">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
     <property name="selection_mode">none</property>
