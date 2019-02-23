@@ -66,7 +66,6 @@ class Open(Window):
     page = Template.Child("page")
     open_button = Template.Child("open_button")
     results = Template.Child("results")
-    results_stack = Template.Child("results_stack")
     results_listbox = Template.Child("results_listbox")
     results_nope_query = Template.Child("results_nope_query")
     select = Template.Child("select")
@@ -255,7 +254,7 @@ class Open(Window):
         var = [s[r] for s in statements for r in s if "Variable" in s[r] and s[r]["Variable"]]
         if var: var = var[-1]
         if statements and var:
-
+            self.results.set_visible_child_name("results_searching")
             select(var, statements, self.on_select_done)
             self.set_search_placeholder(False)
         else:
@@ -274,19 +273,23 @@ class Open(Window):
             self.results_listbox.show_all()
 
     def on_select_done(self, results):
-        if self.results != results:
-            self.results_listbox.foreach(self.results_listbox.remove)
-            self.filtered_results = results
-            if len(results) > 20:
-                results = results[:20]
-            for URI in results:
-                if re_search("^[QP]([0-9]|[A-Z]|-)+([0-9]|[A-Z])$", URI):
-                    download_light(URI, self.on_download_done)
-                else:
-                    entity = {"Label":URI,
-                              "Description":"String",
-                              "URI":""}
-                    self.on_download_done(URI, entity, "")
+        if not results:
+            self.results.set_visible_child_name("results_filters_nope")
+        if results:
+            self.results.set_visible_child_name("results_scrolled_window")
+            if self.results != results:
+                self.results_listbox.foreach(self.results_listbox.remove)
+                self.filtered_results = results
+                if len(results) > 20:
+                    results = results[:20]
+                for URI in results:
+                    if re_search("^[QP]([0-9]|[A-Z]|-)+([0-9]|[A-Z])$", URI):
+                        download_light(URI, self.on_download_done)
+                    else:
+                        entity = {"Label":URI,
+                                  "Description":"String",
+                                  "URI":""}
+                        self.on_download_done(URI, entity, "")
         #print(results)
 
     def object_is_empty(self, triplet, object):
@@ -328,29 +331,32 @@ class Open(Window):
 
     def on_search_done(self, results, error, query):
         if error:
+            self.set_search_placeholder(False)
+            self.results.set_visible_child_name("results_no_internet")
             print("connection error")
-        if query == self.search_entry.get_text():
-            self.results_listbox.foreach(self.results_listbox.remove)
+        else:
+            if query == self.search_entry.get_text():
+                self.results_listbox.foreach(self.results_listbox.remove)
 
-            if results == []:
-                self.results_stack.set_visible_child_name("results_nope")
-                set_text(self.results_nope_query, query, query)
-            else:
-                self.results_stack.set_visible_child_name("results_listbox")
-            for r in results:
-                if self.titlebar.get_selection_mode():
-                    entity = EntitySelectable(r,
+                if results == []:
+                    self.results.set_visible_child_name("results_nope")
+                    set_text(self.results_nope_query, query, query)
+                else:
+                    self.results.set_visible_child_name("results_scrolled_window")
+                for r in results:
+                    if self.titlebar.get_selection_mode():
+                        entity = EntitySelectable(r,
                                               selected=self.entities,
                                               open_button=self.open_button,
                                               select_entities=self.select_entities)
-                else:
-                    entity = SidebarEntity(r, button=False)
-                row = ListBoxRow()
-                row.child = entity
-                row.add(entity)
-                self.results_listbox.add(row)
-            self.results_listbox.show_all()
-            self.set_search_placeholder(False)
+                    else:
+                        entity = SidebarEntity(r, button=False)
+                    row = ListBoxRow()
+                    row.child = entity
+                    row.add(entity)
+                    self.results_listbox.add(row)
+                self.results_listbox.show_all()
+                self.set_search_placeholder(False)
 
 
     @Template.Callback()

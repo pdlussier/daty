@@ -18,7 +18,7 @@
 
     <p>Daty is a lightweight <link href="https://wikidata.org">Wikidata</link> editor and reader for the <link href="https://gnome.org">GNOME</link> desktop.</p>
 
-    <p>The program is available for <link href="https://gitlab.gnome.org/World/Daty">
+    <p>The program is available for <link href="https://gitlab.gnome.org/World/Daty#installation">
     download</link> for GNU/Linux and Microsoft Windows (soon for Mac OS, too).</p>
 
     <p>In this <em>beta</em> editing is disabled, so you can mainly use it to surf the project and do database queries graphically.</p>
