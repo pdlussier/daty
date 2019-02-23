@@ -66,7 +66,7 @@
       popover</gui> search entry and click on the corresponding property in the results.</p>
 
       <note style="tip"><p>You can filter properties in search results prefixing
-      <em>property:</em> to your query (as in <code>property:child</code>)</p></note>
+      <em>property:</em> to your query (as in <code>Property:child</code>)</p></note>
     </section>
 
 </page>
