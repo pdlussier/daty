@@ -177,7 +177,7 @@ class EntityPopover(PopoverMenu):
         except AttributeError as e:
             pass
 
-    Template.Callback()
+    @Template.Callback()
     def new_window_clicked_cb(self, widget, *cb_args):
         if cb_args:
             self.load(list(cb_args))

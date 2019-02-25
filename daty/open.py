@@ -302,13 +302,14 @@ class Open(Window):
             if self.filtered_results != results:
                 self.filtered_results = results
                 self.results_listbox.foreach(self.results_listbox.remove)
-                if len(results) > 20:
-                    partial_results = results[:20]
+                if len(results) > 100:
+                    partial_results = results[:100]
+                    #rest_of_esults = results[100:]
                     #for r in self.filtered_results[:20]:
 
 
-                else:
-                    partial_results = results
+                #else:
+                partial_results = results
                 for URI in partial_results:
                     if re_search("^[QP]([0-9]|[A-Z]|-)+([0-9]|[A-Z])$", URI):
                         download_light(URI, self.on_download_done)
@@ -382,6 +383,7 @@ class Open(Window):
                     row.child = entity
                     row.add(entity)
                     self.results_listbox.add(row)
+                #row.child()
                 self.results_listbox.show_all()
                 self.set_search_placeholder(False)
 
