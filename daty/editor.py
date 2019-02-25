@@ -135,6 +135,8 @@ class Editor(ApplicationWindow):
         loading = LoadingPage()
         self.pages.add_titled(loading, "loading", "Loading")
 
+        #self.entity_search_entry.grab_focus()
+
         # Parse args
         self.max_pages = max_pages
         if entities:
@@ -333,23 +335,33 @@ class Editor(ApplicationWindow):
         """
         if event.keyval in modifiers:
             return None
-        print(focused)
         focused = window.get_focus()
-        sidebar_entity_focused = type(focused) == ListBoxRow
-        sidebar_search_entry_focused = focused == self.sidebar_search_entry
-        entity_popover_search_entry_focused = type(focused) == SearchEntry()
+
+        # Sidebar
         sidebar_leaflet_focused = self.single_column.get_visible_child_name() == 'sidebar'
-        print(focused)
-        if sidebar_search_entry_focused:
-            pass
-        if entity_popover_search_entry_focused:
-            print("test")
-            pass
-        elif sidebar_entity_focused or sidebar_leaflet_focused:
+        if hasattr(focused, 'child'):
+            if type(focused.child) == SidebarEntity:
+                sidebar_entity_focused = True
+        else:
+            sidebar_entity_focused = False
+        sidebar_focused = sidebar_leaflet_focused or sidebar_entity_focused
+
+        # Search Entries
+        search_entry_focused = type(focused) == SearchEntry
+        sidebar_search_entry_focused = focused == self.sidebar_search_entry
+        entity_search_entry_focused = type(focused) == self.entity_search_entry
+
+        if sidebar_focused:
             if not self.sidebar_search_bar.get_search_mode():
+                self.entities_search.set_active(True)
                 self.sidebar_search_bar.set_search_mode(True)
             else:
                 self.sidebar_search_entry.grab_focus()
+        elif search_entry_focused:
+            if entity_search_entry_focused:
+                if not self.entity_search_bar.get_search_mode():
+                    self.entity_search.set_active(True)
+                    self.entity_search_bar.set_search_mode(True)
         else:
             if event.keyval == KEY_Escape:
                  if self.titlebar.get_selection_mode():
@@ -358,6 +370,7 @@ class Editor(ApplicationWindow):
                 if not self.entity_search_bar.get_search_mode():
                     self.entity_search.set_active(True)
                     self.entity_search_bar.set_search_mode(True)
+                    #self.entity_search_entry.set_text(event.string)
 
     @Template.Callback()
     def entity_search_entry_stop_search_cb(self, widget):

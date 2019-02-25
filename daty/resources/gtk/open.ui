@@ -252,6 +252,9 @@
                           <object class="GtkSearchEntry" id="search_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="has_focus">True</property>
+                            <property name="is_focus">True</property>
+                            <property name="receives_default">True</property>
                             <property name="margin_top">12</property>
                             <property name="margin_bottom">12</property>
                             <property name="hexpand">True</property>
