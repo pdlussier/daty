@@ -28,7 +28,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
 from gi.repository.GLib import idle_add #, PRIORITY_LOW
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconSize, StyleContext, Grid, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconSize, Separator, StyleContext, Grid, Template
 
 from .entity import Entity
 from .qualifierproperty import QualifierProperty
@@ -43,12 +43,14 @@ class Value(Grid):
     icon = Template.Child("icon")
     qualifiers = Template.Child("qualifiers")
     mainsnak = Template.Child("mainsnak")
+    references_grid = Template.Child("references_grid")
 
     def __init__(self, claim, *args, load=None, **kwargs):
         Grid.__init__(self, *args, **kwargs)
 
         self.load = load
         self.extra = 0
+        self.references_expanded = False
 
         context = self.get_style_context()
 
@@ -72,8 +74,30 @@ class Value(Grid):
         del claim
 
     def references_expand_clicked_cb(self, widget):
-        for i,P in enumerate(self.references):
-            print(P.keys())
+        if not self.references_expanded:
+            for i, ref in enumerate(self.references):
+                for P in ref['snaks-order']:
+                    values = ref['snaks']
+                #for j, value in enumerate(values):
+                    download_light(P, self.load_reference, i, values)
+            self.references_expanded = True
+        #    print(P.keys())
+
+    def load_reference(self, URI, property, error, i, values):
+        try:
+            i = i*2
+            property = QualifierProperty(property)
+            self.references_grid.attach(Separator(), 0, i, 1, 5)
+            self.references_grid.attach(property, 0, i+1, 1, 1)
+            self.references_grid.show_all()
+            #self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
+            #for j, claim in enumerate(claims):
+            #    self.load_value_async(URI, claim, i+self.extra+j)
+            #self.extra += len(claims) - 1
+            #return None
+        except Exception as e:
+            print(URI)
+            raise e
 
     def load_qualifiers(self, URI, qualifier, error, i, claims):
         try:
