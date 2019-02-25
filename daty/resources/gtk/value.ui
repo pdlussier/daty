@@ -45,6 +45,9 @@
         <child>
           <placeholder/>
         </child>
+        <child>
+          <placeholder/>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>

@@ -24,11 +24,14 @@
 #
 
 from gi import require_version
+require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
+from gi.repository.Gdk import CURRENT_TIME
 from gi.repository.GLib import OptionArg, OptionFlags
 from gi.repository.Gio import ApplicationFlags, SimpleAction
-from gi.repository.Gtk import Application, Builder
+from gi.repository.Gtk import Application, Builder, show_uri
+from platform import system
 from sys import argv
 
 #from .aboutdaty import AboutDaty
@@ -46,6 +49,11 @@ class Daty(Application):
 
     def do_startup(self):
         Application.do_startup(self)
+
+        # Set app menu
+        action = SimpleAction.new("help", None)
+        action.connect("activate", self.on_help)
+        self.add_action(action)
 
         # Set app menu
         action = SimpleAction.new("about", None)
@@ -76,6 +84,13 @@ class Daty(Application):
 
         self.activate()
         return 0
+
+    def on_help(self, action, param):
+        if system() == 'Linux':
+            show_uri (None, "help:daty", CURRENT_TIME)
+        if system() == 'Windows':
+            from webbrowser import open
+            open('http://daty.prevete.ml')
 
     def on_about(self, action, param):
         from .aboutdaty import AboutDaty

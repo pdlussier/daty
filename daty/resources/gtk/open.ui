@@ -46,6 +46,8 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">8</property>
+        <property name="margin_right">8</property>
         <property name="margin_start">8</property>
         <property name="margin_end">8</property>
         <property name="margin_top">8</property>
@@ -1061,6 +1063,7 @@
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
             <property name="text" translatable="yes">Help</property>
+            <signal name="clicked" handler="help_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

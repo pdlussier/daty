@@ -64,10 +64,16 @@ class Value(Grid):
         if 'references' in claim:
             self.references = claim['references']
             self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
+            self.button.connect("clicked", self.references_expand_clicked_cb)
         else:
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
+            #self.button.connect("clicked", self.reference_new_clicked_cb)
 
         del claim
+
+    def references_expand_clicked_cb(self, widget):
+        for i,P in enumerate(self.references):
+            print(P.keys())
 
     def load_qualifiers(self, URI, qualifier, error, i, claims):
         try:
@@ -96,7 +102,7 @@ class Value(Grid):
     def on_value_complete(self, claim, j):
         value = Entity(claim, qualifier=True, load=self.load)
         self.set_font_deprecated(value)
-        self.qualifiers.attach(value, 1, j, 2, 1)
+        self.qualifiers.attach(value, 1, j, 3, 1)
         return None
 
     def set_font_deprecated(self, editor_widget):
