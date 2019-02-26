@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <object class="GtkImage" id="icon">
@@ -31,8 +31,22 @@
       <object class="GtkGrid" id="qualifiers">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="vexpand">True</property>
+        <property name="row_spacing">2</property>
         <property name="column_homogeneous">True</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
         <child>
           <placeholder/>
         </child>
@@ -73,8 +87,22 @@
       <object class="GtkGrid" id="references_grid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
         <property name="vexpand">True</property>
+        <property name="row_spacing">2</property>
         <property name="column_homogeneous">True</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
         <child>
           <placeholder/>
         </child>

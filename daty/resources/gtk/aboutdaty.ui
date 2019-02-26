@@ -8,7 +8,7 @@
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">Daty</property>
-    <property name="version">1.0α</property>
+    <property name="version">1.0β</property>
     <property name="copyright" translatable="yes">Copyright © 2018, 2019 Pellegrino Prevete</property>
     <property name="comments" translatable="yes">A free cross-platform Wikidata editor.</property>
     <property name="website">https://gitlab.gnome.org/World/Daty</property>

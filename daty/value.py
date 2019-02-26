@@ -49,7 +49,8 @@ class Value(Grid):
         Grid.__init__(self, *args, **kwargs)
 
         self.load = load
-        self.extra = 0
+        self.qualifier_row = 0
+        self.reference_row = 0
         self.references_expanded = False
 
         context = self.get_style_context()
@@ -75,23 +76,29 @@ class Value(Grid):
 
     def references_expand_clicked_cb(self, widget):
         if not self.references_expanded:
-            for i, ref in enumerate(self.references):
-                for P in ref['snaks-order']:
-                    values = ref['snaks']
-                #for j, value in enumerate(values):
-                    download_light(P, self.load_reference, i, values)
+            if not self.references_grid.get_children():
+                self.icon.set_from_icon_name("pan-down-symbolic", IconSize.BUTTON)
+                for i,ref in enumerate(self.references):
+                    for j,P in enumerate(ref['snaks-order']):
+                        values = ref['snaks']
+                        download_light(P, self.load_reference, i+j, values)
             self.references_expanded = True
-        #    print(P.keys())
+        else:
+            self.references_expanded = False
+            self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
+        self.set_expanded()
 
     def load_reference(self, URI, property, error, i, values):
         try:
-            i = i*2
+            print(property["Label"], i)
+            #i = 2*i
             property = QualifierProperty(property)
-            self.references_grid.attach(Separator(), 0, i, 1, 5)
+            #separator = Separator()
+            self.references_grid.attach(separator, 0, i, 5, 1)
             self.references_grid.attach(property, 0, i+1, 1, 1)
-            self.references_grid.show_all()
+            #self.references_grid.show_all()
             #self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
-            #for j, claim in enumerate(claims):
+            #for j, value in enumerate(claims):
             #    self.load_value_async(URI, claim, i+self.extra+j)
             #self.extra += len(claims) - 1
             #return None
@@ -102,10 +109,10 @@ class Value(Grid):
     def load_qualifiers(self, URI, qualifier, error, i, claims):
         try:
             qualifier = QualifierProperty(qualifier)
-            self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
+            self.qualifiers.attach(qualifier, 0, i+self.qualifier_row, 1, 1)
             for j, claim in enumerate(claims):
-                self.load_value_async(URI, claim, i+self.extra+j)
-            self.extra += len(claims) - 1
+                self.load_value_async(URI, claim, i+self.qualifier_row+j)
+            self.qualifier_row += len(claims) - 1
             return None
         except Exception as e:
             print(URI)
@@ -145,3 +152,12 @@ class Value(Grid):
             self.context.add_class('unreferenced')
         else:
             self.context.remove_class('unreferenced')
+
+    def set_expanded(self):
+        if self.references_expanded:
+            provider = CssProvider()
+            provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
+            self.context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+            self.context.add_class('expanded')
+        else:
+            self.context.remove_class('expanded')
