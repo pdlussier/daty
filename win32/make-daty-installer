@@ -174,7 +174,7 @@ install_daty_packages() {
   
   # Temp until MinGW accepts packages
   pacman -U temp/mingw-w64-${_arch}-python3-pywikibot-3.0.20181203-1-any.pkg.tar.xz --noconfirm --root "${_newdaty}"
-  pacman -S mingw-w64-${_arch}-libhandy
+  pacman -S mingw-w64-${_arch}-libhandy --noconfirm --root "${_newdaty}"
   # When the packages will be accepted
   # pacman -S mingw-w64-${_arch}-python3-pywikibot mingw-w64-${_arch}-daty-git \
   #  --noconfirm --root "${_newdaty}"
