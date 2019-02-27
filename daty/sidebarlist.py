@@ -229,6 +229,8 @@ class SidebarList(ListBox):
         if not row:
             if len(self.last) >= 1:
                 row = self.last[-1]
+            if len(self.last) == 0:
+
             else:
                 row = self.get_row_at_index(0)
             print(self.last)

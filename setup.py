@@ -47,11 +47,12 @@ data_files = [
 
 data_files.extend(help())
 
-print(data_files)
+#print(data_files)
 daty_files = explore('daty/po') + explore('daty/resources')
 
 try:
     sh(['daty/resources/compile-resources.sh'])
+    print("Gresources compiled")
 except Exception as e:
     print("WARNING: to compile gresource be sure to have \"glib-compile-resources\" in your $PATH")
 
