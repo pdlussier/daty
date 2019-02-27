@@ -32,7 +32,7 @@ author = 'Pellegrino Prevete'
 # The short X.Y version
 version = '1.0'
 # The full version, including alpha/beta/rc tags
-release = '1.0alpha'
+release = '1.0beta'
 
 
 # -- General configuration ---------------------------------------------------

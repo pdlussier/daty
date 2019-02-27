@@ -159,4 +159,4 @@ class Config:
         path = join(self.exec_path, 'resources', 'daty.gresource')
         resource = resource_load(path)
         Resource._register(resource)
-        # print(resource.lookup_data("/ml/prevete/Daty/gtk/usersetup.ui", ResourceLookupFlags(0)))
+        print(resource.lookup_data("/ml/prevete/Daty/gtk/filterslist.ui", ResourceLookupFlags(0)))
