@@ -31,7 +31,7 @@ installdir = argv[1]
 
 script = installdir + "\\bin\\daty-script.pyw"
 
-pattern = "C:/msys64/mingw64/bin/python3w.exe"
+pattern = "F:/msys64/mingw64/bin/python3w.exe"
 
 repl = "\"" + installdir + "\\bin\\python3w.exe" + "\""
 
