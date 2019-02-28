@@ -27,6 +27,8 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add #, PRIORITY_LOW
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconSize, Separator, StyleContext, Grid, Template
 
@@ -36,8 +38,12 @@ from .util import MyThread, download_light
 
 @Template.from_resource("/ml/prevete/Daty/gtk/value.ui")
 class Value(Grid):
-    
+
     __gtype_name__ = "Value"
+
+    __gsignals__ = {'reference-expanded':(sf.RUN_LAST,
+                                                 TYPE_NONE,
+                                                 (TYPE_PYOBJECT,))}
 
     button = Template.Child("button")
     icon = Template.Child("icon")
@@ -67,7 +73,8 @@ class Value(Grid):
         if 'references' in claim:
             self.references = claim['references']
             self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
-            self.button.connect("clicked", self.references_expand_clicked_cb)
+            self.button.connect("clicked", self.references_expand_clicked_cb)#,
+                                #claim['references'])
         else:
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
             #self.button.connect("clicked", self.reference_new_clicked_cb)
@@ -75,6 +82,11 @@ class Value(Grid):
         del claim
 
     def references_expand_clicked_cb(self, widget):
+        if self.icon.get_icon_name() == 'pan-end-symbolic':
+            print("you open")
+        elif self.icon.get_icon_name() == 'pan-down-symbolic':
+            print("you close")
+        #self.emit("reference-expanded", )
         if not self.references_expanded:
             if not self.references_grid.get_children():
                 self.icon.set_from_icon_name("pan-down-symbolic", IconSize.BUTTON)

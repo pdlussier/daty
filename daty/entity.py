@@ -47,7 +47,7 @@ class Entity(Stack):
     label = Template.Child("label")
     unit = Template.Child("unit")
 
-    #wikidata = Wikidata()
+    #TODO:implement editing
 
     def __init__(self, snak, *args, qualifier=False, css=None, load=None, **kwargs):
         Stack.__init__(self, *args, **kwargs)

@@ -142,8 +142,10 @@ class Editor(ApplicationWindow):
         if entities:
             self.load(entities)
         else:
-            Open(self.load, quit_cb=self.quit_cb, new_session=True)
-
+            entities_open_dialog = Open(self.load, quit_cb=self.quit_cb,
+                                        new_session=True)
+            entities_open_dialog.get_focus()
+            #entities_open_dialog.show_all()
     def load(self, entities):
         """Open entities
 
