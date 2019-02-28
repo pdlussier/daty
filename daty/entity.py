@@ -26,6 +26,8 @@
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import EventType, KEY_Escape
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, ListBoxRow, Stack, StyleContext, Template
@@ -42,6 +44,10 @@ from .wikidata import Wikidata
 class Entity(Stack):
     
     __gtype_name__ = "Entity"
+
+    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+                                          TYPE_NONE,
+                                          (TYPE_PYOBJECT,))}
 
     entry = Template.Child("entry")
     label = Template.Child("label")
@@ -178,10 +184,14 @@ class Entity(Stack):
         try:
             from .entitypopover import EntityPopover
             self.entity_popover = EntityPopover(self.entity, parent=self, load=self.load)
+            self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
             self.search(entry.get_text())
             self.entity_popover.set_visible(True)
         except AttributeError as e:
             print("no popover available for this type of value")
+
+    def new_window_clicked_cb(self, popover, payload):
+        self.emit("new-window-clicked", payload)
 
     @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):

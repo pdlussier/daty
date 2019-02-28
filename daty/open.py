@@ -27,6 +27,8 @@ from gi import require_version
 require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.Gdk import CURRENT_TIME
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconTheme, ListBox, ListBoxRow, Template, Window, main_quit, show_uri
 from platform import system
@@ -48,6 +50,10 @@ name = 'ml.prevete.Daty'
 @Template.from_resource("/ml/prevete/Daty/gtk/open.ui")
 class Open(Window):
     __gtype_name__ = "Open"
+
+    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+                                          TYPE_NONE,
+                                          (TYPE_PYOBJECT,))}
 
     wikidata = Wikidata()
 
@@ -190,6 +196,7 @@ class Open(Window):
         self.filters_box.set_visible(True)
         self.filters_subtitle.set_visible(False)
         triplet = Triplet(load=self.load, variables=self.variables)
+        triplet.connect("new-window-clicked", self.new_window_clicked_cb)
         triplet.connect("default-variable-selected", self.triplets_default_variable_selected_cb)
         triplet.connect("object-selected", self.triplets_check_cb)
         triplet.connect("variable-deleted", self.triplet_variable_deleted_cb)
@@ -206,6 +213,10 @@ class Open(Window):
         row.revealer.add(close_button)
         self.filters_listbox.add(row)
         self.filters_listbox.show_all()
+
+    def new_window_clicked_cb(self, triplet, entities):
+        print("new-window-clicked")
+        self.emit("new-window-clicked", entities)
 
     def triplet_variable_deleted_cb(self, triplet, entity):
         output = self.objects_foreach(self.object_delete, entity)

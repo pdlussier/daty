@@ -35,15 +35,19 @@ from .util import EntitySet, download, search, pango_label, set_text
 
 @Template.from_resource("/ml/prevete/Daty/gtk/entitypopover.ui")
 class EntityPopover(PopoverMenu):
+
     __gtype_name__ = "EntityPopover"
 
     __gsignals__ = {'default-variable-selected':(sf.RUN_LAST,
                                                  TYPE_NONE,
                                                  (TYPE_PYOBJECT,)),
-                    'variable-deleted':(sf.RUN_LAST,
+                    'new-window-clicked':(sf.RUN_LAST,
+                                          TYPE_NONE,
+                                          (TYPE_PYOBJECT,)),
+                    'object-selected':(sf.RUN_LAST,
                                        TYPE_NONE,
                                        (TYPE_PYOBJECT,)),
-                    'object-selected':(sf.RUN_LAST,
+                    'variable-deleted':(sf.RUN_LAST,
                                        TYPE_NONE,
                                        (TYPE_PYOBJECT,))}
 
@@ -180,9 +184,11 @@ class EntityPopover(PopoverMenu):
     @Template.Callback()
     def new_window_clicked_cb(self, widget, *cb_args):
         if cb_args:
-            self.load(list(cb_args))
+            payload = list(cb_args)
         else:
-            self.load([self.entity])
+            payload = [self.entity]
+        self.load(payload)
+        self.emit("new-window-clicked", payload)
 
     def is_variable(self, entity):
         if 'Variable' in entity: return True

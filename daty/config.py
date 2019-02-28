@@ -54,6 +54,8 @@ class Config:
             'config':user_config_dir(appname, appauthor),
             'cache':user_cache_dir(appname, appauthor)}
 
+    verbose = False
+
     def __init__(self):
         self.set_dirs()
         self.set_locales()
@@ -159,4 +161,6 @@ class Config:
         path = join(self.exec_path, 'resources', 'daty.gresource')
         resource = resource_load(path)
         Resource._register(resource)
-        print(resource.lookup_data("/ml/prevete/Daty/gtk/filterslist.ui", ResourceLookupFlags(0)))
+        if self.verbose:
+            print(resource.lookup_data("/ml/prevete/Daty/gtk/filterslist.ui",
+                                       ResourceLookupFlags(0)))

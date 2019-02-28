@@ -201,7 +201,11 @@ class Editor(ApplicationWindow):
             Args:
                 widget (Gtk.Widget): the clicked widget.
         """
-        Open(self.load, quit_cb=self.quit_cb, new_session=False)
+        open_dialog = Open(self.load, quit_cb=self.quit_cb, new_session=False)
+        open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
+
+    def new_window_clicked_cb(self, dialog, entities):
+        print("Editor: new window clicked")
 
     @Template.Callback()
     def entities_search_toggled_cb(self, widget):

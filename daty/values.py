@@ -25,7 +25,7 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import ListBox, ListBoxRow, Separator, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Label, ListBox, ListBoxRow, Separator, StyleContext, Template
 from pprint import pprint
 
 @Template.from_resource("/ml/prevete/Daty/gtk/values.ui")
@@ -50,9 +50,49 @@ class Values(ListBox):
         context = row.get_style_context()
         widget.context = context
         widget.set_references()
+        row.child = widget
         row.add(widget)
         super(Values, self).add(row)
+
+    def references_toggled_cb(self, widget, child):
+        for i, row in enumerate(self.get_children()):
+            if hasattr(row, 'child') and row.child == child:
+                print(row)
+                print(type(child))
+                print(i)
+                break
+
+        state = row.child.button.get_active()
         
+        context = self.get_style_context()
+        provider = CssProvider()
+        provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
+        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        if state:
+            context.add_class('expanded')
+            row = ListBoxRow()
+            #button = Button("New reference")
+            #value = Value(claim=claim, load=self.load)
+            row.add(Label("Add reference"))
+            self.insert(row, i+1)
+        else:
+            context.remove_class('expanded')
+
+            row = self.get_row_at_index(i+1)
+            row.destroy()
+
+        self.show_all()
+            #print(state)
+        #lambda row: row if row.child == child else None
+        #for
+        #if
+        #that_row = [row for row in self.get_children() if row.child == child][-1]
+        #print(widget)
+        #print()
+        #if state:
+        #    print(state)
+
 #    def add_reference(self, value, reference):
 #        row = ListBoxRow()
 #        context = row.get_style_context()

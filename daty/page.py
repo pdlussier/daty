@@ -81,9 +81,7 @@ class Page(ScrolledWindow):
             raise e
 
     def load_value_async(self, claim, values):
-        #f = cp(URI), cp(claim)
         def do_call():
-            #URI, claim = f
             error = None
             try:
                 pass
@@ -98,8 +96,15 @@ class Page(ScrolledWindow):
         if error:
             print(error)
         value = Value(claim=claim, load=self.load)
+        value.connect('references-toggled', values.references_toggled_cb)
         values.add(value)
         values.show_all()
         return None
+
+#    def references_toggled_cb(self, widget, state):
+#        print(widget)
+#        print(state)
+#        if state:
+
 
     #TODO: make method to move properties from side to top when content_box is folded

@@ -41,9 +41,12 @@ class Value(Grid):
 
     __gtype_name__ = "Value"
 
-    __gsignals__ = {'reference-expanded':(sf.RUN_LAST,
-                                                 TYPE_NONE,
-                                                 (TYPE_PYOBJECT,))}
+    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+                                          TYPE_NONE,
+                                          (TYPE_PYOBJECT,)),
+                    'references-toggled':(sf.RUN_LAST,
+                                         TYPE_NONE,
+                                         (TYPE_PYOBJECT,))}
 
     button = Template.Child("button")
     icon = Template.Child("icon")
@@ -62,6 +65,7 @@ class Value(Grid):
         context = self.get_style_context()
 
         entity = Entity(claim['mainsnak'], load=self.load)
+        self.connect('new-window-clicked', self.on_new_window_clicked_cb)
         self.mainsnak.add(entity)
 
         if 'qualifiers' in claim:
@@ -72,8 +76,7 @@ class Value(Grid):
 
         if 'references' in claim:
             self.references = claim['references']
-            self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
-            self.button.connect("clicked", self.references_expand_clicked_cb)#,
+            self.button.connect("toggled", self.references_expand_clicked_cb)#,
                                 #claim['references'])
         else:
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
@@ -81,31 +84,45 @@ class Value(Grid):
 
         del claim
 
+    def on_new_window_clicked_cb(self, entity, payload):
+        print("new window clicked")
+        self.emit("new-window-clicked", payload)
+
     def references_expand_clicked_cb(self, widget):
-        if self.icon.get_icon_name() == 'pan-end-symbolic':
-            print("you open")
-        elif self.icon.get_icon_name() == 'pan-down-symbolic':
-            print("you close")
-        #self.emit("reference-expanded", )
-        if not self.references_expanded:
-            if not self.references_grid.get_children():
-                self.icon.set_from_icon_name("pan-down-symbolic", IconSize.BUTTON)
-                for i,ref in enumerate(self.references):
-                    for j,P in enumerate(ref['snaks-order']):
-                        values = ref['snaks']
-                        download_light(P, self.load_reference, i+j, values)
-            self.references_expanded = True
+        state = widget.get_active()
+        if state:
+            icon_name = 'pan-down-symbolic'
         else:
-            self.references_expanded = False
-            self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
-        self.set_expanded()
+            icon_name = 'pan-end-symbolic'
+        self.icon.set_from_icon_name(icon_name, IconSize.BUTTON)
+        self.emit('references-toggled', self)
+
+        #print("get_active?", widget.get_active())
+        #print(self.icon_)
+        #if self.icon.get_icon_name() == 'pan-end-symbolic':
+        #    print("you open")
+        #elif self.icon.get_icon_name() == 'pan-down-symbolic':
+        #    print("you close")
+        #self.emit("reference-expanded", )
+        #if not self.references_expanded:
+        #    if not self.references_grid.get_children():
+        #        self.icon.set_from_icon_name("pan-down-symbolic", IconSize.BUTTON)
+        #        for i,ref in enumerate(self.references):
+        #            for j,P in enumerate(ref['snaks-order']):
+        #                values = ref['snaks']
+        #                download_light(P, self.load_reference, i+j, values)
+        #    self.references_expanded = True
+        #else:
+        #    self.references_expanded = False
+        #    self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
+        #self.set_expanded()
 
     def load_reference(self, URI, property, error, i, values):
         try:
             print(property["Label"], i)
             #i = 2*i
             property = QualifierProperty(property)
-            #separator = Separator()
+            separator = Separator()
             self.references_grid.attach(separator, 0, i, 5, 1)
             self.references_grid.attach(property, 0, i+1, 1, 1)
             #self.references_grid.show_all()

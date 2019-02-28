@@ -41,6 +41,9 @@ class Triplet(Grid):
                     'default-variable-selected':(sf.RUN_LAST,
                                                  TYPE_NONE,
                                                  (TYPE_PYOBJECT,)),
+                    'new-window-clicked':(sf.RUN_LAST,
+                                          TYPE_NONE,
+                                          (TYPE_PYOBJECT,)),
                     'object-selected':(sf.RUN_LAST,
                                        TYPE_NONE,
                                        (TYPE_PYOBJECT,)),
@@ -80,6 +83,8 @@ class Triplet(Grid):
                                                   variables=self.variables)
             widget.popover.connect("default-variable-selected",
                                           self.default_variable_selected_cb)
+            widget.popover.connect("new-window-clicked",
+                                          self.new_window_clicked_cb)
             widget.popover.connect("object-selected",
                                           self.object_selected_cb)
             widget.popover.connect("variable-deleted",
@@ -88,6 +93,9 @@ class Triplet(Grid):
         self.property.popover.search_entry.set_text("property:")
 
         self.show_all()
+
+    def new_window_clicked_cb(self, popover, entities):
+        self.emit("new-window-clicked", entities)
 
     def variable_deleted_cb(self, popover, entity):
         self.emit("variable-deleted", entity)
