@@ -41,6 +41,8 @@ def help():
 data_files = [
     ('share/applications', ['daty/resources/ml.prevete.Daty.desktop']),
     ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/ml.prevete.Daty.svg']),
+    ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/ml.prevete.Daty-symbolic.svg']),
+    ('share/icons/hicolor/scalable/places', ['daty/resources/icons/scalable/places/discussion-page-symbolic.svg']),
     ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/ml.prevete.Daty.png']),
     ('share/icons/hicolor/16x16/apps', ['daty/resources/icons/16x16/apps/ml.prevete.Daty-symbolic.png'])
 ]

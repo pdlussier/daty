@@ -3,10 +3,10 @@
 <interface>
  <requires lib="gtk+" version="3.20"/>
  <requires lib="libhandy" version="0.0"/>
- <object class="GtkImage" id="app-menu-icon">
+ <object class="GtkImage" id="discussion-page-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
-  <property name="icon_name">open-menu-symbolic</property>
+  <property name="icon_name">discussion-page-symbolic</property>
  </object>
  <object class="GtkImage" id="back-icon">
   <property name="visible">True</property>
@@ -23,10 +23,20 @@
   <property name="can_focus">False</property>
   <property name="icon_name">object-select-symbolic</property>
  </object>
+ <object class="GtkImage" id="history-page-icon">
+  <property name="visible">True</property>
+  <property name="can_focus">False</property>
+  <property name="icon_name">document-open-recent-symbolic</property>
+ </object>
  <object class="GtkImage" id="new-entity-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
   <property name="icon_name">list-add-symbolic</property>
+ </object>
+ <object class="GtkImage" id="app-menu-icon">
+  <property name="visible">True</property>
+  <property name="can_focus">False</property>
+  <property name="icon_name">open-menu-symbolic</property>
  </object>
  <object id="entity-menu-icon" class="GtkImage">
   <property name="visible">True</property>
@@ -250,6 +260,7 @@
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
           <property name="image">entities-select-icon</property>
+          <property name="tooltip_text" translatable="yes">Select entities for bulk editing</property>
           <signal name="clicked" handler="entities_select_clicked_cb" swapped="no"/>
          </object>
          <packing>
@@ -258,12 +269,13 @@
          </packing>
         </child>
         <child>
-         <object class="GtkButton" id="entity_new">
+         <object class="GtkButton" id="entity_open">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
           <property name="image">new-entity-icon</property>
-          <signal name="clicked" handler="entity_new_clicked_cb" swapped="no"/>
+          <property name="tooltip_text" translatable="yes">Open entities</property>
+          <signal name="clicked" handler="entity_open_clicked_cb" swapped="no"/>
          </object>
          <packing>
           <property name="position">1</property>
@@ -275,6 +287,7 @@
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
           <property name="image">entities-search-icon</property>
+          <property name="tooltip_text" translatable="yes">Filter open entities</property>
           <signal name="toggled" handler="entities_search_toggled_cb" swapped="no"/>
          </object>
          <packing>
@@ -286,6 +299,7 @@
           <property name="label" translatable="yes">Cancel</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
+          <property name="tooltip_text" translatable="yes">Cancel selection</property>
           <signal name="clicked" handler="cancel_entities_selection_clicked_cb" swapped="no"/>
          </object>
          <packing>
@@ -413,19 +427,12 @@
           <property name="receives_default">True</property>
           <property name="image">back-icon</property>
           <property name="always_show_image">True</property>
+          <property name="tooltip_text" translatable="yes">Back to entity list</property>
           <signal name="clicked" handler="entity_back_clicked_cb" swapped="no"/>
          </object>
-        </child>
-        <child>
-         <object class="GtkButton" id="entity_menu">
-          <property name="visible">True</property>
-          <property name="can_focus">True</property>
-          <property name="receives_default">True</property>
-          <property name="image">entity-menu-icon</property>
-         </object>
          <packing>
-          <property name="pack_type">end</property>
-          <property name="position">1</property>
+          <property name="pack_type">start</property>
+          <property name="position">0</property>
          </packing>
         </child>
         <child>
@@ -434,11 +441,69 @@
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
           <property name="image">editor-search-icon</property>
+          <property name="tooltip_text" translatable="yes">Search in this page</property>
           <signal name="toggled" handler="entity_search_toggled_cb" swapped="no"/>
          </object>
          <packing>
           <property name="pack_type">end</property>
           <property name="position">2</property>
+         </packing>
+        </child>
+        <child>
+         <object class="GtkBox">
+          <property name="visible">True</property>
+          <property name="can_focus">False</property>
+          <property name="orientation">horizontal</property>
+          <child>
+           <object class="GtkButton" id="entity_discussion_open_external">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">discussion-page-icon</property>
+            <property name="always_show_image">True</property>
+            <property name="tooltip_text" translatable="yes">Open talk page in the browser</property>
+            <signal name="clicked" handler="entity_discussion_open_external_clicked_cb" swapped="no"/>
+           </object>
+           <packing>
+            <property name="pack_type">start</property>
+            <property name="position">0</property>
+           </packing>
+          </child>
+          <child>
+           <object class="GtkButton" id="entity_history_open_external">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">history-page-icon</property>
+            <property name="always_show_image">True</property>
+            <property name="tooltip_text" translatable="yes">Open history in the browser</property>
+            <signal name="clicked" handler="entity_discussion_open_external_clicked_cb" swapped="no"/>
+           </object>
+           <packing>
+            <property name="pack_type">start</property>
+            <property name="position">1</property>
+           </packing>
+          </child>
+          <style>
+           <class name="linked"/>
+          </style>
+         </object>
+         <packing>
+          <property name="pack_type">end</property>
+          <property name="position">1</property>
+         </packing>
+        </child>
+        <child>
+         <object class="GtkButton" id="entity_menu">
+          <property name="visible">True</property>
+          <property name="can_focus">True</property>
+          <property name="receives_default">True</property>
+          <property name="image">entity-menu-icon</property>
+          <signal name="clicked" handler="entity_menu_clicked_cb" swapped="no"/>
+         </object>
+         <packing>
+          <property name="pack_type">end</property>
+          <property name="position">0</property>
          </packing>
         </child>
        </object>
@@ -528,7 +593,7 @@
  </object>
  <object class="GtkPopoverMenu" id="entity_menu_popover">
   <property name="can_focus">False</property>
-  <property name="relative_to">entity_new</property>
+  <property name="relative_to">entity_menu</property>
   <property name="constrain_to">none</property>
   <child>
    <object class="GtkBox">
@@ -540,31 +605,16 @@
     <property name="margin_top">8</property>
     <property name="margin_bottom">8</property>
     <child>
-     <object class="GtkModelButton" id="about1">
+     <object class="GtkModelButton" id="entity_open_external">
       <property name="visible">True</property>
       <property name="can_focus">True</property>
       <property name="receives_default">True</property>
-      <property name="action_name">about</property>
-      <property name="text" translatable="yes">About</property>
+      <property name="text" translatable="yes">Open in browser</property>
      </object>
      <packing>
       <property name="expand">False</property>
       <property name="fill">True</property>
       <property name="position">0</property>
-     </packing>
-    </child>
-    <child>
-     <object class="GtkModelButton" id="quit1">
-      <property name="visible">True</property>
-      <property name="can_focus">True</property>
-      <property name="receives_default">True</property>
-      <property name="action_name">quit</property>
-      <property name="text" translatable="yes">Quit</property>
-     </object>
-     <packing>
-      <property name="expand">False</property>
-      <property name="fill">True</property>
-      <property name="position">1</property>
      </packing>
     </child>
    </object>

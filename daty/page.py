@@ -26,6 +26,8 @@
 from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import Frame, Label, ScrolledWindow, Template
 from threading import Thread
@@ -37,16 +39,19 @@ from .util import MyThread, download_light
 
 @Template.from_resource("/ml/prevete/Daty/gtk/page.ui")
 class Page(ScrolledWindow):
+
     __gtype_name__ = "Page"
+
+    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+                                          TYPE_NONE,
+                                          (TYPE_PYOBJECT,))}
 
     image = Template.Child("image")
     statements = Template.Child("statements")
 
-    def __init__(self, entity, *args, load=None, **kwargs):
+    def __init__(self, entity, *args, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
-      
-        #TODO: replace with signals
-        self.load = load
+
         claims = entity['claims']
 
         if not 'P18' in claims:
@@ -95,11 +100,15 @@ class Page(ScrolledWindow):
     def on_value_complete(self, claim, values, error):
         if error:
             print(error)
-        value = Value(claim=claim, load=self.load)
+        value = Value(claim=claim)
+        value.connect("new-window-clicked", self.new_window_clicked_cb)
         value.connect('references-toggled', values.references_toggled_cb)
         values.add(value)
         values.show_all()
         return None
+
+    def new_window_clicked_cb(self, value, entity):
+        self.emit("new-window-clicked", entity)
 
 #    def references_toggled_cb(self, widget, state):
 #        print(widget)

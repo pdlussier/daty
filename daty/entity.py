@@ -55,10 +55,8 @@ class Entity(Stack):
 
     #TODO:implement editing
 
-    def __init__(self, snak, *args, qualifier=False, css=None, load=None, **kwargs):
+    def __init__(self, snak, *args, qualifier=False, css=None, **kwargs):
         Stack.__init__(self, *args, **kwargs)
-
-        self.load = load
 
         context = self.get_style_context()
         provider = CssProvider()
@@ -140,7 +138,7 @@ class Entity(Stack):
             print(type(err))
             print(err.__traceback__)
 
-        self.entry.connect("search-changed", self.entry_search_changed_cb)
+        #self.entry.connect("search-changed", self.entry_search_changed_cb)
 
     def set_text(self, label, description):
         set_text(self.label, label, description)
@@ -183,15 +181,18 @@ class Entity(Stack):
         description = self.label.get_tooltip_text()
         try:
             from .entitypopover import EntityPopover
-            self.entity_popover = EntityPopover(self.entity, parent=self, load=self.load)
+            self.entity_popover = EntityPopover(self.entity, parent=self)
+            self.entry.connect("search-changed", self.entity_popover.search_entry_search_changed_cb)
             self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
-            self.search(entry.get_text())
+            self.entry.emit("search-changed")
             self.entity_popover.set_visible(True)
         except AttributeError as e:
+            #raise e
             print("no popover available for this type of value")
 
-    def new_window_clicked_cb(self, popover, payload):
-        self.emit("new-window-clicked", payload)
+    def new_window_clicked_cb(self, popover, entities):
+        print("Entity: new window clicked")
+        self.emit("new-window-clicked", entities)
 
     @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
@@ -213,50 +214,50 @@ class Entity(Stack):
         except AttributeError as e:
             print("no entity popover for this value")
 
-    def search(self, query):
-        try:
-            if query:
-                self.entity_popover
-                def do_call():
-                    results, error = None, None
-                    try:
-                        wikidata = Wikidata()
-                        results = wikidata.search(query)
-                        #results = f()
-                    except Exception as err:
-                        error = err
+#    def search(self, query):
+#        try:
+#            if query:
+#                self.entity_popover
+#                def do_call():
+#                    results, error = None, None
+#                    try:
+#                        wikidata = Wikidata()
+#                        results = wikidata.search(query)
+#                        #results = f()
+#                    except Exception as err:
+#                        error = err
 
-                    idle_add(lambda: self.on_search_done(results, error))
-                thread = Thread(target = do_call)
-                thread.start()
-            else:
-                self.set_search_placeholder(True)
-        except AttributeError as e:
-            self.set_search_placeholder(True)
+#                    idle_add(lambda: self.on_search_done(results, error))
+#                thread = Thread(target = do_call)
+#                thread.start()
+#            else:
+#                self.set_search_placeholder(True)
+#        except AttributeError as e:
+#            self.set_search_placeholder(True)
 
-    def on_search_done(self, results, error):
-        try:
-            listbox = self.entity_popover.results_listbox
-            listbox.foreach(listbox.remove)
-            for r in results:
-                if r['URI'] != self.URI:
-                    entity = SidebarEntity(r, URI=False)#,
-                    row = ListBoxRow()
-                    row.add(entity)
-                    listbox.add(row)
-            listbox.show_all()
-            self.set_search_placeholder(False)
-        except AttributeError as e:
-            print("this value type has no popover")
-            raise e
+#    def on_search_done(self, results, error):
+#        try:
+#            listbox = self.entity_popover.results_listbox
+#            listbox.foreach(listbox.remove)
+#            for r in results:
+#                if r['URI'] != self.URI:
+#                    entity = SidebarEntity(r, URI=False)#,
+#                    row = ListBoxRow()
+#                    row.add(entity)
+#                    listbox.add(row)
+#            listbox.show_all()
+#            self.set_search_placeholder(False)
+#        except AttributeError as e:
+#            print("this value type has no popover")
+#            raise e
 
-    def set_search_placeholder(self, value):
-        try:
-            self.entity_popover.search_box.set_visible(value)
-            self.entity_popover.results.set_visible(not value)
-        except AttributeError as e:
-            pass
+#    def set_search_placeholder(self, value):
+#        try:
+#            self.entity_popover.search_box.set_visible(value)
+#            self.entity_popover.results.set_visible(not value)
+#        except AttributeError as e:
+#            pass
 
-    def entry_search_changed_cb(self, entry):
-        self.search(entry.get_text())
+#    def entry_search_changed_cb(self, entry):
+#        self.search(entry.get_text())
         

@@ -14,7 +14,7 @@ It has a progressive layout thanks to [libhandy](https://source.puri.sm/Librem5/
 
 ## Current status
 
-The development of the current version (1.0α) has been made possible thanks to a sponsorship provided by [Wikimedia CH](https://wikimedia.ch). 
+The development of the current version (1.0β) has been made possible thanks to a sponsorship provided by [Wikimedia CH](https://wikimedia.ch). 
 
 Endorse the project on [Wikidata](https://wikidata.org/wiki/User:Ogoorcs/Daty/Endorsement) to help the development get funds.
 
@@ -22,7 +22,7 @@ An overview of what you will find in the stable 1.0 version is available at proj
 
 
 - [X] Search and open entities through elastic search;
-- [X] Search and open entities with triplets (broken in the current version);
+- [X] Search and open entities with triplets;
 - [X] Read entities and follow their values;
 - [X] Mobile view;
 - [X] Open entities search;
@@ -33,7 +33,7 @@ An overview of what you will find in the stable 1.0 version is available at proj
 ## Installation
 
 ### Windows
-You can download the installer [here](https://gitlab.gnome.org/World/Daty/uploads/6129428130ad687e2fac23fa4a3c839b/daty-x86_64-1.0alpha.msi).
+You can download the installer [here](https://gitlab.gnome.org/World/Daty/uploads/41f2a430beae8dba1b1d46f0878eecac/daty-x86_64-1.0beta.msi).
 
 ### GNU/Linux
 

@@ -41,6 +41,9 @@ class EntityPopover(PopoverMenu):
     __gsignals__ = {'default-variable-selected':(sf.RUN_LAST,
                                                  TYPE_NONE,
                                                  (TYPE_PYOBJECT,)),
+                    'entity-new':(sf.RUN_LAST,
+                                       TYPE_NONE,
+                                       (TYPE_PYOBJECT,)),
                     'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,)),
@@ -54,10 +57,13 @@ class EntityPopover(PopoverMenu):
     label = Template.Child("label")
     description = Template.Child("description")
     entity_grid = Template.Child("entity_grid")
+    entity_new = Template.Child("entity_new")
     new_window = Template.Child("new_window")
     results = Template.Child("results")
     results_listbox = Template.Child("results_listbox")
-    search_box = Template.Child("search_box")
+    results_nope_query = Template.Child("results_nope_query")
+    results_stack = Template.Child("results_stack")
+#    search_box = Template.Child("search_box")
     search_entry = Template.Child("search_entry")
     search_subtitle = Template.Child("search_subtitle")
     variable_grid = Template.Child("variable_grid")
@@ -65,21 +71,22 @@ class EntityPopover(PopoverMenu):
     variable_title = Template.Child("variable_title")
     variable_subtitle = Template.Child("variable_subtitle")
 
-    def __init__(self, entity, *args, load=None, parent=None,
+    def __init__(self, entity, *args, parent=None,
                  variables=None, **kwargs):
         PopoverMenu.__init__(self, *args, **kwargs)
 
-        self.load = load
         self.variables = variables
         self.entity = entity
         if self.variables != None:
+            self.set_modal(True)
+            self.search_entry.set_visible(True)
+            self.variable_grid.set_visible(True)
             self.entity_grid.set_visible(False)
             subtitle = "Search for entities or\n<i>define new variables</i>"
             set_text(self.search_subtitle, subtitle, subtitle, markup=True)
-            self.set_modal(True)
-            self.search_entry.set_visible(True)
             self.search_entry.connect("search-changed",
                                       self.search_entry_search_changed_cb)
+            self.search_entry.grab_focus()
 
         if parent:
             self.set_relative_to(parent)
@@ -89,21 +96,33 @@ class EntityPopover(PopoverMenu):
     def search_entry_search_changed_cb(self, entry):
         query = entry.get_text()
         if query:
-            search(query, self.on_search_done, query)
+            self.results_stack.set_visible_child_name("results_searching")
+            search(query, self.on_search_done, query, entry)
         else:
+            self.variable_grid.set_visible(False)
             if self.variables:
-                self.variable_grid.set_visible(False)
-                self.variables_set_results()
+                self.variables_set_results(self.results_listbox)
+                self.results_stack.set_visible_child_name("results")
             else:
-                self.set_search_placeholder(True)
+                self.results_stack.set_visible_child_name("results_placeholder")
+                print(self.results_stack.get_visible_child_name())
 
-    def on_search_done(self, results, error, query, *args, **kwargs):
-        if query == self.search_entry.get_text():
+    def on_search_done(self, results, error, query, entry, *args, **kwargs):
+        if query == entry.get_text():
+            print("entitypopover: search done:", query)
             try:
+                listbox = self.results_listbox
+                listbox.foreach(listbox.remove)
                 set_text(self.variable_title, query, query)
                 pango_label(self.variable_title, 'bold')
-                self.variables_set_results(query=query)
-                listbox = self.results_listbox
+                if self.variables != None:
+                    self.variables_set_results(listbox, query=query)
+                if self.variables or results:
+                    self.results_stack.set_visible_child_name("results")
+                else:
+                    set_text(self.results_nope_query, query, query)
+                    self.entity_new.connect("clicked", self.entity_new_clicked_cb, query)
+                    self.results_stack.set_visible_child_name("results_nope")
                 for r in results:
                     if r['URI'] != self.entity['URI']:
                         entity = SidebarEntity(r, URI=False, button=True)
@@ -119,8 +138,10 @@ class EntityPopover(PopoverMenu):
             except Exception as e:
                 raise e
 
-    def variables_set_results(self, query=""):
-        listbox = self.results_listbox
+    def entity_new_clicked_cb(self, widget, query):
+        self.emit("entity-new", query)
+
+    def variables_set_results(self, listbox, query=""):
         listbox.foreach(listbox.remove)
         if hasattr(self.variable_record, 'connection'):
             self.variable_record.disconnect(self.variable_record.connection)
@@ -172,14 +193,11 @@ class EntityPopover(PopoverMenu):
 
     def set_search_placeholder(self, value):
         try:
-            self.search_box.set_visible(value)
             if self.variables != None:
                 self.variable_grid.set_visible(not value)
-            else:
-                self.entity_grid.set_visible(not value)
             self.results.set_visible(not value)
         except AttributeError as e:
-            pass
+            raise e
 
     @Template.Callback()
     def new_window_clicked_cb(self, widget, *cb_args):
@@ -187,7 +205,6 @@ class EntityPopover(PopoverMenu):
             payload = list(cb_args)
         else:
             payload = [self.entity]
-        self.load(payload)
         self.emit("new-window-clicked", payload)
 
     def is_variable(self, entity):
@@ -252,11 +269,11 @@ class EntityPopover(PopoverMenu):
         self.object_selected_cb(sidebar_entity, entity)
         self.hide()
 
-    @Template.Callback()
-    def visibility_notify_event_cb(self, popover):
-        if popover.get_visible():
-            if self.variables:
-                self.variable_grid.set_visible(False)
-                self.search_box.set_visible(False)
-                self.variables_set_results()
-                self.results.set_visible(True)
+#    @Template.Callback()
+#    def visibility_notify_event_cb(self, popover):
+#        if popover.get_visible():
+#            if self.variables:
+#                self.variable_grid.set_visible(False)
+#                self.search_box.set_visible(False)
+#                self.variables_set_results()
+#                self.results.set_visible(True)

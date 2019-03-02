@@ -51,7 +51,10 @@ name = 'ml.prevete.Daty'
 class Open(Window):
     __gtype_name__ = "Open"
 
-    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+    __gsignals__ = {'entity-new':(sf.RUN_LAST,
+                                  TYPE_NONE,
+                                  (TYPE_PYOBJECT,)),
+                    'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,))}
 
@@ -85,7 +88,7 @@ class Open(Window):
     title = Template.Child("title")
     titlebar = Template.Child("titlebar")
 
-    def __init__(self, load, *args, new_session=True, quit_cb=None, verbose=False):
+    def __init__(self, *args, new_session=True, quit_cb=None, verbose=False):
         Window.__init__(self, *args)
 
         # Set window icon
@@ -95,7 +98,6 @@ class Open(Window):
 
         self.verbose = verbose
         self.new_session = new_session
-        self.load = load
         self.results_listbox.selected = EntitySet()
         self.filtered_results = EntitySet()
         self.entities = self.results_listbox.selected
@@ -120,7 +122,7 @@ class Open(Window):
             self.header_bar.set_show_close_button(False)
             self.back.set_visible(True)
 
-        self.open_button.connect('clicked', self.open_button_clicked_cb, load)
+        self.open_button.connect('clicked', self.open_button_clicked_cb)
         text = """<b>Search for an <a href="url">entity</a> in the database</b>"""
         if system() == 'Linux':
             url = "help:daty/daty-entities"
@@ -153,9 +155,9 @@ class Open(Window):
             if not self.filters_box.get_visible():
                 self.filter_new_box.props.valign = 0
 
-    def open_button_clicked_cb(self, widget, load):
+    def open_button_clicked_cb(self, widget):
         if self.entities != []:
-            load(self.entities)
+            self.emit("new-window-clicked", self.entities)
         self.destroy()
 
     @Template.Callback()
@@ -195,9 +197,10 @@ class Open(Window):
     def filter_new_clicked_cb(self, widget):
         self.filters_box.set_visible(True)
         self.filters_subtitle.set_visible(False)
-        triplet = Triplet(load=self.load, variables=self.variables)
-        triplet.connect("new-window-clicked", self.new_window_clicked_cb)
+        triplet = Triplet(variables=self.variables)
         triplet.connect("default-variable-selected", self.triplets_default_variable_selected_cb)
+        triplet.connect("entity-new", self.entity_new_clicked_cb)
+        triplet.connect("new-window-clicked", self.new_window_clicked_cb)
         triplet.connect("object-selected", self.triplets_check_cb)
         triplet.connect("variable-deleted", self.triplet_variable_deleted_cb)
         row = OverlayedListBoxRow(triplet)
@@ -214,8 +217,10 @@ class Open(Window):
         self.filters_listbox.add(row)
         self.filters_listbox.show_all()
 
+    def entity_new_clicked_cb(self, popover, query):
+        self.emit("entity-new", query)
+
     def new_window_clicked_cb(self, triplet, entities):
-        print("new-window-clicked")
         self.emit("new-window-clicked", entities)
 
     def triplet_variable_deleted_cb(self, triplet, entity):
@@ -329,7 +334,6 @@ class Open(Window):
                                   "Description":"String",
                                   "URI":""}
                         self.on_download_done(URI, entity, "")
-        #print(results)
 
     def object_is_empty(self, triplet, object):
         is_var = 'Variable' in object.entity
@@ -414,7 +418,6 @@ class Open(Window):
         n = 0
         for row in self.results_listbox:
             entity = row.child.entity
-            #print(entity.keys())
             if query in entity['Label'].lower() or query in entity['Description'].lower():
                 row.set_visible(True)
                 n += 1
@@ -426,11 +429,11 @@ class Open(Window):
     @Template.Callback()
     def results_listbox_row_activated_cb(self, widget, row):
         if self.titlebar.get_selection_mode():
-            toggle = row.child #row.get_children()[0]
+            toggle = row.child
             toggle.set_active(False) if toggle.get_active() else toggle.set_active(True)
         else:
             self.entities.add(row.child.entity)
-            self.load(self.entities)
+            self.emit("new-window-clicked", self.entities)
             self.destroy()
 
     def set_selection_mode(self, value):

@@ -37,11 +37,12 @@ from threading import Thread
 from .entityselectable import EntitySelectable
 from .loadingpage import LoadingPage
 from .open import Open
+from .page import Page
 from .overlayedlistboxrow import OverlayedListBoxRow
 from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
 from .sidebarlist import SidebarList
-from .util import MyThread, download
+from .util import MyThread, download, label_color
 from .wikidata import Wikidata
 
 name = "ml.prevete.Daty"
@@ -60,9 +61,12 @@ class Editor(ApplicationWindow):
 
     # Header bar
     header_bar = Template.Child("header_bar")
-    entity_new = Template.Child("entity_new")
+    entity_discussion_open_external = Template.Child("entity_discussion_open_external")
+    entity_open = Template.Child("entity_open")
+    entity_menu_popover = Template.Child("entity_menu_popover")
     entities_search = Template.Child("entities_search")
     entities_select = Template.Child("entities_select")
+    entity_open_external = Template.Child("entity_open_external")
     cancel_entities_selection = Template.Child("cancel_entities_selection")
     app_menu = Template.Child("app_menu")
     app_menu_popover = Template.Child("app_menu_popover")
@@ -120,15 +124,8 @@ class Editor(ApplicationWindow):
         self.set_icon_list(icons);
 
         # Init sidebar
-        self.sidebar_list = SidebarList(self.single_column,
-                                        self.header_box,
-                                        self.pages, 
-                                        self.entity,
-                                        self.description,
-                                        self.entity_search_entry,
-                                        self.sidebar_search_entry,
-                                        load=self.load,
-                                        wikidata=self.wikidata)
+        self.sidebar_list = SidebarList()
+        self.sidebar_list.connect("entity-selected", self.sidebar_row_selected_cb)
         self.sidebar_viewport.add(self.sidebar_list)
 
         # Init pages
@@ -142,10 +139,105 @@ class Editor(ApplicationWindow):
         if entities:
             self.load(entities)
         else:
-            entities_open_dialog = Open(self.load, quit_cb=self.quit_cb,
+            entities_open_dialog = Open(quit_cb=self.quit_cb,
                                         new_session=True)
+            entities_open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
             entities_open_dialog.get_focus()
             #entities_open_dialog.show_all()
+
+    def filter(self, query, text):
+        return query.lower() in text.lower()
+
+    def sidebar_search_entry_search_changed_cb(self, entry):
+        text = entry.get_text()
+        for row in self.sidebar_list.get_children():
+            if row.get_children():
+                child = row.child
+                entity = child.entity
+                if text.lower() in entity["Label"].lower() or text.lower() in entity["Description"].lower():
+                    row.set_visible(True)
+                    label_color(child.label, text)
+                    label_color(child.description, text)
+                else:
+                    row.set_visible(False)
+
+    def sidebar_row_selected_cb(self, sidebar_list, entity):
+        self.single_column.set_visible_child_name("content_stack")
+        self.header_box.set_visible_child_name("sub_header_bar")
+
+        # Set titlebar
+        def set_text(widget, label):
+            widget.set_text(label)
+            widget.set_tooltip_text(label)
+
+        set_text(self.entity, entity["Label"])
+        set_text(self.description, entity["Description"])
+
+        self.entity_open_external.connect("clicked",
+                                          self.entity_open_external_clicked_cb,
+                                          entity['URI'])
+        self.entity_discussion_open_external.connect("clicked",
+                                                     self.entity_discussion_open_external_clicked_cb,
+                                                     entity['URI'])
+
+        if not self.pages.get_child_by_name(entity['URI']):
+            self.pages.set_visible_child_name("loading")
+            children = self.pages.get_children()
+
+            if len(children) >= 10:
+                oldest = children[1]
+                children.remove(oldest)
+                oldest.destroy()
+                del oldest
+
+            # TODO: Implement a short timeout to make sure you explicitly wanted to load the row
+
+            self.load_page_async(entity)
+        else:
+            self.pages.set_visible_child_name(entity['URI'])
+            self.entity_search_entry.connect('search-changed',
+                                             self.entity_search_entry_search_changed_cb)
+            self.sidebar_search_entry.connect('search-changed',
+                                             self.sidebar_search_entry_search_changed_cb)
+        print("Editor: sidebar row selected")
+
+    def load_page_async(self, entity):
+        def do_call():
+            idle_add(lambda: self.on_page_complete(entity))
+        thread = MyThread(target = do_call)
+        thread.start()
+
+    def on_page_complete(self, entity):
+        page = Page(entity['Data'])
+        page.connect("new-window-clicked", self.new_window_clicked_cb)
+        self.pages.add_titled(page, entity['URI'], entity['Label'])
+        self.pages.set_visible_child_name(entity['URI'])
+        self.entity_search_entry.connect("search-changed",
+                                         self.entity_search_entry_search_changed_cb)
+        self.sidebar_search_entry.connect("search-changed",
+                                          self.sidebar_search_entry_search_changed_cb)
+        return None
+
+    def entity_search_entry_search_changed_cb(self, entry):
+        text = entry.get_text()
+        page = self.pages.get_visible_child()
+        statements = page.statements
+        i = 0
+        row = lambda i,j: statements.get_child_at(j,i)
+        while row(i,0):
+            p_label = row(i,0).property_label.get_text()
+            p_desc = row(i,0).property_label.get_tooltip_text()
+            p_found = self.filter(text, p_label) or self.filter(text, p_desc)
+            if p_found:
+                label_color(row(i,0).property_label, text)
+                row(i,0).set_visible(True)
+                row(i,1).set_visible(True)
+            else:
+                label_color(row(i,0).property_label, color='')
+                row(i,0).set_visible(False)
+                row(i,1).set_visible(False)
+            i = i + 1
+
     def load(self, entities):
         """Open entities
 
@@ -187,13 +279,25 @@ class Editor(ApplicationWindow):
 
         row = ListBoxRow()
         row.child = sidebar_entity
+
         row.add(sidebar_entity)
 
-        self.sidebar_list.add(row, **kwargs)
+        current_row = self.sidebar_list.get_selected_row()
+        rows = self.sidebar_list.get_children()
+        i = 0
+        for i, r in enumerate(rows):
+            if r == current_row:
+                break
+        if (i < len(rows) - 2):
+            self.sidebar_list.insert(row, i+1)
+        else:
+            self.sidebar_list.add(row)
         self.sidebar_list.show_all()
+        if 'select' in kwargs and kwargs['select']:
+            self.sidebar_list.select_row(row)
 
     @Template.Callback()
-    def entity_new_clicked_cb(self, widget):
+    def entity_open_clicked_cb(self, widget):
         """New entity button clicked callback
 
             If clicked, it opens the 'open new entities' window.
@@ -201,11 +305,24 @@ class Editor(ApplicationWindow):
             Args:
                 widget (Gtk.Widget): the clicked widget.
         """
-        open_dialog = Open(self.load, quit_cb=self.quit_cb, new_session=False)
+        open_dialog = Open(quit_cb=self.quit_cb, new_session=False)
+        open_dialog.connect("entity-new", self.entity_new_clicked_cb)
         open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
 
     def new_window_clicked_cb(self, dialog, entities):
+        self.load(entities)
         print("Editor: new window clicked")
+
+    def entity_new_clicked_cb(self, open, query):
+        print("New entity", query)
+
+    def entity_discussion_open_external_clicked_cb(self, widget, URI):
+        from webbrowser import open
+        open(''.join(['https://www.wikidata.org/wiki/Talk:', URI]))
+
+    def entity_open_external_clicked_cb(self, widget, URI):
+        from webbrowser import open
+        open('/'.join(['https://wikidata.org/wiki', URI]))
 
     @Template.Callback()
     def entities_search_toggled_cb(self, widget):
@@ -245,7 +362,7 @@ class Editor(ApplicationWindow):
         # Titlebar
         self.titlebar.set_selection_mode(value)
         # New entity button
-        self.entity_new.set_visible(not value)
+        self.entity_open.set_visible(not value)
         # Entities search button
         self.entities_search.set_visible(value)
         # App menu
@@ -279,6 +396,20 @@ class Editor(ApplicationWindow):
             self.app_menu_popover.hide()
         else:
             self.app_menu_popover.set_visible(True)
+
+    @Template.Callback()
+    def entity_menu_clicked_cb(self, widget):
+        """Primary menu button clicked callback
+
+            If clicked, open primary menu (app menu).
+
+            Args:
+                widget (Gtk.Widget): the clicked widget.
+        """
+        if self.entity_menu_popover.get_visible():
+            self.entity_menu_popover.hide()
+        else:
+            self.entity_menu_popover.set_visible(True)
 
     @Template.Callback()
     def on_content_box_folded_changed(self, leaflet, folded):

@@ -55,6 +55,9 @@
                     "type" : "file",
                     "path" : "./flatpak/ml.prevete.DatyNightly.appdata.xml"
                 }
+            ],
+            "config-opts" : [
+                "Q356"
             ]
         }
     ],

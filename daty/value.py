@@ -54,18 +54,17 @@ class Value(Grid):
     mainsnak = Template.Child("mainsnak")
     references_grid = Template.Child("references_grid")
 
-    def __init__(self, claim, *args, load=None, **kwargs):
+    def __init__(self, claim, *args, **kwargs):
         Grid.__init__(self, *args, **kwargs)
 
-        self.load = load
         self.qualifier_row = 0
         self.reference_row = 0
         self.references_expanded = False
 
         context = self.get_style_context()
 
-        entity = Entity(claim['mainsnak'], load=self.load)
-        self.connect('new-window-clicked', self.on_new_window_clicked_cb)
+        entity = Entity(claim['mainsnak'])
+        entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(entity)
 
         if 'qualifiers' in claim:
@@ -84,8 +83,8 @@ class Value(Grid):
 
         del claim
 
-    def on_new_window_clicked_cb(self, entity, payload):
-        print("new window clicked")
+    def new_window_clicked_cb(self, entity, payload):
+        print("Value: new window clicked")
         self.emit("new-window-clicked", payload)
 
     def references_expand_clicked_cb(self, widget):
@@ -160,7 +159,7 @@ class Value(Grid):
         thread.start()
 
     def on_value_complete(self, claim, j):
-        value = Entity(claim, qualifier=True, load=self.load)
+        value = Entity(claim, qualifier=True)
         self.set_font_deprecated(value)
         self.qualifiers.attach(value, 1, j, 3, 1)
         return None

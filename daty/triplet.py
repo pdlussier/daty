@@ -41,6 +41,9 @@ class Triplet(Grid):
                     'default-variable-selected':(sf.RUN_LAST,
                                                  TYPE_NONE,
                                                  (TYPE_PYOBJECT,)),
+                    'entity-new':(sf.RUN_LAST,
+                                  TYPE_NONE,
+                                  (TYPE_PYOBJECT,)),
                     'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,)),
@@ -61,10 +64,9 @@ class Triplet(Grid):
     object_title = Template.Child("object_title")
     object_description = Template.Child("object_description")
 
-    def __init__(self, load=None, variables=None, *args, **kwargs):
+    def __init__(self, variables=None, *args, **kwargs):
         Grid.__init__(self, *args, **kwargs)
 
-        self.load = load
         self.variables = variables
         self.subject.title = self.subject_title
         self.subject.description = self.subject_description
@@ -79,10 +81,11 @@ class Triplet(Grid):
             widget.entity = {"Label":"", "Description":"", "URI":""}
             widget.popover = EntityPopover(widget.entity,
                                                   parent=widget,
-                                                  load=self.load,
                                                   variables=self.variables)
             widget.popover.connect("default-variable-selected",
                                           self.default_variable_selected_cb)
+            widget.popover.connect("entity-new",
+                                          self.entity_new_clicked_cb)
             widget.popover.connect("new-window-clicked",
                                           self.new_window_clicked_cb)
             widget.popover.connect("object-selected",
@@ -93,6 +96,10 @@ class Triplet(Grid):
         self.property.popover.search_entry.set_text("property:")
 
         self.show_all()
+
+    def entity_new_clicked_cb(self, popover, query):
+        #print(query)
+        self.emit("entity-new", query)
 
     def new_window_clicked_cb(self, popover, entities):
         self.emit("new-window-clicked", entities)
