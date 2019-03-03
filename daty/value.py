@@ -41,7 +41,11 @@ class Value(Grid):
 
     __gtype_name__ = "Value"
 
-    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+    __gsignals__ = {'claim-changed':(sf.RUN_LAST,
+                                     TYPE_NONE,
+                                     (TYPE_PYOBJECT,
+                                      TYPE_PYOBJECT)),
+                    'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,)),
                     'references-toggled':(sf.RUN_LAST,
@@ -64,6 +68,7 @@ class Value(Grid):
         context = self.get_style_context()
 
         entity = Entity(claim['mainsnak'])
+        entity.connect("object-selected", self.object_selected_cb, claim)
         entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(entity)
 
@@ -95,26 +100,6 @@ class Value(Grid):
             icon_name = 'pan-end-symbolic'
         self.icon.set_from_icon_name(icon_name, IconSize.BUTTON)
         self.emit('references-toggled', self)
-
-        #print("get_active?", widget.get_active())
-        #print(self.icon_)
-        #if self.icon.get_icon_name() == 'pan-end-symbolic':
-        #    print("you open")
-        #elif self.icon.get_icon_name() == 'pan-down-symbolic':
-        #    print("you close")
-        #self.emit("reference-expanded", )
-        #if not self.references_expanded:
-        #    if not self.references_grid.get_children():
-        #        self.icon.set_from_icon_name("pan-down-symbolic", IconSize.BUTTON)
-        #        for i,ref in enumerate(self.references):
-        #            for j,P in enumerate(ref['snaks-order']):
-        #                values = ref['snaks']
-        #                download_light(P, self.load_reference, i+j, values)
-        #    self.references_expanded = True
-        #else:
-        #    self.references_expanded = False
-        #    self.icon.set_from_icon_name("pan-end-symbolic", IconSize.BUTTON)
-        #self.set_expanded()
 
     def load_reference(self, URI, property, error, i, values):
         try:
@@ -160,9 +145,14 @@ class Value(Grid):
 
     def on_value_complete(self, claim, j):
         value = Entity(claim, qualifier=True)
+        value.connect("object-selected", self.object_selected_cb, claim)
         self.set_font_deprecated(value)
         self.qualifiers.attach(value, 1, j, 3, 1)
         return None
+
+    def object_selected_cb(self, value, entity, claim):
+        print("Value: object selected")
+        self.emit("claim-changed", claim, entity)
 
     def set_font_deprecated(self, editor_widget):
         pango_context = editor_widget.create_pango_context()

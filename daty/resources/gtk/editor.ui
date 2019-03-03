@@ -477,7 +477,6 @@
             <property name="image">history-page-icon</property>
             <property name="always_show_image">True</property>
             <property name="tooltip_text" translatable="yes">Open history in the browser</property>
-            <signal name="clicked" handler="entity_discussion_open_external_clicked_cb" swapped="no"/>
            </object>
            <packing>
             <property name="pack_type">start</property>

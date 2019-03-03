@@ -176,6 +176,8 @@ class Wikidata:
         entity["URI"] = URI
         return entity
 
+#    def edit()
+
     def get_label(self, entity, language='en'):
         """Get entity label
 

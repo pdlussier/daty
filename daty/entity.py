@@ -47,7 +47,10 @@ class Entity(Stack):
 
     __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
-                                          (TYPE_PYOBJECT,))}
+                                          (TYPE_PYOBJECT,)),
+                    'object-selected':(sf.RUN_LAST,
+                                       TYPE_NONE,
+                                       (TYPE_PYOBJECT,))}
 
     entry = Template.Child("entry")
     label = Template.Child("label")
@@ -184,11 +187,16 @@ class Entity(Stack):
             self.entity_popover = EntityPopover(self.entity, parent=self)
             self.entry.connect("search-changed", self.entity_popover.search_entry_search_changed_cb)
             self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
+            self.entity_popover.connect("object-selected", self.object_selected_cb)
             self.entry.emit("search-changed")
             self.entity_popover.set_visible(True)
         except AttributeError as e:
             #raise e
             print("no popover available for this type of value")
+
+    def object_selected_cb(self, popover, entity):
+        print("Editor: object selected:", entity['URI'])
+        self.emit("object-selected", entity)
 
     def new_window_clicked_cb(self, popover, entities):
         print("Entity: new window clicked")
@@ -213,51 +221,3 @@ class Entity(Stack):
                 self.entry_focus_out_event_cb(widget, event)
         except AttributeError as e:
             print("no entity popover for this value")
-
-#    def search(self, query):
-#        try:
-#            if query:
-#                self.entity_popover
-#                def do_call():
-#                    results, error = None, None
-#                    try:
-#                        wikidata = Wikidata()
-#                        results = wikidata.search(query)
-#                        #results = f()
-#                    except Exception as err:
-#                        error = err
-
-#                    idle_add(lambda: self.on_search_done(results, error))
-#                thread = Thread(target = do_call)
-#                thread.start()
-#            else:
-#                self.set_search_placeholder(True)
-#        except AttributeError as e:
-#            self.set_search_placeholder(True)
-
-#    def on_search_done(self, results, error):
-#        try:
-#            listbox = self.entity_popover.results_listbox
-#            listbox.foreach(listbox.remove)
-#            for r in results:
-#                if r['URI'] != self.URI:
-#                    entity = SidebarEntity(r, URI=False)#,
-#                    row = ListBoxRow()
-#                    row.add(entity)
-#                    listbox.add(row)
-#            listbox.show_all()
-#            self.set_search_placeholder(False)
-#        except AttributeError as e:
-#            print("this value type has no popover")
-#            raise e
-
-#    def set_search_placeholder(self, value):
-#        try:
-#            self.entity_popover.search_box.set_visible(value)
-#            self.entity_popover.results.set_visible(not value)
-#        except AttributeError as e:
-#            pass
-
-#    def entry_search_changed_cb(self, entry):
-#        self.search(entry.get_text())
-        

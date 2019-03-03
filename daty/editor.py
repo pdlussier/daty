@@ -33,6 +33,7 @@ from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, Li
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
+from webbrowser import open
 
 from .entityselectable import EntitySelectable
 from .loadingpage import LoadingPage
@@ -62,6 +63,7 @@ class Editor(ApplicationWindow):
     # Header bar
     header_bar = Template.Child("header_bar")
     entity_discussion_open_external = Template.Child("entity_discussion_open_external")
+    entity_history_open_external = Template.Child("entity_history_open_external")
     entity_open = Template.Child("entity_open")
     entity_menu_popover = Template.Child("entity_menu_popover")
     entities_search = Template.Child("entities_search")
@@ -162,6 +164,7 @@ class Editor(ApplicationWindow):
                     row.set_visible(False)
 
     def sidebar_row_selected_cb(self, sidebar_list, entity):
+        print("Editor: sidebar row selected")
         self.single_column.set_visible_child_name("content_stack")
         self.header_box.set_visible_child_name("sub_header_bar")
 
@@ -173,12 +176,22 @@ class Editor(ApplicationWindow):
         set_text(self.entity, entity["Label"])
         set_text(self.description, entity["Description"])
 
-        self.entity_open_external.connect("clicked",
-                                          self.entity_open_external_clicked_cb,
-                                          entity['URI'])
-        self.entity_discussion_open_external.connect("clicked",
-                                                     self.entity_discussion_open_external_clicked_cb,
-                                                     entity['URI'])
+        if hasattr(self, 'entity_open_external_connection'):
+            print("disconnecting open signal")
+            self.entity_open_external.disconnect(self.entity_open_external_connection)
+        self.entity_open_external_connection = self.entity_open_external.connect("clicked",
+                                                                                 self.entity_open_external_clicked_cb,
+                                                                                 entity['URI'])
+        if hasattr(self, 'entity_history_open_external_connection'):
+            self.entity_history_open_external.disconnect(self.entity_history_open_external_connection)
+        self.entity_history_open_external_connection = self.entity_history_open_external.connect("clicked",
+                                                                                                 self.entity_history_open_external_clicked_cb,
+                                                                                                 entity['URI'])
+        if hasattr(self, 'entity_discussion_open_external_connection'):
+            self.entity_discussion_open_external.disconnect(self.entity_discussion_open_external_connection)
+        self.entity_discussion_open_external_connection = self.entity_discussion_open_external.connect("clicked",
+                                                                                                       self.entity_discussion_open_external_clicked_cb,
+                                                                                                       entity['URI'])
 
         if not self.pages.get_child_by_name(entity['URI']):
             self.pages.set_visible_child_name("loading")
@@ -199,7 +212,6 @@ class Editor(ApplicationWindow):
                                              self.entity_search_entry_search_changed_cb)
             self.sidebar_search_entry.connect('search-changed',
                                              self.sidebar_search_entry_search_changed_cb)
-        print("Editor: sidebar row selected")
 
     def load_page_async(self, entity):
         def do_call():
@@ -316,12 +328,13 @@ class Editor(ApplicationWindow):
     def entity_new_clicked_cb(self, open, query):
         print("New entity", query)
 
+    def entity_history_open_external_clicked_cb(self, widget, URI):
+       open(''.join(['https://wikidata.org/w/index.php?action=history&title=', URI]))
+
     def entity_discussion_open_external_clicked_cb(self, widget, URI):
-        from webbrowser import open
         open(''.join(['https://www.wikidata.org/wiki/Talk:', URI]))
 
     def entity_open_external_clicked_cb(self, widget, URI):
-        from webbrowser import open
         open('/'.join(['https://wikidata.org/wiki', URI]))
 
     @Template.Callback()

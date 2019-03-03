@@ -69,7 +69,7 @@ class Page(ScrolledWindow):
             frame.set_visible(True)
             values = Values()
             frame.add(values)
-            self.statements.attach(frame, 1, i, 2, 1)
+            self.statements.attach(frame, 1, i, 3, 1)
             for claim in claims[P]:
                 claim = claim.toJSON()
                 self.load_value_async(claim, values)
@@ -101,11 +101,15 @@ class Page(ScrolledWindow):
         if error:
             print(error)
         value = Value(claim=claim)
+        value.connect("claim-changed", self.claim_changed_cb)
         value.connect("new-window-clicked", self.new_window_clicked_cb)
         value.connect('references-toggled', values.references_toggled_cb)
         values.add(value)
         values.show_all()
         return None
+
+    def claim_changed_cb(self, value, claim, entity):
+        print("Page: claim changed")
 
     def new_window_clicked_cb(self, value, entity):
         self.emit("new-window-clicked", entity)
