@@ -22,7 +22,7 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-#from copy import deepcopy as cp
+from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
@@ -61,7 +61,7 @@ class Entity(Stack):
     def __init__(self, snak, *args, qualifier=False, css=None, **kwargs):
         Stack.__init__(self, *args, **kwargs)
 
-        context = self.get_style_context()
+        context = self.entry.get_style_context()
         provider = CssProvider()
         provider.load_from_resource('/ml/prevete/Daty/gtk/entity.css')
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
@@ -184,7 +184,7 @@ class Entity(Stack):
         description = self.label.get_tooltip_text()
         try:
             from .entitypopover import EntityPopover
-            self.entity_popover = EntityPopover(self.entity, parent=self)
+            self.entity_popover = EntityPopover(cp(self.entity), parent=self)
             self.entry.connect("search-changed", self.entity_popover.search_entry_search_changed_cb)
             self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
             self.entity_popover.connect("object-selected", self.object_selected_cb)
@@ -196,6 +196,7 @@ class Entity(Stack):
 
     def object_selected_cb(self, popover, entity):
         print("Editor: object selected:", entity['URI'])
+        self.load_entity(entity['URI'], entity, None)
         self.emit("object-selected", entity)
 
     def new_window_clicked_cb(self, popover, entities):

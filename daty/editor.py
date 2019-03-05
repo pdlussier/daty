@@ -27,6 +27,8 @@ from gi import require_version
 require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 require_version('Handy', '0.0')
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import KEY_Escape, KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L, KEY_ISO_Level3_Shift, KEY_ISO_Level3_Lock, KEY_Tab, KEY_Menu, KEY_Up, KEY_Down, KEY_Right, KEY_Left
 from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
@@ -43,7 +45,7 @@ from .overlayedlistboxrow import OverlayedListBoxRow
 from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
 from .sidebarlist import SidebarList
-from .util import MyThread, download, label_color
+from .util import MyThread, download, edit, label_color, set_style
 from .wikidata import Wikidata
 
 name = "ml.prevete.Daty"
@@ -54,7 +56,12 @@ modifiers = [KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L,
 
 @Template.from_resource("/ml/prevete/Daty/gtk/editor.ui")
 class Editor(ApplicationWindow):
+
     __gtype_name__ = "Editor"
+
+#    __gsignals__ = {'claim-changed-done':(sf.RUN_LAST,
+#                                          TYPE_NONE,
+#                                          (TYPE_PYOBJECT,))}
 
     # Title bar
     titlebar = Template.Child("titlebar")
@@ -177,7 +184,6 @@ class Editor(ApplicationWindow):
         set_text(self.description, entity["Description"])
 
         if hasattr(self, 'entity_open_external_connection'):
-            print("disconnecting open signal")
             self.entity_open_external.disconnect(self.entity_open_external_connection)
         self.entity_open_external_connection = self.entity_open_external.connect("clicked",
                                                                                  self.entity_open_external_clicked_cb,
@@ -192,6 +198,7 @@ class Editor(ApplicationWindow):
         self.entity_discussion_open_external_connection = self.entity_discussion_open_external.connect("clicked",
                                                                                                        self.entity_discussion_open_external_clicked_cb,
                                                                                                        entity['URI'])
+
 
         if not self.pages.get_child_by_name(entity['URI']):
             self.pages.set_visible_child_name("loading")
@@ -221,6 +228,8 @@ class Editor(ApplicationWindow):
 
     def on_page_complete(self, entity):
         page = Page(entity['Data'])
+        page.connect("claim-changed", self.claim_changed_cb)
+        #self.connect("claim-changed-done", page.claim_changed_done_cb)
         page.connect("new-window-clicked", self.new_window_clicked_cb)
         self.pages.add_titled(page, entity['URI'], entity['Label'])
         self.pages.set_visible_child_name(entity['URI'])
@@ -229,6 +238,20 @@ class Editor(ApplicationWindow):
         self.sidebar_search_entry.connect("search-changed",
                                           self.sidebar_search_entry_search_changed_cb)
         return None
+
+    def claim_changed_cb(self, page, claim, target, value):
+        print("Editor: claim changed")
+        URI = self.pages.get_visible_child_name()
+        edit(URI, claim, target, self.on_claim_changed, value)
+
+    def on_claim_changed(self, target, error, value):
+        if not error:
+            set_style(value.context, '/ml/prevete/Daty/gtk/value.css',
+                                     'loading', False)
+            print("Modifica effettuata correttamente")
+        else:
+            print("Error", error)
+
 
     def entity_search_entry_search_changed_cb(self, entry):
         text = entry.get_text()
@@ -257,7 +280,7 @@ class Editor(ApplicationWindow):
                 entities (list): of dict having "URI", "Label", "Description" keys;
         """
         for entity in entities[:-1]:
-            download(entity, self.load_row_async,)
+            download(entity, self.load_row_async, use_cache=False)
         download(entities[-1], self.load_row_async, select=True)
         self.show()
         self.present()

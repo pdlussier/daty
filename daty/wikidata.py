@@ -132,15 +132,15 @@ class Wikidata:
                     path = join(self.config.dirs['cache'], URI + 'target')
                 else:
                     path = join(self.config.dirs['cache'], URI)
-                if exists(path):
+                if exists(path) and use_cache:
                     mtime = getmtime(path)
-                    if (use_cache or time() - mtime < 604800):
+                    if (time() - mtime < 604800):
                         try:
                             entity = load(path)
                             break
                         except AttributeError as e:
                             pass
-                else:
+                elif not use_cache or not exists(path):
                     print("light-downloading" if target else "dowloading", URI)
                     if URI.startswith("P"):
                         entity = PropertyPage(repo, URI).get()
@@ -176,7 +176,40 @@ class Wikidata:
         entity["URI"] = URI
         return entity
 
-#    def edit()
+    def edit(self, URI, claim, target):
+        try:
+            print("Wikidata: edit claim")
+            from pywikibot import ItemPage, PropertyPage, Site
+            site = Site('wikidata', 'wikidata')
+            repo = site.data_repository()
+            if URI.startswith("P"):
+                page = PropertyPage(repo, URI)
+            elif URI.startswith("Q") or URI.startswith("L"):
+                page = ItemPage(repo, URI)
+            entity_dict = page.get()
+            print("claim keys:", claim.keys())
+            if not 'hash' in claim:
+                print('this is a mainsnak')
+                P = claim['mainsnak']['property']
+                #print(entity_dict)
+                for c in entity_dict['claims'][P]:
+                    #print(c)
+                    json = c.toJSON()
+                    #print(entity)
+                    #print(entity['Label'])
+                    #print(entity["Label"], json.keys())
+                    #print("entity claim id", claim['id'])
+                    if json['id'] == claim['id']:
+                        target_page = ItemPage(repo, target['URI'], 0)
+                        c.changeTarget(target_page)
+                        print("completed")
+            else:
+                print(claim.keys())
+                print("qualifier")
+        except Exception as e:
+            print("Error", e)
+            raise e
+
 
     def get_label(self, entity, language='en'):
         """Get entity label

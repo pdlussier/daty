@@ -24,8 +24,8 @@
 
 #from ast import literal_eval
 from copy import deepcopy as cp
-from gi.repository import GObject
 from gi.repository.GLib import idle_add
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider
 from os import makedirs, umask
 from pickle import dump
 from pickle import load as pickle_load
@@ -138,6 +138,15 @@ def set_text(widget, text, tooltip, markup=False):
         widget.set_text(text)
     widget.set_tooltip_text(tooltip)
 
+def set_style(context, resource, style_class, enable):
+    if enable:
+        provider = CssProvider()
+        provider.load_from_resource(resource)
+        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+        context.add_class(style_class)
+    else:
+        context.remove_class(style_class)
+
 def mkdirs(newdir, mode=0o755):
     try:
         original_umask = umask(0)
@@ -182,7 +191,7 @@ def async_call(f, on_done):
     except Exception as err:
       error = err
 
-    GObject.idle_add(lambda: on_done(result, error))
+    idle_add(lambda: on_done(result, error))
 
   thread = Thread(target = do_call)
   thread.start()
@@ -281,6 +290,21 @@ def download_light(URI, callback, *cb_args, wikidata=None, target=["Label", "Des
         idle_add(lambda: callback(URI, entity, error, *cb_args))
     thread = MyThread(target = do_call)
     thread.start()
+
+def edit(URI, claim, target, callback, *cb_args, wikidata=None):
+    if not wikidata:
+        from .wikidata import Wikidata
+        wikidata = Wikidata()
+    def do_call():
+        error = None
+        try:
+            wikidata.edit(URI, claim, target)
+        except Exception as err:
+            error = err
+        idle_add(lambda: callback(target, error, *cb_args))
+    thread = MyThread(target = do_call)
+    thread.start()
+
 
 def search(query, callback, *cb_args, wikidata=None, **kwargs):
     if not wikidata:

@@ -150,9 +150,14 @@ class Value(Grid):
         self.qualifiers.attach(value, 1, j, 3, 1)
         return None
 
-    def object_selected_cb(self, value, entity, claim):
+    def object_selected_cb(self, entity, target, claim):
         print("Value: object selected")
-        self.emit("claim-changed", claim, entity)
+        print("Value: entity", entity.entity['Label'])
+        provider = CssProvider()
+        provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
+        self.context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+        self.context.add_class('loading')
+        self.emit("claim-changed", claim, target)
 
     def set_font_deprecated(self, editor_widget):
         pango_context = editor_widget.create_pango_context()

@@ -1,0 +1,29 @@
+Editor: object selected: Q473873
+Value: object selected
+Page: claim changed
+new entity
+{'Description': 'video hosting service', 'Label': 'Vevo', 'URI': 'Q473873'}
+Claim
+{'id': 'Q866$15c08287-4ec3-e63b-db37-91086927d137',
+ 'mainsnak': {'datatype': 'wikibase-item',
+              'datavalue': {'type': 'wikibase-entityid',
+                            'value': {'entity-type': 'item',
+                                      'numeric-id': 559856}},
+              'property': 'P31',
+              'snaktype': 'value'},
+ 'rank': 'normal',
+ 'type': 'statement'}
+
+
+Editor: object selected: Q27968
+Value: object selected
+Page: claim changed
+new entity
+{'Description': 'English Studies', 'Label': 'English Studies', 'URI': 'Q27968'}
+Claim
+{'datatype': 'wikibase-item',
+ 'datavalue': {'type': 'wikibase-entityid',
+               'value': {'entity-type': 'item', 'numeric-id': 1860}},
+ 'hash': 'daf1c4fcb58181b02dff9cc89deb084004ddae4b',
+ 'property': 'P407',
+ 'snaktype': 'value'}

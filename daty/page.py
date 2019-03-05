@@ -30,6 +30,7 @@ from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gtk import Frame, Label, ScrolledWindow, Template
+from pprint import pprint
 from threading import Thread
 
 from .property import Property
@@ -42,7 +43,12 @@ class Page(ScrolledWindow):
 
     __gtype_name__ = "Page"
 
-    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+    __gsignals__ = {'claim-changed':(sf.RUN_LAST,
+                                     TYPE_NONE,
+                                     (TYPE_PYOBJECT,
+                                      TYPE_PYOBJECT,
+                                      TYPE_PYOBJECT)),
+                    'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,))}
 
@@ -108,8 +114,8 @@ class Page(ScrolledWindow):
         values.show_all()
         return None
 
-    def claim_changed_cb(self, value, claim, entity):
-        print("Page: claim changed")
+    def claim_changed_cb(self, value, claim, target):
+        self.emit("claim-changed", claim, target, value)
 
     def new_window_clicked_cb(self, value, entity):
         self.emit("new-window-clicked", entity)

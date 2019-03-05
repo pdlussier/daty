@@ -22,7 +22,11 @@
 */
 
 .unreferenced {
-    background-color:#fdefee;
+    background-color:#fff0f0;
+}
+
+.loading {
+    background-color:#fffae2;
 }
 
 .expanded {
