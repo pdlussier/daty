@@ -9,6 +9,21 @@ repo = site.data_repository()
 item_page = ItemPage(repo, 'Q4115189')
 data = item_page.get()
 
+target_page = ItemPage(repo, 'Q17')
+
+for P in data['claims']:
+    for c in data['claims'][P]:
+        if hasattr(c, 'qualifiers'):
+            #print(c.qualifiers)
+            if 'P710' in c.qualifiers:
+                for q in c.qualifiers['P710']:
+                    print(q.hash)
+                    q.setTarget(target_page)
+                    print(q.hash)
+                    repo.editQualifier(c, q)
+                    #q.changeTarget(target_page)
+                    #print(q)
+
 #del item_page
 #print(data)
 
@@ -21,7 +36,7 @@ data = item_page.get()
     #    c = c.toJSON()
     #    pprint(c)
 #pprint(data["claims"])
-claim = data['claims']['P31'][0]
+#claim = data['claims']['P31'][0]
 
 #item_page = ItemPage.editEntity(item_page, data=data)
 

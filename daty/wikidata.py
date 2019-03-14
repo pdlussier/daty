@@ -182,30 +182,38 @@ class Wikidata:
             from pywikibot import ItemPage, PropertyPage, Site
             site = Site('wikidata', 'wikidata')
             repo = site.data_repository()
+
             if URI.startswith("P"):
                 page = PropertyPage(repo, URI)
             elif URI.startswith("Q") or URI.startswith("L"):
                 page = ItemPage(repo, URI)
             entity_dict = page.get()
+
+            if target['URI'].startswith("Q"):
+                f = ItemPage
+            elif target['URI'].startswith("P"):
+                f = PropertyPage
+            target_page = f(repo, target['URI'], 0)
+
             print("claim keys:", claim.keys())
             if not 'hash' in claim:
                 print('this is a mainsnak')
                 P = claim['mainsnak']['property']
-                #print(entity_dict)
                 for c in entity_dict['claims'][P]:
-                    #print(c)
                     json = c.toJSON()
-                    #print(entity)
-                    #print(entity['Label'])
-                    #print(entity["Label"], json.keys())
-                    #print("entity claim id", claim['id'])
                     if json['id'] == claim['id']:
-                        target_page = ItemPage(repo, target['URI'], 0)
                         c.changeTarget(target_page)
                         print("completed")
             else:
-                print(claim.keys())
-                print("qualifier")
+                P = claim['property']
+                for p in entity_dict['claims']:
+                    for c in entity_dict['claims'][p]:
+                        if hasattr(c, 'qualifiers'):
+                            if P in c.qualifiers:
+                                for q in c.qualifiers[P]:
+                                    if claim['hash'] == q.hash:
+                                        q.setTarget(target_page)
+                                        q.repo.editQualifier(c, q)
         except Exception as e:
             print("Error", e)
             raise e

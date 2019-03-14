@@ -71,7 +71,9 @@ class Values(ListBox):
 
         if state:
             context.add_class('expanded')
+            if hasattr(child, "references")
             row = ListBoxRow()
+
             #button = Button("New reference")
             #value = Value(claim=claim, load=self.load)
             row.add(Label("Add reference"))
