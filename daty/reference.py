@@ -24,31 +24,23 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconTheme, Template
+from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION
+from gi.repository.Gtk import Grid, IconTheme, Template
 
 #from .wikidata import Wikidata
 
-@Template.from_resource("/ml/prevete/Daty/gtk/property.ui")
-class Property(Button):
-    __gtype_name__ = "Property"
+@Template.from_resource("/ml/prevete/Daty/gtk/reference.ui")
+class Reference(Grid):
+    __gtype_name__ = "Reference"
 
-    property_label = Template.Child("property_label")
+    #property_label = Template.Child("property_label")
     #values = Template.Child("values")
 
     def __init__(self, prop, *args, **kwargs):
-        Button.__init__(self, *args, **kwargs)
+        Grid.__init__(self, *args, **kwargs)
 
         # Styling
-        context = self.get_style_context()      
-        provider = CssProvider()
-        provider.load_from_resource('/ml/prevete/Daty/gtk/property.css')
-        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
-
-        #wikidata = Wikidata()
-        #label, tooltip = wikidata.get_label(prop), wikidata.get_description(prop)
-        self.set_label(prop["Label"], prop["Description"])
-        #del prop
-
-    def set_label(self, label, tooltip):
-        self.property_label.set_text(label)
-        self.property_label.set_tooltip_text(tooltip)
+        #context = self.get_style_context()
+        #provider = CssProvider()
+        #provider.load_from_resource('/ml/prevete/Daty/gtk/reference.css')
+        #context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 

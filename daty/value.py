@@ -35,6 +35,7 @@ from pprint import pprint
 
 from .entity import Entity
 from .qualifierproperty import QualifierProperty
+from .reference import Reference
 from .util import MyThread, download_light
 
 @Template.from_resource("/ml/prevete/Daty/gtk/value.ui")
@@ -104,10 +105,10 @@ class Value(Grid):
     def init_references(self):
         self.references_widgets = []
         for ref in self.references:
-            grid = Grid()
-            grid.props.margin_bottom = 6
-            grid.props.margin_top = 6
-            grid.props.row_spacing = 3
+            grid = Reference()
+            #grid.props.margin_bottom = 6
+            #grid.props.margin_top = 6
+            #grid.props.row_spacing = 3
             self.references_widgets.append(grid)
             for i,P in enumerate(ref['snaks-order']):
                 download_light(P, self.load_reference, i, grid, ref['snaks'][P])

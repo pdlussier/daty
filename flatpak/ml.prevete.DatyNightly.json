@@ -4,6 +4,7 @@
     "runtime-version" : "3.30",
     "sdk" : "org.gnome.Sdk",
     "command" : "daty",
+    "x-run-args" : ["Q342545", "Q35795", "Q4115189"],
     "finish-args" : [
         "--share=ipc",
         "--socket=x11",

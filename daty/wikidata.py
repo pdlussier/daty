@@ -114,7 +114,7 @@ class Wikidata:
         results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def download(self, URI, use_cache=True, target=None):
+    def download(self, URI, use_cache=True, target=None, debug=True):
         """
 
         Args:
@@ -133,6 +133,8 @@ class Wikidata:
                 else:
                     path = join(self.config.dirs['cache'], URI)
                 if exists(path) and use_cache:
+                    if debug:
+                        print("loading local copy")
                     mtime = getmtime(path)
                     if (time() - mtime < 604800):
                         try:
