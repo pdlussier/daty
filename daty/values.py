@@ -25,8 +25,10 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Label, ListBox, ListBoxRow, Separator, StyleContext, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, Button, CssProvider, Label, ListBox, ListBoxRow, Separator, StyleContext, Template
 from pprint import pprint
+
+from .reference import Reference
 
 @Template.from_resource("/ml/prevete/Daty/gtk/values.ui")
 class Values(ListBox):
@@ -80,7 +82,8 @@ class Values(ListBox):
             row = ListBoxRow()
             #button = Button("New reference")
             #value = Value(claim=claim, load=self.load)
-            row.add(Label("Add reference"))
+            #row.add(Button("Add reference")
+            row.add(Reference(new=True))
             self.insert(row, i+len(child.references_widgets))
         else:
             context.remove_class('expanded')
@@ -89,7 +92,7 @@ class Values(ListBox):
             row.destroy()
 
         self.show_all()
-            #print(state)
+            #print(state)j
         #lambda row: row if row.child == child else None
         #for
         #if

@@ -7,8 +7,8 @@
     "sources": [
         {
             "type": "file",
-            "url": "https://files.pythonhosted.org/packages/8c/c0/53d54efc2f9e9172543308e73401af391c33e252e4675f858edfee55e69f/soupsieve-1.7.1.tar.gz",
-            "sha256": "009d8865916766f7f452880d08ff94ed4c5445011a3deaac67543b82bdb0b9ee"
+            "url": "https://files.pythonhosted.org/packages/0c/52/e9088bb9b96e2d39fc3b33fcda5b4fde9d71473536ac660a1ca9a0958a2f/soupsieve-1.8.tar.gz",
+            "sha256": "eaed742b48b1f3e2d45ba6f79401b2ed5dc33b2123dfe216adb90d4bfa0ade26"
         },
         {
             "type": "file",

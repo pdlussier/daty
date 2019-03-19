@@ -1,0 +1,19 @@
+{
+    "name": "python3-pygobject",
+    "buildsystem": "simple",
+    "build-commands": [
+        "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} pygobject"
+    ],
+    "sources": [
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/a6/54/23d6cf3e8d8f1eb30e0e58f171b6f62b2ea75c024935492373639a1a08e4/pycairo-1.18.0.tar.gz",
+            "sha256": "abd42a4c9c2069febb4c38fe74bfc4b4a9d3a89fea3bc2e4ba7baff7a20f783f"
+        },
+        {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/0b/fd/56ac6898afc5c7f5718026103bd8f0b44714b6f79ac20d7eb8990c9a7eab/PyGObject-3.32.0.tar.gz",
+            "sha256": "a4d6f6d8e688d28e07119fc83aabc6e7aad02057f48b2194089959d03654f695"
+        }
+    ]
+}

@@ -25,19 +25,22 @@
 from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION
-from gi.repository.Gtk import Grid, IconTheme, Template
+from gi.repository.Gtk import Box, IconTheme, Template
 
 #from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/reference.ui")
-class Reference(Grid):
+class Reference(Box):
     __gtype_name__ = "Reference"
 
-    #property_label = Template.Child("property_label")
+    new_ref = Template.Child("new")
     #values = Template.Child("values")
 
-    def __init__(self, prop, *args, **kwargs):
-        Grid.__init__(self, *args, **kwargs)
+    def __init__(self, *args, new=False, **kwargs):
+        Box.__init__(self, *args, **kwargs)
+
+        if new:
+            self.new_ref.set_visible(True)
 
         # Styling
         #context = self.get_style_context()
