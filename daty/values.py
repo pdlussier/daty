@@ -57,9 +57,7 @@ class Values(ListBox):
     def references_toggled_cb(self, widget, child):
         for i, row in enumerate(self.get_children()):
             if hasattr(row, 'child') and row.child == child:
-                print(row)
-                print(type(child))
-                print(i)
+                i = i+1
                 break
 
         state = row.child.button.get_active()
@@ -71,13 +69,19 @@ class Values(ListBox):
 
         if state:
             context.add_class('expanded')
-            if hasattr(child, "references")
-            row = ListBoxRow()
+            if not hasattr(child, "references_widgets"):
+                child.init_references()
 
+            for j, grid in enumerate(child.references_widgets):
+                row = ListBoxRow()
+                row.add(grid)
+                self.insert(row, i+j)
+
+            row = ListBoxRow()
             #button = Button("New reference")
             #value = Value(claim=claim, load=self.load)
             row.add(Label("Add reference"))
-            self.insert(row, i+1)
+            self.insert(row, i+len(child.references_widgets))
         else:
             context.remove_class('expanded')
 

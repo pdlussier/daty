@@ -22,12 +22,13 @@ An overview of what you will find in the stable 1.0 version is available at proj
 
 
 - [X] Search and open entities through elastic search;
-- [X] Search and open entities with triplets;
+- [X] Search and open entities with filters;
 - [X] Read entities and follow their values;
 - [X] Mobile view;
 - [X] Open entities search;
 - [X] Property In-page search;
-- [ ] Edit statements;
+- [X] Edit statements;
+- [ ] Create new statements;
 - [ ] Mass-edit statements.
 
 ## Installation
@@ -68,6 +69,14 @@ Hardware or contributors needed.
 #### Option 1: with GNOME Builder
 Open GNOME Builder, click the "Clone..." button, paste the repository url.
 Clone the project and hit the ![](https://terminal.run/stuff/run_button.png) button to start building Daty.
+
+**Note**
+
+Depending on your distribution you could have to run
+
+    systemctl --user start xdg-desktop-portal
+    
+in order to build the flatpak with GNOME Builder.
 
 #### Option 2: with Flatpak Builder
 ```

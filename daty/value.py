@@ -30,7 +30,8 @@ require_version('Gdk', '3.0')
 from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add #, PRIORITY_LOW
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, IconSize, Separator, StyleContext, Grid, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Grid, IconSize, Separator, StyleContext, Grid, Template
+from pprint import pprint
 
 from .entity import Entity
 from .qualifierproperty import QualifierProperty
@@ -56,7 +57,6 @@ class Value(Grid):
     icon = Template.Child("icon")
     qualifiers = Template.Child("qualifiers")
     mainsnak = Template.Child("mainsnak")
-    references_grid = Template.Child("references_grid")
 
     def __init__(self, claim, *args, **kwargs):
         Grid.__init__(self, *args, **kwargs)
@@ -76,7 +76,7 @@ class Value(Grid):
             self.qualifiers.props.margin_bottom = 6
             claims = claim['qualifiers']
             for i,P in enumerate(claims):
-                download_light(P, self.load_qualifiers, i, claims[P])
+                download_light(P, self.load_qualifier, i, claims[P])
 
         if 'references' in claim:
             self.references = claim['references']
@@ -101,37 +101,58 @@ class Value(Grid):
         self.icon.set_from_icon_name(icon_name, IconSize.BUTTON)
         self.emit('references-toggled', self)
 
-    def load_reference(self, URI, property, error, i, values):
+    def init_references(self):
+        self.references_widgets = []
+        for ref in self.references:
+            grid = Grid()
+            grid.props.margin_bottom = 6
+            grid.props.margin_top = 6
+            grid.props.row_spacing = 3
+            self.references_widgets.append(grid)
+            for i,P in enumerate(ref['snaks-order']):
+                download_light(P, self.load_reference, i, grid, ref['snaks'][P])
+
+    def load_reference(self, URI, property, error, i, grid, refs):
         try:
             print(property["Label"], i)
-            #i = 2*i
             property = QualifierProperty(property)
-            separator = Separator()
-            self.references_grid.attach(separator, 0, i, 5, 1)
-            self.references_grid.attach(property, 0, i+1, 1, 1)
-            #self.references_grid.show_all()
-            #self.qualifiers.attach(qualifier, 0, i+self.extra, 1, 1)
-            #for j, value in enumerate(claims):
-            #    self.load_value_async(URI, claim, i+self.extra+j)
-            #self.extra += len(claims) - 1
-            #return None
+            grid.attach(property, 0, i+self.reference_row, 1, 1)
+            for j, ref in enumerate(refs):
+                self.load_async(self.on_value_complete,
+                                URI,
+                                ref,
+                                grid,
+                                i+self.reference_row+j)
+            self.reference_row += len(refs) - 1
         except Exception as e:
             print(URI)
             raise e
 
-    def load_qualifiers(self, URI, qualifier, error, i, claims):
+    def load_qualifier(self, URI, qualifier, error, i, claims):
         try:
             qualifier = QualifierProperty(qualifier)
             self.qualifiers.attach(qualifier, 0, i+self.qualifier_row, 1, 1)
             for j, claim in enumerate(claims):
-                self.load_value_async(URI, claim, i+self.qualifier_row+j)
+                self.load_async(self.on_value_complete,
+                                URI,
+                                claim,
+                                self.qualifiers,
+                                i+self.qualifier_row+j)
             self.qualifier_row += len(claims) - 1
             return None
         except Exception as e:
             print(URI)
             raise e
 
-    def load_value_async(self, URI, claim, j):
+    def on_value_complete(self, URI, snak, grid, row):
+        value = Entity(snak, qualifier=True)
+        value.connect("object-selected", self.object_selected_cb, snak)
+        value.connect('new-window-clicked', self.new_window_clicked_cb)
+        self.set_font_deprecated(value)
+        grid.attach(value, 1, row, 3, 1)
+        return None
+
+    def load_async(self, callback, *cb_args):#URI, claim, j):
         def do_call():
             error = None
             try:
@@ -139,16 +160,9 @@ class Value(Grid):
             except Exception as err:
                 print(URI)
                 raise err
-            idle_add(lambda: self.on_value_complete(claim, j))
+            idle_add(lambda: callback(*cb_args))#claim, j))
         thread = MyThread(target = do_call)
         thread.start()
-
-    def on_value_complete(self, claim, j):
-        value = Entity(claim, qualifier=True)
-        value.connect("object-selected", self.object_selected_cb, claim)
-        self.set_font_deprecated(value)
-        self.qualifiers.attach(value, 1, j, 3, 1)
-        return None
 
     def object_selected_cb(self, entity, target, claim):
         print("Value: object selected")

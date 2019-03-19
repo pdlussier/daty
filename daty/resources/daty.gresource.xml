@@ -14,6 +14,7 @@
     <file compressed="true">gtk/property.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/qualifierproperty.ui</file>
     <file compressed="true">gtk/qualifiersnak.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/reference.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/roundedbutton.ui</file>
     <file compressed="true">gtk/roundedbutton.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarentity.ui</file>
