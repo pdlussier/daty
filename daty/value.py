@@ -105,24 +105,24 @@ class Value(Grid):
     def init_references(self):
         self.references_widgets = []
         for ref in self.references:
-            grid = Reference()
+            widget = Reference()
             #grid.props.margin_bottom = 6
             #grid.props.margin_top = 6
             #grid.props.row_spacing = 3
-            self.references_widgets.append(grid)
+            self.references_widgets.append(widget)
             for i,P in enumerate(ref['snaks-order']):
-                download_light(P, self.load_reference, i, grid, ref['snaks'][P])
+                download_light(P, self.load_reference, i, widget, ref['snaks'][P])
 
-    def load_reference(self, URI, property, error, i, grid, refs):
+    def load_reference(self, URI, property, error, i, widget, refs):
         try:
             print(property["Label"], i)
             property = QualifierProperty(property)
-            grid.attach(property, 0, i+self.reference_row, 1, 1)
+            widget.grid.attach(property, 0, i+self.reference_row, 1, 1)
             for j, ref in enumerate(refs):
                 self.load_async(self.on_value_complete,
                                 URI,
                                 ref,
-                                grid,
+                                widget.grid,
                                 i+self.reference_row+j)
             self.reference_row += len(refs) - 1
         except Exception as e:

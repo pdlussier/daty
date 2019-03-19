@@ -33,6 +33,7 @@ from gi.repository.Gtk import Box, IconTheme, Template
 class Reference(Box):
     __gtype_name__ = "Reference"
 
+    grid = Template.Child("grid")
     new_ref = Template.Child("new")
     #values = Template.Child("values")
 
@@ -41,6 +42,7 @@ class Reference(Box):
 
         if new:
             self.new_ref.set_visible(True)
+            self.grid.set_visible(False)
 
         # Styling
         #context = self.get_style_context()
