@@ -34,7 +34,7 @@ class Reference(Box):
     __gtype_name__ = "Reference"
 
     grid = Template.Child("grid")
-    new_ref = Template.Child("new")
+    new_ref = Template.Child("new_ref")
     #values = Template.Child("values")
 
     def __init__(self, *args, new=False, **kwargs):
@@ -43,6 +43,8 @@ class Reference(Box):
         if new:
             self.new_ref.set_visible(True)
             self.grid.set_visible(False)
+            self.props.margin_top = 0
+            self.props.margin_bottom = 0
 
         # Styling
         #context = self.get_style_context()

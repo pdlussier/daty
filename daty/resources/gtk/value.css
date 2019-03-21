@@ -22,7 +22,7 @@
 */
 
 .unreferenced {
-    background-color:#fff0f0;
+    background-color:#ffe0e0; /*#fff0f0;*/
 }
 
 .loading {
@@ -31,5 +31,9 @@
 
 .expanded {
 /*    background-color:#fdefee */
-    background-color:#f6f6f6;
+    background-color:#e0e0e0;
+}
+
+.separator {
+    background-color:#cfc8c3;
 }

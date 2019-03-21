@@ -45,7 +45,10 @@ class Entity(Stack):
     
     __gtype_name__ = "Entity"
 
-    __gsignals__ = {'new-window-clicked':(sf.RUN_LAST,
+    __gsignals__ = {'entity-editing':(sf.RUN_LAST,
+                                      TYPE_NONE,
+                                      (TYPE_PYOBJECT,)),
+                    'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,)),
                     'object-selected':(sf.RUN_LAST,
@@ -182,17 +185,23 @@ class Entity(Stack):
         entry.props.margin_bottom = 3
         label = self.label.get_label()
         description = self.label.get_tooltip_text()
-        try:
-            from .entitypopover import EntityPopover
-            self.entity_popover = EntityPopover(cp(self.entity), parent=self)
-            self.entry.connect("search-changed", self.entity_popover.search_entry_search_changed_cb)
-            self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
-            self.entity_popover.connect("object-selected", self.object_selected_cb)
+        if not hasattr(self, 'entity_popover'):
+            try:
+                from .entitypopover import EntityPopover
+                self.entity_popover = EntityPopover(cp(self.entity), parent=self)
+                self.entry.connect("search-changed", self.entity_popover.search_entry_search_changed_cb)
+                self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
+                self.entity_popover.connect("object-selected", self.object_selected_cb)
+                self.entry.emit("search-changed")
+                self.entity_popover.set_visible(True)
+                self.emit("entity-editing", self.entity_popover)
+            except AttributeError as e:
+                #raise e
+                print("no popover available for this type of value")
+        else:
             self.entry.emit("search-changed")
             self.entity_popover.set_visible(True)
-        except AttributeError as e:
-            #raise e
-            print("no popover available for this type of value")
+            self.emit("entity-editing", self.entity_popover)
 
     def object_selected_cb(self, popover, entity):
         print("Editor: object selected:", entity['URI'])

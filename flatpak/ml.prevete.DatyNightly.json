@@ -48,13 +48,13 @@
             "name" : "daty",
             "buildsystem" : "simple",
             "build-commands" : [
-                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} ${PWD}/Daty",
-                "install -Dm644 ${PWD}/Daty/flatpak/ml.prevete.DatyNightly.appdata.xml /app/share/metainfo/ml.prevete.DatyNightly.appdata.xml"
+                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} .",
+                "install -Dm644 ./flatpak/ml.prevete.DatyNightly.appdata.xml /app/share/metainfo/ml.prevete.DatyNightly.appdata.xml"
             ],
             "sources" : [
                 {
                     "type" : "dir",
-                    "path" : "Daty"
+                    "path" : "."
                 },
                 {
                     "type" : "file",

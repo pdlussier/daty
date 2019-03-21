@@ -27,6 +27,7 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Gdk', '3.0')
+from gi.repository.Gdk import EventType
 from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add #, PRIORITY_LOW
@@ -43,7 +44,11 @@ class Value(Grid):
 
     __gtype_name__ = "Value"
 
-    __gsignals__ = {'claim-changed':(sf.RUN_LAST,
+    __gsignals__ = {'entity-editing':(sf.RUN_LAST,
+                                     TYPE_NONE,
+                                     (TYPE_PYOBJECT,
+                                      TYPE_PYOBJECT)),
+                    'claim-changed':(sf.RUN_LAST,
                                      TYPE_NONE,
                                      (TYPE_PYOBJECT,
                                       TYPE_PYOBJECT)),
@@ -58,6 +63,7 @@ class Value(Grid):
     icon = Template.Child("icon")
     qualifiers = Template.Child("qualifiers")
     mainsnak = Template.Child("mainsnak")
+    reference_new = Template.Child("reference_new")
 
     def __init__(self, claim, *args, **kwargs):
         Grid.__init__(self, *args, **kwargs)
@@ -69,6 +75,7 @@ class Value(Grid):
         context = self.get_style_context()
 
         entity = Entity(claim['mainsnak'])
+        entity.connect("entity-editing", self.entity_editing_cb)
         entity.connect("object-selected", self.object_selected_cb, claim)
         entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(entity)
@@ -81,8 +88,9 @@ class Value(Grid):
 
         if 'references' in claim:
             self.references = claim['references']
-            self.button.connect("toggled", self.references_expand_clicked_cb)#,
-                                #claim['references'])
+            self.connect("button-press-event", self.clicked_cb)
+            self.button.connect("button-press-event", self.references_expand_clicked_cb)
+
         else:
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
             #self.button.connect("clicked", self.reference_new_clicked_cb)
@@ -93,25 +101,30 @@ class Value(Grid):
         print("Value: new window clicked")
         self.emit("new-window-clicked", payload)
 
-    def references_expand_clicked_cb(self, widget):
-        state = widget.get_active()
+    def clicked_cb(self, widget, event):
+        #print(event.type)
+        if event.type == EventType(5): #double click
+            self.references_expand_clicked_cb(widget, event)
+
+    def references_expand_clicked_cb(self, widget, event):
+        self.references_expanded = not self.references_expanded
+        state = self.references_expanded
         if state:
             icon_name = 'pan-down-symbolic'
         else:
             icon_name = 'pan-end-symbolic'
         self.icon.set_from_icon_name(icon_name, IconSize.BUTTON)
+        #self.reference_new.set_visible(state)
         self.emit('references-toggled', self)
 
     def init_references(self):
         self.references_widgets = []
-        for ref in self.references:
+        for j,ref in enumerate(self.references):
             widget = Reference()
-            #grid.props.margin_bottom = 6
-            #grid.props.margin_top = 6
-            #grid.props.row_spacing = 3
             self.references_widgets.append(widget)
             for i,P in enumerate(ref['snaks-order']):
                 download_light(P, self.load_reference, i, widget, ref['snaks'][P])
+        self.references_widgets.append(Reference(new=True))
 
     def load_reference(self, URI, property, error, i, widget, refs):
         try:
@@ -147,11 +160,17 @@ class Value(Grid):
 
     def on_value_complete(self, URI, snak, grid, row):
         value = Entity(snak, qualifier=True)
+        value.connect("entity-editing", self.entity_editing_cb)
         value.connect("object-selected", self.object_selected_cb, snak)
         value.connect('new-window-clicked', self.new_window_clicked_cb)
         self.set_font_deprecated(value)
-        grid.attach(value, 1, row, 3, 1)
+        grid.attach(value, 1, row, 2, 1)
+        grid.set_size_request(-1,100)
+        grid.set_size_request(-1,-1)
         return None
+
+    def entity_editing_cb(self, entity, popover):
+        self.emit("entity-editing", entity, popover)
 
     def load_async(self, callback, *cb_args):#URI, claim, j):
         def do_call():

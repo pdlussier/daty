@@ -25,16 +25,21 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, Button, CssProvider, Label, ListBox, ListBoxRow, Separator, StyleContext, Template
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
+from gi.repository.Gtk import ListBox, ListBoxRow, Separator, Template
 from pprint import pprint
 
 from .reference import Reference
+from .util import set_style
 
 @Template.from_resource("/ml/prevete/Daty/gtk/values.ui")
 class Values(ListBox):
     __gtype_name__ = "Values"
 
-    #list = Template.Child("list")
+    __gsignals__ = {'reference-toggled':(sf.RUN_LAST,
+                                         TYPE_NONE,
+                                         (TYPE_PYOBJECT,))}
 
     def __init__(self, *args, frame=True, **kwargs):
         ListBox.__init__(self, *args, **kwargs)
@@ -45,7 +50,10 @@ class Values(ListBox):
 
     def update_header(self, row, before, *args):
         if before:
-            row.set_header(Separator())
+            separator = Separator()
+            context = separator.get_style_context()
+            set_style(context, '/ml/prevete/Daty/gtk/value.css', 'separator', True)
+            row.set_header(separator)
  
     def add(self, widget):
         row = ListBoxRow()
@@ -62,51 +70,44 @@ class Values(ListBox):
                 i = i+1
                 break
 
-        state = row.child.button.get_active()
+        state = row.child.references_expanded
         
-        context = self.get_style_context()
-        provider = CssProvider()
-        provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
-        context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
+        row_context = row.get_style_context()
+        resource = '/ml/prevete/Daty/gtk/value.css'
+        set_style(row_context, resource, 'expanded', state)
 
-        if state:
-            context.add_class('expanded')
-            if not hasattr(child, "references_widgets"):
-                child.init_references()
+        if not hasattr(child, "references_widgets"):
+            child.init_references()
 
-            for j, grid in enumerate(child.references_widgets):
+        def f(reference):
+            if state:
                 row = ListBoxRow()
-                row.add(grid)
+                row_context = row.get_style_context()
+                set_style(row_context, resource, 'expanded', state)
+                row.add(reference)
+                row.show()
                 self.insert(row, i+j)
+            else:
+                print("removing widget")
+                row = self.get_row_at_index(i)
+                print(reference)
+                print(row.get_children())
+                row.remove(reference)
+                row.destroy()
+                #del row
 
-            row = ListBoxRow()
-            #button = Button("New reference")
-            #value = Value(claim=claim, load=self.load)
-            #row.add(Button("Add reference")
-            row.add(Reference(new=True))
-            self.insert(row, i+len(child.references_widgets))
-        else:
-            context.remove_class('expanded')
+        for j, reference in enumerate(child.references_widgets):
+            f(reference)
 
-            row = self.get_row_at_index(i+1)
-            row.destroy()
+        #if state:
+        #    new_ref = Reference(new=True)
+        #    f(new_ref)
+        #else:
+        #    row = self.get_row_at_index(i+1)
+        #    row.destroy()
+
+
+        self.emit("reference-toggled", state)
 
         self.show_all()
-            #print(state)j
-        #lambda row: row if row.child == child else None
-        #for
-        #if
-        #that_row = [row for row in self.get_children() if row.child == child][-1]
-        #print(widget)
-        #print()
-        #if state:
-        #    print(state)
-
-#    def add_reference(self, value, reference):
-#        row = ListBoxRow()
-#        context = row.get_style_context()
-#        widget.context = context
-#        widget.set_references()
-#        row.add(widget)
-#        super(Values, self).add(row)
         

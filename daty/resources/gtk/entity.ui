@@ -9,7 +9,7 @@
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
     <child>
-      <object class="GtkGrid">
+      <object class="GtkGrid" id="view">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
@@ -24,9 +24,6 @@
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <property name="label" translatable="yes">unit</property>
-            <attributes>
-              <attribute name="font-desc" value="Cantarell 10"/>
-            </attributes>
             <style>
               <class name="dim-label"/>
             </style>

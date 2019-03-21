@@ -25,7 +25,9 @@
 
 from copy import deepcopy as cp
 from gi import require_version
+require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
+from gi.repository.Gdk import Event, EventKey, KEY_Escape
 from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
@@ -55,6 +57,8 @@ class Page(ScrolledWindow):
     image = Template.Child("image")
     statements = Template.Child("statements")
 
+    references_toggled = 1
+
     def __init__(self, entity, *args, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
 
@@ -68,17 +72,27 @@ class Page(ScrolledWindow):
             N = len(claims[P])
             if N > 5:
                 frame = ScrolledWindow()
-                frame.set_min_content_height(36*6)
+                frame.height = 36*6
+                frame.set_min_content_height(frame.height)
             else:
                 frame = Frame()
             frame.set_shadow_type(2)
             frame.set_visible(True)
             values = Values()
+            values.connect("reference-toggled", self.reference_toggled_cb, frame)
             frame.add(values)
             self.statements.attach(frame, 1, i, 3, 1)
             for claim in claims[P]:
                 claim = claim.toJSON()
                 self.load_value_async(claim, values)
+
+    def reference_toggled_cb(self, values, state, frame):
+        if type(frame) == ScrolledWindow:
+            if state:
+                self.references_toggled += 1
+            else:
+                self.references_toggled -= 1
+            frame.set_min_content_height(frame.height*max(self.references_toggled, 3))
 
     def load_property(self, URI, prop, error, i):
         try:
@@ -107,12 +121,24 @@ class Page(ScrolledWindow):
         if error:
             print(error)
         value = Value(claim=claim)
+        value.connect("entity-editing", self.entity_editing_cb)
         value.connect("claim-changed", self.claim_changed_cb)
         value.connect("new-window-clicked", self.new_window_clicked_cb)
         value.connect('references-toggled', values.references_toggled_cb)
         values.add(value)
         values.show_all()
         return None
+
+    def entity_editing_cb(self, value, entity, popover):
+        self.entity_popover_connection = self.connect("button-press-event",
+                                                      self.button_press_event_cb,
+                                                      entity,
+                                                      popover)
+
+    def button_press_event_cb(self, widget, event, entity, popover):
+        popover.set_visible(False)
+        entity.set_visible_child_name("view")
+        self.disconnect(self.entity_popover_connection)
 
     def claim_changed_cb(self, value, claim, target):
         self.emit("claim-changed", claim, target, value)
