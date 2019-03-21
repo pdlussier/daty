@@ -87,6 +87,7 @@ class Entity(Stack):
                     URI = 'Q' + str(numeric_id)
                   if entity_type == 'property':
                     URI = 'P' + str(numeric_id)
+                  print("Entity: light downloading", URI)
                   download_light(URI, self.load_entity)
               if dt == 'url':
                   url = dv['value']
@@ -140,9 +141,10 @@ class Entity(Stack):
             del snak
 
         except Exception as err:
-            print(err)
-            print(type(err))
-            print(err.__traceback__)
+            raise err
+            #print(err)
+            #print(type(err))
+            #print(err.__traceback__)
 
         #self.entry.connect("search-changed", self.entry_search_changed_cb)
 
@@ -165,6 +167,7 @@ class Entity(Stack):
             print(type(error))
             print(error)
         self.entity = entity
+        print(entity)
         self.URI = URI
         self.set_text(entity["Label"], entity["Description"])
         self.show_all()

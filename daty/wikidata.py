@@ -133,15 +133,22 @@ class Wikidata:
                 else:
                     path = join(self.config.dirs['cache'], URI)
                 if exists(path) and use_cache:
-                    if debug:
-                        print("loading local copy")
                     mtime = getmtime(path)
                     if (time() - mtime < 604800):
                         try:
+                            if debug:
+                                print("loading local copy")
                             entity = load(path)
+                            if type(entity) != dict:
+                                print("error")
                             break
-                        except AttributeError as e:
-                            pass
+                        except (ModuleNotFoundError, AttributeError) as e:
+                            if type(e) == AttributeError:
+                                pass
+                            else:
+                                raise e
+                    else:
+                        use_cache = not use_cache
                 elif not use_cache or not exists(path):
                     print("light-downloading" if target else "dowloading", URI)
                     if URI.startswith("P"):
