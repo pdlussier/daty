@@ -37,7 +37,7 @@ from time import sleep
 
 #from .util import MyThread
 from .sidebarentity import SidebarEntity
-from .util import download_light, set_text
+from .util import download_light, set_style, set_text
 from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/entity.ui")
@@ -91,10 +91,13 @@ class Entity(Stack):
                   download_light(URI, self.load_entity)
               if dt == 'url':
                   url = dv['value']
-                  label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
-                  #self.label.set_markup(label)
+                  #label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
+                  label = url.split('/')[2]
+                  self.data = {"url":url}
                   self.set_text(label, url)
-                  self.label.props.use_markup = True
+                  context = self.label.get_style_context()
+                  set_style(context, '/ml/prevete/Daty/gtk/entity.css', 'url', True)
+                  #self.label.props.use_markup = True
               if dt == 'quantity':
                   unit = dv['value']['unit']
                   if unit.startswith('http'):
@@ -142,9 +145,6 @@ class Entity(Stack):
 
         except Exception as err:
             raise err
-            #print(err)
-            #print(type(err))
-            #print(err.__traceback__)
 
         #self.entry.connect("search-changed", self.entry_search_changed_cb)
 
@@ -166,8 +166,7 @@ class Entity(Stack):
         if error:
             print(type(error))
             print(error)
-        self.entity = entity
-        print(entity)
+        self.data = entity
         self.URI = URI
         self.set_text(entity["Label"], entity["Description"])
         self.show_all()
@@ -188,23 +187,24 @@ class Entity(Stack):
         entry.props.margin_bottom = 3
         label = self.label.get_label()
         description = self.label.get_tooltip_text()
-        if not hasattr(self, 'entity_popover'):
+        if not hasattr(self, 'popover'):
             try:
                 from .entitypopover import EntityPopover
-                self.entity_popover = EntityPopover(cp(self.entity), parent=self)
-                self.entry.connect("search-changed", self.entity_popover.search_entry_search_changed_cb)
-                self.entity_popover.connect("new-window-clicked", self.new_window_clicked_cb)
-                self.entity_popover.connect("object-selected", self.object_selected_cb)
+                self.popover = EntityPopover(self.data)
+                self.popover.set_relative_to(self)
+                self.entry.connect("search-changed", self.popover.search_entry_search_changed_cb)
+                self.popover.connect("new-window-clicked", self.new_window_clicked_cb)
+                self.popover.connect("object-selected", self.object_selected_cb)
                 self.entry.emit("search-changed")
-                self.entity_popover.set_visible(True)
-                self.emit("entity-editing", self.entity_popover)
+                self.popover.set_visible(True)
+                self.emit("entity-editing", self.popover)
             except AttributeError as e:
                 #raise e
                 print("no popover available for this type of value")
         else:
             self.entry.emit("search-changed")
-            self.entity_popover.set_visible(True)
-            self.emit("entity-editing", self.entity_popover)
+            self.popover.set_visible(True)
+            self.emit("entity-editing", self.popover)
 
     def object_selected_cb(self, popover, entity):
         print("Editor: object selected:", entity['URI'])
@@ -223,7 +223,7 @@ class Entity(Stack):
         self.entry.props.margin_bottom = 0
         self.entry.set_text(self.label.get_text())
         try:
-            self.entity_popover.hide()
+            self.popover.hide()
         except AttributeError as e:
             print("this entity has no popover")
 

@@ -80,8 +80,8 @@ class Triplet(Grid):
         for widget in self.members:
             widget.entity = {"Label":"", "Description":"", "URI":""}
             widget.popover = EntityPopover(widget.entity,
-                                                  parent=widget,
                                                   variables=self.variables)
+            widget.popover.set_relative_to(widget)
             widget.popover.connect("default-variable-selected",
                                           self.default_variable_selected_cb)
             widget.popover.connect("entity-new",

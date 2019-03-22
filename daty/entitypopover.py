@@ -27,11 +27,12 @@ require_version('Gtk', '3.0')
 from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.Gtk import IconSize, ListBoxRow, PopoverMenu, Template
+from gi.repository.Pango import WrapMode
 from pprint import pprint
 
 from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
-from .util import EntitySet, download, search, pango_label, set_text
+from .util import EntitySet, download, get_title, search, pango_label, set_text
 
 @Template.from_resource("/ml/prevete/Daty/gtk/entitypopover.ui")
 class EntityPopover(PopoverMenu):
@@ -60,10 +61,10 @@ class EntityPopover(PopoverMenu):
     entity_new = Template.Child("entity_new")
     new_window = Template.Child("new_window")
     results = Template.Child("results")
+    results_frame = Template.Child("results_frame")
     results_listbox = Template.Child("results_listbox")
     results_nope_query = Template.Child("results_nope_query")
     results_stack = Template.Child("results_stack")
-#    search_box = Template.Child("search_box")
     search_entry = Template.Child("search_entry")
     search_subtitle = Template.Child("search_subtitle")
     variable_grid = Template.Child("variable_grid")
@@ -71,7 +72,7 @@ class EntityPopover(PopoverMenu):
     variable_title = Template.Child("variable_title")
     variable_subtitle = Template.Child("variable_subtitle")
 
-    def __init__(self, entity, *args, parent=None,
+    def __init__(self, entity, *args,
                  variables=None, **kwargs):
         PopoverMenu.__init__(self, *args, **kwargs)
 
@@ -88,10 +89,22 @@ class EntityPopover(PopoverMenu):
                                       self.search_entry_search_changed_cb)
             self.search_entry.grab_focus()
 
-        if parent:
-            self.set_relative_to(parent)
+        if 'url' in entity:
+            self.results_frame.set_visible(False)
+            self.new_window.set_visible(False)
+            self.set_size_request(300,-1)
+            self.description.set_line_wrap_mode(WrapMode(2))
+            entity['Label'] = "Loading title"
+            entity['Description'] = "".join(["<a href='", entity['url'], "'>",
+                                             entity['url'], "</a>"])
+            get_title(entity['url'], self.on_title_got)
+
         set_text(self.label, entity["Label"], entity["Label"])
-        set_text(self.description, entity["Description"], entity["Description"])
+        set_text(self.description, entity["Description"], entity["Description"], markup=True)
+
+    def on_title_got(self, url, title):
+        set_text(self.label, title, title)
+        self.set_size_request(300,-1)
 
     def search_entry_search_changed_cb(self, entry):
         query = entry.get_text()

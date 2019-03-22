@@ -277,6 +277,20 @@ def download(entity, callback, *cb_args, wikidata=None, use_cache=False, **kwarg
     thread = Thread(target = do_call)
     thread.start()
 
+def get_title(url, callback, *cb_args, **kwargs):
+    """Asynchronously download entity from wikidata
+         Args:
+            entity (dict): have keys "URI", "Label", "Description"
+    """
+    def do_call():
+        from requests import get
+        from bs4 import BeautifulSoup
+        title = BeautifulSoup(get(url).text).title.string
+        idle_add(lambda: callback(url, title, *cb_args, **kwargs))
+        return None
+    thread = Thread(target = do_call)
+    thread.start()
+
 def download_light(URI, callback, *cb_args, wikidata=None, target=["Label", "Description"]):
     if not wikidata:
         from .wikidata import Wikidata
