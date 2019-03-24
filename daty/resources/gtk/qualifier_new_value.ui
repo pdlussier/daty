@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
+<interface>
+  <requires lib="gtk+" version="3.22"/>
+  <!-- interface-css-provider-path qualifier_new_value.css -->
+  <template class="QualifierNewValue" parent="GtkButton">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="receives_default">True</property>
+    <property name="halign">start</property>
+    <property name="valign">start</property>
+    <property name="relief">none</property>
+    <child>
+      <object class="GtkLabel" id="property_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="hexpand">False</property>
+        <property name="label" translatable="yes">label</property>
+        <property name="wrap">True</property>
+        <property name="xalign">1</property>
+        <attributes>
+          <attribute name="font-desc" value="Cantarell 8"/>
+        </attributes>
+        <style>
+          <class name="flat"/>
+        </style>
+      </object>
+    </child>
+    <style>
+      <class name="flat"/>
+      <class name="value"/>
+    </style>
+  </template>
+</interface>

@@ -139,6 +139,14 @@ def set_text(widget, text, tooltip, markup=False):
     widget.set_tooltip_text(tooltip)
 
 def set_style(context, resource, style_class, enable):
+    """Set style
+
+    Args:
+        context (Gtk.Context): the context;
+        resource (Gtk.Resource): the resource;
+        style_class (str): the class name;
+        enable (bool): on/off;
+        """
     if enable:
         provider = CssProvider()
         provider.load_from_resource(resource)

@@ -12,6 +12,10 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/property.ui</file>
     <file compressed="true">gtk/property.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/qualifier_new_property.ui</file>
+    <file compressed="true">gtk/qualifier_new_property.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/qualifier_new_value.ui</file>
+    <file compressed="true">gtk/qualifier_new_value.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/qualifierproperty.ui</file>
     <file compressed="true">gtk/qualifiersnak.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/reference.ui</file>

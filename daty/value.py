@@ -35,6 +35,8 @@ from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, 
 from pprint import pprint
 
 from .entity import Entity
+from .qualifier_new_property import QualifierNewProperty
+from .qualifier_new_value import QualifierNewValue
 from .qualifierproperty import QualifierProperty
 from .reference import Reference
 from .util import MyThread, download_light
@@ -61,6 +63,7 @@ class Value(Grid):
 
     button = Template.Child("button")
     icon = Template.Child("icon")
+    qualifier_new = Template.Child("qualifier_new")
     qualifiers = Template.Child("qualifiers")
     mainsnak = Template.Child("mainsnak")
     reference_new = Template.Child("reference_new")
@@ -80,9 +83,17 @@ class Value(Grid):
         entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(entity)
 
+        qualifier_new_property = QualifierNewProperty()#{"URI":"P0",
+                                     #"Label":"Example property",
+                                     #"Description":"This is an example property"})
+        qualifier_new_value = QualifierNewValue()
+        self.qualifier_new.attach(qualifier_new_property, 0, 0, 1, 1)
+        self.qualifier_new.attach(qualifier_new_value, 1, 0, 2, 1)
+
         if 'qualifiers' in claim:
-            self.qualifiers.props.margin_bottom = 6
+            #self.qualifiers.props.margin_bottom = 6
             claims = claim['qualifiers']
+
             for i,P in enumerate(claims):
                 download_light(P, self.load_qualifier, i, claims[P])
 
@@ -170,6 +181,7 @@ class Value(Grid):
         return None
 
     def entity_editing_cb(self, entity, popover):
+        self.qualifier_new.set_visible(True)
         self.emit("entity-editing", entity, popover)
 
     def load_async(self, callback, *cb_args):#URI, claim, j):
