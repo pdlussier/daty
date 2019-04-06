@@ -24,19 +24,19 @@
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconTheme, Template
+from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Entry, Button, IconTheme, Template
 
 from .util import set_style
 
 @Template.from_resource("/ml/prevete/Daty/gtk/qualifier_new_property.ui")
-class QualifierNewProperty(Button):
+class QualifierNewProperty(Entry):
     __gtype_name__ = "QualifierNewProperty"
 
     #property_label = Template.Child("property_label")
     #values = Template.Child("values")
 
     def __init__(self, *args, **kwargs):
-        Button.__init__(self, *args, **kwargs)
+        Entry.__init__(self, *args, **kwargs)
 
         context = self.get_style_context()
         resource = '/ml/prevete/Daty/gtk/qualifier_new_property.css'

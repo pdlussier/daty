@@ -48,6 +48,9 @@ class Entity(Stack):
     __gsignals__ = {'entity-editing':(sf.RUN_LAST,
                                       TYPE_NONE,
                                       (TYPE_PYOBJECT,)),
+                    'entity-leaving':(sf.RUN_LAST,
+                                      TYPE_NONE,
+                                      (TYPE_PYOBJECT,)),
                     'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,)),
@@ -145,6 +148,8 @@ class Entity(Stack):
 
         except Exception as err:
             raise err
+        self.entry_focus_out_connection = self.entry.connect("focus-out-event",
+                                                             self.entry_focus_out_event_cb)
 
         #self.entry.connect("search-changed", self.entry_search_changed_cb)
 
@@ -215,22 +220,16 @@ class Entity(Stack):
         print("Entity: new window clicked")
         self.emit("new-window-clicked", entities)
 
-    @Template.Callback()
+#    @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
-        self.set_visible_child_name("view")
-        self.entry.set_visible(False)
-        self.entry.props.margin_top = 0
-        self.entry.props.margin_bottom = 0
-        self.entry.set_text(self.label.get_text())
-        try:
-            self.popover.hide()
-        except AttributeError as e:
-            print("this entity has no popover")
+        self.emit("entity-leaving", self.popover)
+        #self.emit("entity-leaving", self.popover)
 
     @Template.Callback()
     def entry_key_release_event_cb(self, widget, event):
-        try:
-            if event.keyval == KEY_Escape:
-                self.entry_focus_out_event_cb(widget, event)
-        except AttributeError as e:
-            print("no entity popover for this value")
+        pass
+        #try:
+            #if event.keyval == KEY_Escape:
+                #self.entry_focus_out_event_cb(widget, event)
+        #except AttributeError as e:
+        #    print("no entity popover for this value")

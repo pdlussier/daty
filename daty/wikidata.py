@@ -162,11 +162,11 @@ class Wikidata:
                         output = {}
                         for t in target:
                             if t == "Label":
-                                output["Label"] = self.get_label(entity)
+                                output[t] = self.get_label(entity)
                             if t == "Description":
-                                output["Description"] = self.get_description(entity)
+                                output[t] = self.get_description(entity)
                             if t == "Data":
-                                output["Data"] = entity
+                                output[t] = entity
                         entity = output
                     save(entity, path)
                     break

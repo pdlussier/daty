@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <!-- interface-css-provider-path property.css -->
-  <template class="QualifierNewProperty" parent="GtkButton">
+  <template class="QualifierNewProperty" parent="GtkEntry">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <property name="receives_default">True</property>
-    <property name="halign">end</property>
-    <property name="valign">start</property>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">label</property>
-        <attributes>
-          <attribute name="font-desc" value="Cantarell Bold 8"/>
-        </attributes>
-      </object>
-    </child>
     <style>
       <class name="flat"/>
-      <class name="property"/>
     </style>
   </template>
 </interface>

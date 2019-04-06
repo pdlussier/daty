@@ -229,6 +229,8 @@ class Editor(ApplicationWindow):
     def on_page_complete(self, entity):
         page = Page(entity['Data'])
         page.connect("claim-changed", self.claim_changed_cb)
+        page.connect("entity-editing", self.entity_editing_cb)
+        page.connect("entity-leaving", self.entity_leaving_cb)
         #self.connect("claim-changed-done", page.claim_changed_done_cb)
         page.connect("new-window-clicked", self.new_window_clicked_cb)
         self.pages.add_titled(page, entity['URI'], entity['Label'])
@@ -238,6 +240,38 @@ class Editor(ApplicationWindow):
         self.sidebar_search_entry.connect("search-changed",
                                           self.sidebar_search_entry_search_changed_cb)
         return None
+
+    def entity_leaving_cb(self, page, value, entity):
+        print("Editor: entity leaving")
+        print("focus", self.get_focus())
+        entity.entry.set_text(entity.label.get_text())
+        entity.set_visible_child_name("view")
+        entity.entry.set_visible(False)
+        entity.entry.props.margin_top = 0
+        entity.entry.props.margin_bottom = 0
+        value.actions.set_visible(False)
+        try:
+            entity.popover.hide()
+        except AttributeError as e:
+            print("this entity has no popover")
+
+    def entity_editing_cb(self, page, value, entity, popover):
+        #print(page, value, entity, popover)
+        self.entity_popover_connection = page.connect("button-press-event",
+                                                      self.button_press_event_cb,
+                                                      entity,
+                                                      popover)
+
+    def button_press_event_cb(self, page, event, entity, popover):
+        #print(page)
+        entity.emit("entity-leaving", event)
+        #entity.entry.emit("focus-out-event", event)
+        #popover.set_visible(False)
+        #entity.set_visible_child_name("view")
+        try:
+            page.disconnect(self.entity_popover_connection)
+        except Exception as e:
+            print(e)
 
     def claim_changed_cb(self, page, claim, target, value):
         print("Editor: claim changed")

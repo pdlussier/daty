@@ -35,6 +35,7 @@ from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, 
 from pprint import pprint
 
 from .entity import Entity
+from .entitypopover import EntityPopover
 from .qualifier_new_property import QualifierNewProperty
 from .qualifier_new_value import QualifierNewValue
 from .qualifierproperty import QualifierProperty
@@ -50,6 +51,12 @@ class Value(Grid):
                                      TYPE_NONE,
                                      (TYPE_PYOBJECT,
                                       TYPE_PYOBJECT)),
+                    'entity-leaving':(sf.RUN_LAST,
+                                      TYPE_NONE,
+                                      (TYPE_PYOBJECT,)),
+                    'edit_new':(sf.RUN_LAST,
+                                TYPE_NONE,
+                                (TYPE_PYOBJECT,)),
                     'claim-changed':(sf.RUN_LAST,
                                      TYPE_NONE,
                                      (TYPE_PYOBJECT,
@@ -62,10 +69,12 @@ class Value(Grid):
                                          (TYPE_PYOBJECT,))}
 
     button = Template.Child("button")
+    actions = Template.Child("actions")
     icon = Template.Child("icon")
-    qualifier_new = Template.Child("qualifier_new")
+    #qualifier_new = Template.Child("qualifier_new")
     qualifiers = Template.Child("qualifiers")
     mainsnak = Template.Child("mainsnak")
+    qualifier_new = Template.Child("qualifier_new")
     reference_new = Template.Child("reference_new")
 
     def __init__(self, claim, *args, **kwargs):
@@ -79,19 +88,21 @@ class Value(Grid):
 
         entity = Entity(claim['mainsnak'])
         entity.connect("entity-editing", self.entity_editing_cb)
+        entity.connect("entity-leaving", self.entity_leaving_cb)
         entity.connect("object-selected", self.object_selected_cb, claim)
         entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(entity)
 
-        qualifier_new_property = QualifierNewProperty()#{"URI":"P0",
+        #qualifier_new_property = QualifierNewProperty()#{"URI":"P0",
                                      #"Label":"Example property",
                                      #"Description":"This is an example property"})
-        qualifier_new_value = QualifierNewValue()
-        self.qualifier_new.attach(qualifier_new_property, 0, 0, 1, 1)
-        self.qualifier_new.attach(qualifier_new_value, 1, 0, 2, 1)
+        #qualifier_new_value = QualifierNewValue()
+        #self.qualifier_new.attach(qualifier_new_property, 0, 0, 1, 1)
+        #self.qualifier_new.attach(qualifier_new_value, 1, 0, 2, 1)
 
         if 'qualifiers' in claim:
-            #self.qualifiers.props.margin_bottom = 6
+            self.props.row_spacing = 3
+            self.qualifiers.set_visible(True)
             claims = claim['qualifiers']
 
             for i,P in enumerate(claims):
@@ -99,23 +110,43 @@ class Value(Grid):
 
         if 'references' in claim:
             self.references = claim['references']
-            self.connect("button-press-event", self.clicked_cb)
-            self.button.connect("button-press-event", self.references_expand_clicked_cb)
-
+            self.button_connection = self.button.connect("button-press-event", self.references_expand_clicked_cb)
         else:
+            self.actions_hide = False
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
-            #self.button.connect("clicked", self.reference_new_clicked_cb)
+            self.button_connection = self.button.connect("button-press-event", self.reference_new_clicked_cb)
+
+        self.connect("button-press-event", self.clicked_cb)
 
         del claim
+
+    def entity_leaving_cb(self, entity, popover):
+        print("Value: entity leaving")
+        self.emit("entity-leaving", entity)
 
     def new_window_clicked_cb(self, entity, payload):
         print("Value: new window clicked")
         self.emit("new-window-clicked", payload)
 
     def clicked_cb(self, widget, event):
-        #print(event.type)
-        if event.type == EventType(5): #double click
-            self.references_expand_clicked_cb(widget, event)
+        if hasattr(self, 'references'):
+            if event.type == EventType(5): #double click
+                self.references_expand_clicked_cb(widget, event)
+        else:
+            if event.type == EventType(4): #single click
+                self.reference_new_clicked_cb(widget, event)
+
+    def reference_new_clicked_cb(self, widget, event):
+        print("Value: 'new' clicked")
+        if not self.actions_hide:
+            print("actions not visible: showing")
+            self.actions.set_visible(True)
+            self.icon.set_from_icon_name('pan-down-symbolic', IconSize.BUTTON)
+        else:
+            print("actions visible: hiding")
+            self.actions.set_visible(False)
+            self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
+        self.actions_hide = not self.actions_hide
 
     def references_expand_clicked_cb(self, widget, event):
         self.references_expanded = not self.references_expanded
@@ -172,6 +203,7 @@ class Value(Grid):
     def on_value_complete(self, URI, snak, grid, row):
         value = Entity(snak, qualifier=True)
         value.connect("entity-editing", self.entity_editing_cb)
+        value.entry.connect("focus-out-event", self.entity_leaving_cb)
         value.connect("object-selected", self.object_selected_cb, snak)
         value.connect('new-window-clicked', self.new_window_clicked_cb)
         self.set_font_deprecated(value)
@@ -181,7 +213,9 @@ class Value(Grid):
         return None
 
     def entity_editing_cb(self, entity, popover):
-        self.qualifier_new.set_visible(True)
+        print("Value: entity editing")
+        self.actions_hide = False
+        self.reference_new_clicked_cb(entity, popover)
         self.emit("entity-editing", entity, popover)
 
     def load_async(self, callback, *cb_args):#URI, claim, j):

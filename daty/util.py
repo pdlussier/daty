@@ -300,6 +300,17 @@ def get_title(url, callback, *cb_args, **kwargs):
     thread.start()
 
 def download_light(URI, callback, *cb_args, wikidata=None, target=["Label", "Description"]):
+    """Download an entity returning only a subset of its features
+
+        Args:
+            URI (str): the Q/P/L of the entity;
+            callback (fun): the callback to give the downloaded entity;
+            wikidata (Wikidata): a Wikidata instance (opt);
+            target (list): the keys to be recorded in the entity (opt).
+
+        Returns:
+            (dict) which has for keys the member of targets.
+    """
     if not wikidata:
         from .wikidata import Wikidata
         wikidata = Wikidata()

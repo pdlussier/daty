@@ -50,6 +50,15 @@ class Page(ScrolledWindow):
                                      (TYPE_PYOBJECT,
                                       TYPE_PYOBJECT,
                                       TYPE_PYOBJECT)),
+                    'entity-editing':(sf.RUN_LAST,
+                                      TYPE_NONE,
+                                      (TYPE_PYOBJECT,
+                                       TYPE_PYOBJECT,
+                                       TYPE_PYOBJECT)),
+                    'entity-leaving':(sf.RUN_LAST,
+                                      TYPE_NONE,
+                                      (TYPE_PYOBJECT,
+                                       TYPE_PYOBJECT)),
                     'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
                                           (TYPE_PYOBJECT,))}
@@ -122,6 +131,7 @@ class Page(ScrolledWindow):
             print(error)
         value = Value(claim=claim)
         value.connect("entity-editing", self.entity_editing_cb)
+        value.connect("entity-leaving", self.entity_leaving_cb)
         value.connect("claim-changed", self.claim_changed_cb)
         value.connect("new-window-clicked", self.new_window_clicked_cb)
         value.connect('references-toggled', values.references_toggled_cb)
@@ -129,16 +139,25 @@ class Page(ScrolledWindow):
         values.show_all()
         return None
 
+    def entity_leaving_cb(self, value, entity):
+        print("Page: entity leaving")
+        self.emit("entity-leaving", value, entity)
+
     def entity_editing_cb(self, value, entity, popover):
-        self.entity_popover_connection = self.connect("button-press-event",
-                                                      self.button_press_event_cb,
-                                                      entity,
-                                                      popover)
+        self.emit("entity-editing", value, entity, popover)
+        #self.entity_popover_connection = self.connect("button-press-event",
+        #                                              self.button_press_event_cb,
+        #                                              entity,
+        #                                              popover)
 
     def button_press_event_cb(self, widget, event, entity, popover):
+        print(event)
         popover.set_visible(False)
         entity.set_visible_child_name("view")
-        self.disconnect(self.entity_popover_connection)
+        try:
+            self.disconnect(self.entity_popover_connection)
+        except Exception as e:
+            print(e)
 
     def claim_changed_cb(self, value, claim, target):
         self.emit("claim-changed", claim, target, value)

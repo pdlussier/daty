@@ -73,7 +73,6 @@
         <property name="primary_icon_activatable">False</property>
         <property name="primary_icon_sensitive">False</property>
         <signal name="focus-in-event" handler="entry_focus_in_event_cb" swapped="no"/>
-        <signal name="focus-out-event" handler="entry_focus_out_event_cb" swapped="no"/>
         <signal name="key-release-event" handler="entry_key_release_event_cb" swapped="no"/>
         <style>
           <class name="flat"/>
