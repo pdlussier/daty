@@ -61,7 +61,11 @@ class Page(ScrolledWindow):
                                        TYPE_PYOBJECT)),
                     'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
-                                          (TYPE_PYOBJECT,))}
+                                          (TYPE_PYOBJECT,)),
+                    'reference-new-clicked':(sf.RUN_LAST,
+                                             TYPE_NONE,
+                                             (TYPE_PYOBJECT,
+                                              TYPE_PYOBJECT,)),}
 
     image = Template.Child("image")
     statements = Template.Child("statements")
@@ -134,13 +138,19 @@ class Page(ScrolledWindow):
         value.connect("entity-leaving", self.entity_leaving_cb)
         value.connect("claim-changed", self.claim_changed_cb)
         value.connect("new-window-clicked", self.new_window_clicked_cb)
+        value.connect("reference-new-clicked", self.reference_new_clicked_cb)
         value.connect('references-toggled', values.references_toggled_cb)
         values.add(value)
         values.show_all()
         return None
 
+    def reference_new_clicked_cb(self, value, entity):
+        self.emit("reference-new-clicked", value, entity)
+        return True
+
     def entity_leaving_cb(self, value, entity):
         print("Page: entity leaving")
+        print("entity", entity)
         self.emit("entity-leaving", value, entity)
 
     def entity_editing_cb(self, value, entity, popover):

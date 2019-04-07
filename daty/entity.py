@@ -150,12 +150,16 @@ class Entity(Stack):
             raise err
         self.entry_focus_out_connection = self.entry.connect("focus-out-event",
                                                              self.entry_focus_out_event_cb)
+        self.entry_focus_in_connection = self.entry.connect("focus-in-event",
+                                                            self.entry_focus_in_event_cb)
 
         #self.entry.connect("search-changed", self.entry_search_changed_cb)
 
     def set_text(self, label, description):
         set_text(self.label, label, description)
         set_text(self.entry, label, description)
+
+
 
     def on_download_unit(self, URI, unit, error):
         if error:
@@ -186,7 +190,7 @@ class Entity(Stack):
             self.set_visible_child_name("entry")
             self.entry.grab_focus()
 
-    @Template.Callback()
+#    @Template.Callback()
     def entry_focus_in_event_cb(self, entry, event):
         entry.props.margin_top = 3
         entry.props.margin_bottom = 3
@@ -222,7 +226,16 @@ class Entity(Stack):
 
 #    @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
-        self.emit("entity-leaving", self.popover)
+        self.emit("entity-leaving", self)
+        self.entry.set_text(self.label.get_text())
+        self.set_visible_child_name("view")
+        self.entry.set_visible(False)
+        self.entry.props.margin_top = 0
+        self.entry.props.margin_bottom = 0
+        try:
+            self.popover.hide()
+        except AttributeError as e:
+            print("this entity has no popover")
         #self.emit("entity-leaving", self.popover)
 
     @Template.Callback()

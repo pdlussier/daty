@@ -233,6 +233,7 @@ class Editor(ApplicationWindow):
         page.connect("entity-leaving", self.entity_leaving_cb)
         #self.connect("claim-changed-done", page.claim_changed_done_cb)
         page.connect("new-window-clicked", self.new_window_clicked_cb)
+        page.connect("reference-new-clicked", self.reference_new_clicked_cb)
         self.pages.add_titled(page, entity['URI'], entity['Label'])
         self.pages.set_visible_child_name(entity['URI'])
         self.entity_search_entry.connect("search-changed",
@@ -241,37 +242,81 @@ class Editor(ApplicationWindow):
                                           self.sidebar_search_entry_search_changed_cb)
         return None
 
+    def reference_new_clicked_cb(self, page, value, entity):
+        print("Editor: reference new clicked")
+        self.reference_new_connection = page.connect("button-release-event",
+                                                      self.reference_new_button_press_event_elsewhere,
+                                                      value)
+        self.qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
+                                                                          self.qualifier_new_enter_notify_event_cb,
+                                                                          page,
+                                                                          entity)
+        self.qualifier_new_leave_connection = value.qualifier_new.connect("leave-notify-event",
+                                                                          self.qualifier_new_leave_notify_event_cb,
+                                                                          page,
+                                                                          entity)
+
+    def reference_new_button_press_event_elsewhere(self, widget, event, value):
+        print("Reference new: hiding actions")
+        value.actions.set_visible(False)
+        self.reference_new_connection = True
+
     def entity_leaving_cb(self, page, value, entity):
         print("Editor: entity leaving")
-        print("focus", self.get_focus())
-        entity.entry.set_text(entity.label.get_text())
-        entity.set_visible_child_name("view")
-        entity.entry.set_visible(False)
-        entity.entry.props.margin_top = 0
-        entity.entry.props.margin_bottom = 0
-        value.actions.set_visible(False)
-        try:
-            entity.popover.hide()
-        except AttributeError as e:
-            print("this entity has no popover")
+        if value.hide_actions:
+            value.actions.set_visible(False)
 
     def entity_editing_cb(self, page, value, entity, popover):
-        #print(page, value, entity, popover)
+        print("Editor: entity editing")
         self.entity_popover_connection = page.connect("button-press-event",
                                                       self.button_press_event_cb,
-                                                      entity,
-                                                      popover)
+                                                      entity)
+        self.qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
+                                                                          self.qualifier_new_enter_notify_event_cb,
+                                                                          page,
+                                                                          value)
+        self.qualifier_new_leave_connection = value.qualifier_new.connect("leave-notify-event",
+                                                                          self.qualifier_new_leave_notify_event_cb,
+                                                                          page,
+                                                                          value,
+                                                                          entity)
 
-    def button_press_event_cb(self, page, event, entity, popover):
-        #print(page)
-        entity.emit("entity-leaving", event)
-        #entity.entry.emit("focus-out-event", event)
-        #popover.set_visible(False)
-        #entity.set_visible_child_name("view")
+    def qualifier_new_enter_notify_event_cb(self, qualifier_new, event, page, value):
+        print("Editor: entering new qualifier entry")
+        print("new qualifier entry enter cb: disconnect entity leaving")
+        #print(entity.entry_focus_out_connection)
+        value.hide_actions = False
+        try:
+            page.disconnect(self.reference_new_connection)
+            self.reference_new_connection = False
+        except Exception as e:
+            pass
         try:
             page.disconnect(self.entity_popover_connection)
         except Exception as e:
-            print(e)
+            pass
+
+    def qualifier_new_leave_notify_event_cb(self, actions, event, page, value, entity):
+        print("Editor: leaving new qualifier entry")
+        if self.reference_new_connection:
+            self.reference_new_conection = page.connect("button-press-event",
+                                                        self.reference_new_press_event_elsewhere,
+                                                        value)
+        else:
+            self.entity_popover_connection = page.connect("button-press-event",
+                                                          self.button_press_event_cb,
+                                                          entity)
+
+        #entity.entry_focus_out_connection = entity.entry.connect("focus-out-event",
+        #                                                     entity.entry_focus_out_event_cb)
+        value.hide_actions = True
+
+    def button_press_event_cb(self, page, event, entity):
+        entity.emit("entity-leaving", entity)
+        #try:
+        #    page.disconnect(self.entity_popover_connection)
+        #except Exception as e:
+        #    print(e)
 
     def claim_changed_cb(self, page, claim, target, value):
         print("Editor: claim changed")

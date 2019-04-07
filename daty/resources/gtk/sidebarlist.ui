@@ -4,7 +4,7 @@
   <requires lib="gtk+" version="3.22"/>
   <template class="SidebarList" parent="GtkListBox">
     <property name="visible">True</property>
-    <property name="can_focus">True</property>
+    <property name="can_focus">False</property>
     <property name="receives_default">True</property>
   </template>
 </interface>
