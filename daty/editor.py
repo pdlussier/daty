@@ -244,9 +244,11 @@ class Editor(ApplicationWindow):
 
     def reference_new_clicked_cb(self, page, value, entity):
         print("Editor: reference new clicked")
+        print("Editor: connecting page to reference new button press elsewhere")
         self.reference_new_connection = page.connect("button-release-event",
                                                       self.reference_new_button_press_event_elsewhere,
                                                       value)
+        print("reference new connection", self.reference_new_connection)
         self.qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
                                                                           self.qualifier_new_enter_notify_event_cb,
                                                                           page,
@@ -256,10 +258,16 @@ class Editor(ApplicationWindow):
                                                                           page,
                                                                           entity)
 
-    def reference_new_button_press_event_elsewhere(self, widget, event, value):
-        print("Reference new: hiding actions")
-        value.actions.set_visible(False)
-        self.reference_new_connection = True
+    def reference_new_button_press_event_elsewhere(self, page, event, value):
+        print("Reference new clicked elsewhere callback")
+        visible = value.actions.get_visible()
+        if not visible:
+            print("showing")
+        else:
+            print("hiding, disconnecting signal", self.reference_new_connection)
+            page.disconnect(self.reference_new_connection)
+        value.actions.set_visible(not visible)
+        #self.reference_new_connection = True
 
     def entity_leaving_cb(self, page, value, entity):
         print("Editor: entity leaving")

@@ -121,7 +121,7 @@ class Value(Grid):
         else:
             self.actions_hide = False
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
-            self.button_connection = self.button.connect("button-press-event", self.reference_new_clicked_cb)
+            #self.button_connection = self.button.connect("button-press-event", self.reference_new_clicked_cb)
 
         self.connect("button-press-event", self.clicked_cb)
 
@@ -157,8 +157,8 @@ class Value(Grid):
 
     def reference_new_clicked_cb(self, widget, event):
         if not self.actions_hide:
-            print("Value: showing actions")
-            self.actions.set_visible(True)
+            print("Value: emitting reference new clicked signal")
+            #self.actions.set_visible(True)
             #self.actions_hide = not self.actions_hide
             if self.icon.get_icon_name()[0] == "list-add-symbolic":
                 self.button.set_visible(False)
@@ -171,7 +171,7 @@ class Value(Grid):
             if self.icon.get_icon_name()[0] == "list-add-symbolic":
                 self.button.set_visible(True)
             #self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
-        self.actions_hide = not self.actions_hide
+        #self.actions_hide = not self.actions_hide
 
     def references_expand_clicked_cb(self, widget, event):
         self.references_expanded = not self.references_expanded
