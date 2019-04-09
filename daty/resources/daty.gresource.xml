@@ -24,6 +24,7 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarentity.ui</file>
     <file compressed="true">gtk/sidebarentity.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/sidebarlist.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/shortcutswindow.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/statements.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/triplet.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/usersetup.ui</file>

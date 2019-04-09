@@ -123,7 +123,7 @@ class Value(Grid):
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
             #self.button_connection = self.button.connect("button-press-event", self.reference_new_clicked_cb)
 
-        self.connect("button-press-event", self.clicked_cb)
+        self.button_press_connection = self.connect("button-press-event", self.clicked_cb)
 
         del claim
 

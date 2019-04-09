@@ -25,7 +25,7 @@
 #from ast import literal_eval
 from copy import deepcopy as cp
 from gi.repository.GLib import idle_add
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, AccelFlags, CssProvider, accelerator_parse
 from os import makedirs, umask
 from pickle import dump
 from pickle import load as pickle_load
@@ -154,6 +154,14 @@ def set_style(context, resource, style_class, enable):
         context.add_class(style_class)
     else:
         context.remove_class(style_class)
+
+def add_accelerator(accelerators, widget, accelerator, signal="activate"):
+    """Adds a keyboard shortcut"""
+    if accelerator is not None:
+        #if DEBUG:
+            #print accelerator, widget.get_tooltip_text()
+        key, mod = accelerator_parse(accelerator)
+        widget.add_accelerator(signal, accelerators, key, mod, AccelFlags.VISIBLE)
 
 def mkdirs(newdir, mode=0o755):
     try:

@@ -51,17 +51,30 @@ class Daty(Application):
         Application.do_startup(self)
 
         # Set app menu
-        action = SimpleAction.new("help", None)
-        action.connect("activate", self.on_help)
+        action = SimpleAction.new("shortcuts", None)
+        action.connect("activate", self.on_shortcuts)
+        self.set_accels_for_action("app.shortcuts", ["<Control>F1"])
         self.add_action(action)
 
         # Set app menu
+        action = SimpleAction.new("help", None)
+        action.connect("activate", self.on_help)
+        self.set_accels_for_action("app.help", ["F1"])
+        self.add_action(action)
+
         action = SimpleAction.new("about", None)
         action.connect("activate", self.on_about)
         self.add_action(action)
 
         action = SimpleAction.new("quit", None)
         action.connect("activate", self.on_quit)
+        self.set_accels_for_action("app.quit", ["<Control>q"])
+        self.add_action(action)
+
+        # Set entity menu
+        action = SimpleAction.new("entity_close", None)
+        action.connect("activate", self.on_entity_close)
+        self.set_accels_for_action("app.entity_close", ["<Control>w"])
         self.add_action(action)
 
         #builder = Builder()
@@ -85,12 +98,23 @@ class Daty(Application):
         self.activate()
         return 0
 
+    def on_entity_close(self, action, param):
+        row = self.window.sidebar_list.get_selected_row()
+        sidebar_entity = row.child
+        self.window.entity_close_clicked_cb(row, sidebar_entity)
+
     def on_help(self, action, param):
         if system() == 'Linux':
             show_uri (None, "help:daty", CURRENT_TIME)
         if system() == 'Windows':
             from webbrowser import open
             open('http://daty.prevete.ml')
+
+    def on_shortcuts(self, action, param):
+        builder = Builder()
+        builder.add_from_resource('/ml/prevete/Daty/gtk/shortcutswindow.ui')
+        window = builder.get_object("shortcuts")
+        window.show_all()
 
     def on_about(self, action, param):
         from .aboutdaty import AboutDaty

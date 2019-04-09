@@ -31,7 +31,7 @@ from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import KEY_Escape, KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L, KEY_ISO_Level3_Shift, KEY_ISO_Level3_Lock, KEY_Tab, KEY_Menu, KEY_Up, KEY_Down, KEY_Right, KEY_Left
-from gi.repository.Gtk import ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
+from gi.repository.Gtk import AccelGroup, ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
@@ -45,7 +45,7 @@ from .overlayedlistboxrow import OverlayedListBoxRow
 from .roundedbutton import RoundedButton
 from .sidebarentity import SidebarEntity
 from .sidebarlist import SidebarList
-from .util import MyThread, download, edit, label_color, set_style
+from .util import MyThread, add_accelerator, download, edit, label_color, set_style
 from .wikidata import Wikidata
 
 name = "ml.prevete.Daty"
@@ -59,9 +59,9 @@ class Editor(ApplicationWindow):
 
     __gtype_name__ = "Editor"
 
-#    __gsignals__ = {'claim-changed-done':(sf.RUN_LAST,
-#                                          TYPE_NONE,
-#                                          (TYPE_PYOBJECT,))}
+    __gsignals__ = {'entity-close':(sf.RUN_LAST,
+                                    TYPE_NONE,
+                                    (TYPE_PYOBJECT,))}
 
     # Title bar
     titlebar = Template.Child("titlebar")
@@ -69,6 +69,7 @@ class Editor(ApplicationWindow):
 
     # Header bar
     header_bar = Template.Child("header_bar")
+    entity_close = Template.Child("entity_close")
     entity_discussion_open_external = Template.Child("entity_discussion_open_external")
     entity_history_open_external = Template.Child("entity_history_open_external")
     entity_open = Template.Child("entity_open")
@@ -79,6 +80,7 @@ class Editor(ApplicationWindow):
     cancel_entities_selection = Template.Child("cancel_entities_selection")
     app_menu = Template.Child("app_menu")
     app_menu_popover = Template.Child("app_menu_popover")
+    help = Template.Child("help")
 
     # Sub header bar
     sub_header_bar = Template.Child("sub_header_bar")
@@ -131,6 +133,17 @@ class Editor(ApplicationWindow):
         icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
         icons = [icon(size) for size in [32, 48, 64, 96]];
         self.set_icon_list(icons);
+
+        # Set shortcuts
+        accelerators = AccelGroup()
+        self.add_accel_group(accelerators)
+        add_accelerator(accelerators, self.entity_open, "<Control>o", signal="clicked")
+        add_accelerator(accelerators, self.entity_search, "<Control>f", signal="clicked")
+        add_accelerator(accelerators, self.entity_discussion_open_external, "<Control>d", signal="clicked")
+        add_accelerator(accelerators, self.entity_history_open_external, "<Control>h", signal="clicked")
+        add_accelerator(accelerators, self.entities_select, "<Control>s", signal="clicked")
+        add_accelerator(accelerators, self.cancel_entities_selection, "<Control><Shift>s", signal="clicked")
+        add_accelerator(accelerators, self.entities_search, "<Control><Shift>f", signal="activate")
 
         # Init sidebar
         self.sidebar_list = SidebarList()
@@ -198,7 +211,15 @@ class Editor(ApplicationWindow):
         self.entity_discussion_open_external_connection = self.entity_discussion_open_external.connect("clicked",
                                                                                                        self.entity_discussion_open_external_clicked_cb,
                                                                                                        entity['URI'])
+        # Get selected sidebar entity for popover close button
+        current_row = self.sidebar_list.get_selected_row()
+        sidebar_entity = current_row.child
 
+        #if hasattr(self, 'entity_close_connection'):
+        #    self.entity_close.disconnect(self.entity_close_connection)
+        #self.entity_close_connection = self.entity_close.connect("clicked",
+        #                                                         self.entity_close_clicked_cb,
+        #                                                         sidebar_entity)
 
         if not self.pages.get_child_by_name(entity['URI']):
             self.pages.set_visible_child_name("loading")
@@ -244,6 +265,8 @@ class Editor(ApplicationWindow):
 
     def reference_new_clicked_cb(self, page, value, entity):
         print("Editor: reference new clicked")
+        print("disconnecting reference new pressed value signal")
+        value.disconnect(value.button_press_connection)
         print("Editor: connecting page to reference new button press elsewhere")
         self.reference_new_connection = page.connect("button-release-event",
                                                       self.reference_new_button_press_event_elsewhere,
@@ -262,11 +285,16 @@ class Editor(ApplicationWindow):
         print("Reference new clicked elsewhere callback")
         visible = value.actions.get_visible()
         if not visible:
-            print("showing")
+            print("showing actions")
         else:
-            print("hiding, disconnecting signal", self.reference_new_connection)
+            print("hiding actions, disconnecting 'elsewhere' signal",
+                  self.reference_new_connection)
             page.disconnect(self.reference_new_connection)
+            print("connecting reference new value pressed signal")
+            value.button_press_connection = value.connect("button-press-event",
+                                                          value.clicked_cb)
         value.actions.set_visible(not visible)
+        value.button.set_visible(visible)
         #self.reference_new_connection = True
 
     def entity_leaving_cb(self, page, value, entity):
@@ -307,7 +335,7 @@ class Editor(ApplicationWindow):
     def qualifier_new_leave_notify_event_cb(self, actions, event, page, value, entity):
         print("Editor: leaving new qualifier entry")
         if self.reference_new_connection:
-            self.reference_new_conection = page.connect("button-press-event",
+            self.reference_new_connection = page.connect("button-press-event",
                                                         self.reference_new_press_event_elsewhere,
                                                         value)
         else:
@@ -585,7 +613,7 @@ class Editor(ApplicationWindow):
         else:
             self.entity_search_bar.set_search_mode(False)
 
-    @Template.Callback()
+    #@Template.Callback()
     def key_press_event_cb(self, window, event):
         """Manages editor's key press events
 
