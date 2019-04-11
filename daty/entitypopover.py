@@ -122,7 +122,7 @@ class EntityPopover(PopoverMenu):
 
     def on_search_done(self, results, error, query, entry, *args, **kwargs):
         if query == entry.get_text():
-            print("entitypopover: search done:", query)
+            print("EntityPopover: search", query, 'complete')
             try:
                 listbox = self.results_listbox
                 listbox.foreach(listbox.remove)

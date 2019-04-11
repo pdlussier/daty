@@ -226,9 +226,8 @@ class Entity(Stack):
 
 #    @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
-        self.emit("entity-leaving", self)
-        self.entry.set_text(self.label.get_text())
         self.set_visible_child_name("view")
+        #self.entry.set_text(self.label.get_text())
         self.entry.set_visible(False)
         self.entry.props.margin_top = 0
         self.entry.props.margin_bottom = 0
@@ -236,13 +235,14 @@ class Entity(Stack):
             self.popover.hide()
         except AttributeError as e:
             print("this entity has no popover")
-        #self.emit("entity-leaving", self.popover)
+        self.emit("entity-leaving", self)
+        return True
 
     @Template.Callback()
     def entry_key_release_event_cb(self, widget, event):
-        pass
-        #try:
-            #if event.keyval == KEY_Escape:
-                #self.entry_focus_out_event_cb(widget, event)
-        #except AttributeError as e:
-        #    print("no entity popover for this value")
+        #pass
+        try:
+            if event.keyval == KEY_Escape:
+                self.entry_focus_out_event_cb(widget, event)
+        except AttributeError as e:
+            print("no entity popover for this value")

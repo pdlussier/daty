@@ -150,8 +150,8 @@ class Page(ScrolledWindow):
 
     def entity_leaving_cb(self, value, entity):
         print("Page: entity leaving")
-        print("entity", entity)
         self.emit("entity-leaving", value, entity)
+        return True
 
     def entity_editing_cb(self, value, entity, popover):
         self.emit("entity-editing", value, entity, popover)

@@ -142,6 +142,7 @@ class Value(Grid):
     def entity_leaving_cb(self, entity, popover):
         print("Value: entity leaving")
         self.emit("entity-leaving", entity)
+        return True
 
     def new_window_clicked_cb(self, entity, payload):
         print("Value: new window clicked")
@@ -157,7 +158,7 @@ class Value(Grid):
 
     def reference_new_clicked_cb(self, widget, event):
         if not self.actions_hide:
-            print("Value: emitting reference new clicked signal")
+            print("Value: 'reference-new' emitted")
             #self.actions.set_visible(True)
             #self.actions_hide = not self.actions_hide
             if self.icon.get_icon_name()[0] == "list-add-symbolic":
@@ -239,8 +240,8 @@ class Value(Grid):
 
     def entity_editing_cb(self, entity, popover):
         print("Value: entity editing")
-        self.actions_hide = False
-        self.reference_new_clicked_cb(entity, popover)
+        #self.actions_hide = False
+        #self.reference_new_clicked_cb(entity, popover)
         self.emit("entity-editing", entity, popover)
 
     def load_async(self, callback, *cb_args):#URI, claim, j):

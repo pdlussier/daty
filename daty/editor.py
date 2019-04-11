@@ -31,6 +31,7 @@ from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import KEY_Escape, KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L, KEY_ISO_Level3_Shift, KEY_ISO_Level3_Lock, KEY_Tab, KEY_Menu, KEY_Up, KEY_Down, KEY_Right, KEY_Left
+from gi.repository.Gdk import Event, EventFocus, EventType
 from gi.repository.Gtk import AccelGroup, ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
@@ -251,7 +252,7 @@ class Editor(ApplicationWindow):
         page = Page(entity['Data'])
         page.connect("claim-changed", self.claim_changed_cb)
         page.connect("entity-editing", self.entity_editing_cb)
-        page.connect("entity-leaving", self.entity_leaving_cb)
+        self.entity_leaving_connection = page.connect("entity-leaving", self.entity_leaving_cb)
         #self.connect("claim-changed-done", page.claim_changed_done_cb)
         page.connect("new-window-clicked", self.new_window_clicked_cb)
         page.connect("reference-new-clicked", self.reference_new_clicked_cb)
@@ -264,48 +265,115 @@ class Editor(ApplicationWindow):
         return None
 
     def reference_new_clicked_cb(self, page, value, entity):
-        print("Editor: reference new clicked")
-        print("disconnecting reference new pressed value signal")
+        print("Editor: 'reference-new' received")
+        print("Editor: Value 'reference-new' emission disabled")
         value.disconnect(value.button_press_connection)
-        print("Editor: connecting page to reference new button press elsewhere")
-        self.reference_new_connection = page.connect("button-release-event",
-                                                      self.reference_new_button_press_event_elsewhere,
-                                                      value)
-        print("reference new connection", self.reference_new_connection)
-        self.qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
-                                                                          self.qualifier_new_enter_notify_event_cb,
-                                                                          page,
-                                                                          entity)
-        self.qualifier_new_leave_connection = value.qualifier_new.connect("leave-notify-event",
-                                                                          self.qualifier_new_leave_notify_event_cb,
-                                                                          page,
-                                                                          entity)
+        if hasattr(self, 'reference_new_connection'):
+            print("Editor: 'reference-new' signals already attached; resetting")
+            page.disconnect(self.reference_new_connection)
+            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_enter_connection)
+            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_leave_connection)
+            self.current_value.button_press_connection = self.current_value.connect("button-press-event",
+                                                                                    self.current_value.clicked_cb)
+            self.current_value.actions.set_visible(False)
+            self.current_value.button.set_visible(True)
+            del self.reference_new_connection
+            print("reconnecting signals")
+        if not hasattr(self, 'reference_new_connection'):
+            self.current_value = value
+            self.reference_new_connection = page.connect("button-release-event",
+                                                         self.reference_new_button_press_event_elsewhere,
+                                                         value)
+            print("Editor: Page 'button-press-event' connected to 'elsewhere' cb with value", self.reference_new_connection)
+
+            self.from_value_qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
+                                                                                         self.from_value_qualifier_new_enter_notify_event_cb,
+                                                                                         page,
+                                                                                         value)
+            self.from_value_qualifier_new_leave_connection = value.qualifier_new.connect("leave-notify-event",
+                                                                                         self.from_value_qualifier_new_leave_notify_event_cb,
+                                                                                         page,
+                                                                                         value)
+
+
+    def from_value_qualifier_new_enter_notify_event_cb(self, qualifier_new, event, page, value):
+        print("Editor: entering new qualifier entry")
+        print("disconnect elsewhere signal", self.reference_new_connection)
+        #print(entity.entry_focus_out_connection)
+        #value.hide_actions = False
+        #try:
+        page.disconnect(self.reference_new_connection)
+
+        #except Exception as e:
+        #    pass
+
+
+    def from_value_qualifier_new_leave_notify_event_cb(self, actions, event, page, value):
+        print("Editor: leaving new qualifier entry")
+        self.reference_new_connection = page.connect("button-press-event",
+                                                     self.reference_new_button_press_event_elsewhere,
+                                                     value)
+        print("reconnecting page to 'reference new button press elsewhere'", self.reference_new_connection)
+        #else:
+        #    self.entity_popover_connection = page.connect("button-press-event",
+        #                                                  self.button_press_event_cb,
+        #                                                  entity)
+
+        #entity.entry_focus_out_connection = entity.entry.connect("focus-out-event",
+        #                                                     entity.entry_focus_out_event_cb)
+        #value.hide_actions = True
+
 
     def reference_new_button_press_event_elsewhere(self, page, event, value):
-        print("Reference new clicked elsewhere callback")
         visible = value.actions.get_visible()
         if not visible:
-            print("showing actions")
+            print("Elsewhere cb: show actions")
+            value.actions.set_visible(True)
+            value.button.set_visible(False)
         else:
-            print("hiding actions, disconnecting 'elsewhere' signal",
+            print("Elsewhere cb: hide actions, disconnect 'elsewhere' signals",
                   self.reference_new_connection)
+            print("Elsewhere cb: disconnect NQ enter connection", self.from_value_qualifier_new_enter_connection)
+            print("Elsewhere cb: disconnect NQ leave connection", self.from_value_qualifier_new_leave_connection)
             page.disconnect(self.reference_new_connection)
-            print("connecting reference new value pressed signal")
+            value.qualifier_new.disconnect(self.from_value_qualifier_new_enter_connection)
+            value.qualifier_new.disconnect(self.from_value_qualifier_new_leave_connection)
+            del self.reference_new_connection #= False
+            del self.from_value_qualifier_new_enter_connection #= False
+            del self.from_value_qualifier_new_leave_connection #= False
+            print("Elsewhere cb: Value 'reference-new' emission enabled")
             value.button_press_connection = value.connect("button-press-event",
                                                           value.clicked_cb)
-        value.actions.set_visible(not visible)
-        value.button.set_visible(visible)
+            value.actions.set_visible(False)
+            value.button.set_visible(True)
         #self.reference_new_connection = True
 
     def entity_leaving_cb(self, page, value, entity):
         print("Editor: entity leaving")
-        if value.hide_actions:
-            value.actions.set_visible(False)
+        #if value.hide_actions:
+        value.actions.set_visible(False)
+        if not hasattr(value, 'references'):
+            value.button.set_visible(True)
+        return True
 
     def entity_editing_cb(self, page, value, entity, popover):
         print("Editor: entity editing")
+        if hasattr(self, 'reference_new_connection'):
+            print("Editor: 'reference-new' signals already attached; resetting")
+            page.disconnect(self.reference_new_connection)
+            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_enter_connection)
+            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_leave_connection)
+            self.current_value.button_press_connection = self.current_value.connect("button-press-event",
+                                                                                    self.current_value.clicked_cb)
+            self.current_value.actions.set_visible(False)
+            self.current_value.button.set_visible(True)
+            del self.reference_new_connection
+        value.actions.set_visible(True)
+        if not hasattr(value, 'references'):
+            value.button.set_visible(False)
         self.entity_popover_connection = page.connect("button-press-event",
                                                       self.button_press_event_cb,
+                                                      value,
                                                       entity)
         self.qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
                                                                           self.qualifier_new_enter_notify_event_cb,
@@ -319,36 +387,33 @@ class Editor(ApplicationWindow):
 
     def qualifier_new_enter_notify_event_cb(self, qualifier_new, event, page, value):
         print("Editor: entering new qualifier entry")
-        print("new qualifier entry enter cb: disconnect entity leaving")
-        #print(entity.entry_focus_out_connection)
-        value.hide_actions = False
-        try:
-            page.disconnect(self.reference_new_connection)
-            self.reference_new_connection = False
-        except Exception as e:
-            pass
-        try:
-            page.disconnect(self.entity_popover_connection)
-        except Exception as e:
-            pass
+        #value.hide_actions = False
+        page.disconnect(self.entity_popover_connection)
+        page.disconnect(self.entity_leaving_connection)
 
     def qualifier_new_leave_notify_event_cb(self, actions, event, page, value, entity):
         print("Editor: leaving new qualifier entry")
-        if self.reference_new_connection:
-            self.reference_new_connection = page.connect("button-press-event",
-                                                        self.reference_new_press_event_elsewhere,
-                                                        value)
-        else:
-            self.entity_popover_connection = page.connect("button-press-event",
-                                                          self.button_press_event_cb,
-                                                          entity)
-
+        self.entity_popover_connection = page.connect("button-press-event",
+                                                      self.button_press_event_cb,
+                                                      entity)
+        self.entity_leaving_connection = page.connect("entity-leaving",
+                                                      self.entity_leaving_cb)
         #entity.entry_focus_out_connection = entity.entry.connect("focus-out-event",
         #                                                     entity.entry_focus_out_event_cb)
-        value.hide_actions = True
+        #value.hide_actions = True
 
-    def button_press_event_cb(self, page, event, entity):
-        entity.emit("entity-leaving", entity)
+    def button_press_event_cb(self, page, event, value, entity):
+        print("Disconnecting all signals")
+        page.disconnect(self.entity_popover_connection)
+        value.qualifier_new.disconnect(self.qualifier_new_enter_connection)
+        value.qualifier_new.disconnect(self.qualifier_new_leave_connection)
+
+        print("Editor: Entity entry emitting 'focus-out-event'")
+        event = Event(EventType(12))
+        event.window = page.get_window()  # the gtk.gdk.Window of the widget
+        event.send_event = True  # this means you sent the event explicitly
+        event.in_ = False
+        entity.entry.emit("focus-out-event", event)
         #try:
         #    page.disconnect(self.entity_popover_connection)
         #except Exception as e:
