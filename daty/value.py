@@ -94,10 +94,14 @@ class Value(Grid):
         self.entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(self.entity)
 
-        self.qualifier_new.connect("focus-in-event",
-                                   self.qualifier_new_focus_in_event_cb)
-        self.qualifier_new.connect("focus-out-event",
-                                   self.qualifier_new_focus_out_event_cb)
+        #self.qualifier_new.connect("focus-in-event",
+        #                           self.qualifier_new_focus_in_event_cb)
+        #self.qualifier_new.connect("focus-out-event",
+        #                           self.qualifier_new_focus_out_event_cb)
+        #self.reference_new.connect("focus-in-event",
+        #                           self.qualifier_new_focus_in_event_cb)
+        #self.reference_new.connect("focus-out-event",
+        #                           self.qualifier_new_focus_out_event_cb)
         self.hide_actions = True
 
         #qualifier_new_property = QualifierNewProperty()#{"URI":"P0",
@@ -115,11 +119,12 @@ class Value(Grid):
             for i,P in enumerate(claims):
                 download_light(P, self.load_qualifier, i, claims[P])
 
+        self.actions_hide = False
+
         if 'references' in claim:
             self.references = claim['references']
             self.button_connection = self.button.connect("button-press-event", self.references_expand_clicked_cb)
         else:
-            self.actions_hide = False
             self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
             #self.button_connection = self.button.connect("button-press-event", self.reference_new_clicked_cb)
 
@@ -128,16 +133,16 @@ class Value(Grid):
         del claim
 
     @Template.Callback()
-    def qualifier_new_focus_in_event_cb(self, qualifier, event):
-        context = self.get_style_context
+    def object_new_focus_in_event_cb(self, object, event):
+        context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
-        set_style(self.qualifier_new.get_style_context(), resource, 'search_entry', True)
+        set_style(context, resource, 'search_entry', True)
 
     @Template.Callback()
-    def qualifier_new_focus_out_event_cb(self, qualifier, event):
-        context = self.get_style_context()
+    def object_new_focus_out_event_cb(self, object, event):
+        context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
-        set_style(self.qualifier_new.get_style_context(), resource, 'search_entry', False)
+        set_style(context, resource, 'search_entry', False)
 
     def entity_leaving_cb(self, entity, popover):
         print("Value: entity leaving")
@@ -152,27 +157,21 @@ class Value(Grid):
         if hasattr(self, 'references'):
             if event.type == EventType(5): #double click
                 self.references_expand_clicked_cb(widget, event)
-        else:
-            if event.type == EventType(4): #single click
-                self.reference_new_clicked_cb(widget, event)
+
+        if event.type == EventType(4): #single click
+            self.reference_new_clicked_cb(widget, event)
 
     def reference_new_clicked_cb(self, widget, event):
         if not self.actions_hide:
+            self.emit("reference-new-clicked", self.entity)
             print("Value: 'reference-new' emitted")
-            #self.actions.set_visible(True)
-            #self.actions_hide = not self.actions_hide
             if self.icon.get_icon_name()[0] == "list-add-symbolic":
                 self.button.set_visible(False)
-                self.emit("reference-new-clicked", self.entity)
-            #self.icon.set_from_icon_name('pan-down-symbolic', IconSize.BUTTON)
         else:
-            #self.actions_hide = not self.actions_hide
             print("Value: hiding actions")
             self.actions.set_visible(False)
             if self.icon.get_icon_name()[0] == "list-add-symbolic":
                 self.button.set_visible(True)
-            #self.icon.set_from_icon_name('list-add-symbolic', IconSize.BUTTON)
-        #self.actions_hide = not self.actions_hide
 
     def references_expand_clicked_cb(self, widget, event):
         self.references_expanded = not self.references_expanded
