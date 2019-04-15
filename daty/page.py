@@ -105,7 +105,7 @@ class Page(ScrolledWindow):
                 self.references_toggled += 1
             else:
                 self.references_toggled -= 1
-            frame.set_min_content_height(frame.height*max(self.references_toggled, 3))
+            frame.set_min_content_height(frame.height*min(self.references_toggled, 3))
 
     def load_property(self, URI, prop, error, i):
         try:

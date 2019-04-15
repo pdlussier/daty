@@ -258,74 +258,94 @@ class Editor(ApplicationWindow):
                                           self.sidebar_search_entry_search_changed_cb)
         return None
 
+    def value_disable_signals(self, page, value, entity):
+        print("Editor: disabling all Value signals")
+
+        try:
+            if hasattr(value, 'button_press_connection'):
+                value.disconnect(value.button_press_connection)
+
+            if hasattr(self, 'reference_new_connection'):
+                page_connection = self.reference_new_connection
+                page_enter = self.from_value_qualifier_new_enter_connection
+                page_leave = self.from_value_qualifier_new_leave_connection
+                reference_enter = self.from_value_reference_new_enter_connection
+                reference_leave = self.from_value_reference_new_leave_connection
+                del self.reference_new_connection
+            elif hasattr(self, 'entity_popover_connection'):
+                page_connection = self.entity_popover_connection
+                page_enter = self.qualifier_new_enter_connection
+                page_leave = self.qualifier_new_leave_connection
+                reference_enter = self.reference_new_enter_connection
+                reference_leave = self.reference_new_leave_connection
+                del self.entity_popover_connection
+            else:
+                print("no signals to be disconnected")
+                raise Exception
+
+            page.disconnect(page_connection)
+            self.current_value.qualifier_new.disconnect(page_enter)
+            self.current_value.qualifier_new.disconnect(page_leave)
+            self.current_value.reference_new.disconnect(reference_enter)
+            self.current_value.reference_new.disconnect(reference_leave)
+            self.current_value.button_press_connection = self.current_value.connect("button-press-event",
+                                                                                        self.current_value.clicked_cb)
+
+            self.current_value.actions.set_visible(False)
+            self.current_value.button.set_visible(True)
+
+        except Exception as e:
+            print(e)
+            pass
+
     def reference_new_clicked_cb(self, page, value, entity):
-        print("Editor: 'reference-new' received")
-        print("Editor: Value 'reference-new' emission disabled")
-        value.disconnect(value.button_press_connection)
-        if hasattr(self, 'reference_new_connection'):
-            print("Editor: 'reference-new' signals already attached; resetting")
-            page.disconnect(self.reference_new_connection)
-            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_enter_connection)
-            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_leave_connection)
-            self.current_value.reference_new.disconnect(self.from_value_reference_new_enter_connection)
-            self.current_value.reference_new.disconnect(self.from_value_reference_new_leave_connection)
-            self.current_value.button_press_connection = self.current_value.connect("button-press-event",
-                                                                                    self.current_value.clicked_cb)
-            self.current_value.actions.set_visible(False)
-            self.current_value.button.set_visible(True)
-            del self.reference_new_connection
-            print("reconnecting signals")
-        if hasattr(self, 'entity_popover_connection'):
-            print("Editor: entity popover connection present: resetting")
-            page.disconnect(self.entity_popover_connection)
-            self.current_value.qualifier_new.disconnect(self.qualifier_new_enter_connection)
-            self.current_value.qualifier_new.disconnect(self.qualifier_new_leave_connection)
-            self.current_value.reference_new.disconnect(self.reference_new_enter_connection)
-            self.current_value.reference_new.disconnect(self.reference_new_leave_connection)
-            self.current_value.button_press_connection = self.current_value.connect("button-press-event",
-                                                                                    self.current_value.clicked_cb)
-            self.current_value.actions.set_visible(False)
-            self.current_value.button.set_visible(True)
+        self.value_disable_signals(page, value, entity)
         if not hasattr(self, 'reference_new_connection'):
             self.current_value = value
             self.reference_new_connection = page.connect("button-release-event",
                                                          self.reference_new_button_press_event_elsewhere,
-                                                         value)
+                                                         value,
+                                                         entity)
             print("Editor: Page 'button-press-event' connected to 'elsewhere' cb with value", self.reference_new_connection)
 
             self.from_value_qualifier_new_enter_connection = value.qualifier_new.connect("enter-notify-event",
                                                                                          self.from_value_object_new_enter_notify_event_cb,
                                                                                          page,
-                                                                                         value)
+                                                                                         value,
+                                                                                         entity)
             self.from_value_qualifier_new_leave_connection = value.qualifier_new.connect("leave-notify-event",
                                                                                          self.from_value_object_new_leave_notify_event_cb,
                                                                                          page,
-                                                                                         value)
+                                                                                         value,
+                                                                                         entity)
 
             self.from_value_reference_new_enter_connection = value.reference_new.connect("enter-notify-event",
                                                                                          self.from_value_object_new_enter_notify_event_cb,
                                                                                          page,
-                                                                                         value)
+                                                                                         value,
+                                                                                         entity)
             self.from_value_reference_new_leave_connection = value.reference_new.connect("leave-notify-event",
                                                                                          self.from_value_object_new_leave_notify_event_cb,
                                                                                          page,
-                                                                                         value)
+                                                                                         value,
+                                                                                         entity)
 
 
-    def from_value_object_new_enter_notify_event_cb(self, qualifier_new, event, page, value):
+    def from_value_object_new_enter_notify_event_cb(self, qualifier_new, event, page, value, entity):
         print("Editor: entering new disposable entry")
         print("disconnect elsewhere signal", self.reference_new_connection)
         page.disconnect(self.reference_new_connection)
 
-    def from_value_object_new_leave_notify_event_cb(self, actions, event, page, value):
+    def from_value_object_new_leave_notify_event_cb(self, actions, event, page, value, entity):
         print("Editor: leaving new disposable entry")
         self.reference_new_connection = page.connect("button-press-event",
                                                      self.reference_new_button_press_event_elsewhere,
-                                                     value)
+                                                     value,
+                                                     entity)
         print("reconnecting page to 'reference new button press elsewhere'", self.reference_new_connection)
 
 
-    def reference_new_button_press_event_elsewhere(self, page, event, value):
+    def reference_new_button_press_event_elsewhere(self, page, event, value, entity):
         visible = value.actions.get_visible()
         if not visible:
             print("Elsewhere cb: show actions")
@@ -333,30 +353,12 @@ class Editor(ApplicationWindow):
             if not hasattr(value, 'references'):
                 value.button.set_visible(False)
         else:
-            print("Elsewhere cb: hide actions, disconnect 'elsewhere' signals",
-                  self.reference_new_connection)
-            print("Elsewhere cb: disconnect NQ enter connection", self.from_value_qualifier_new_enter_connection)
-            print("Elsewhere cb: disconnect NQ leave connection", self.from_value_qualifier_new_leave_connection)
-            page.disconnect(self.reference_new_connection)
-            value.qualifier_new.disconnect(self.from_value_qualifier_new_enter_connection)
-            value.qualifier_new.disconnect(self.from_value_qualifier_new_leave_connection)
-            value.reference_new.disconnect(self.from_value_reference_new_enter_connection)
-            value.reference_new.disconnect(self.from_value_reference_new_leave_connection)
-            del self.reference_new_connection
-            del self.from_value_qualifier_new_enter_connection
-            del self.from_value_qualifier_new_leave_connection
-            del self.from_value_reference_new_enter_connection
-            del self.from_value_reference_new_leave_connection
-            print("Elsewhere cb: Value 'reference-new' emission enabled")
-            value.button_press_connection = value.connect("button-press-event",
-                                                          value.clicked_cb)
+            self.value_disable_signals(page, value, entity)
             value.actions.set_visible(False)
             value.button.set_visible(True)
-        #self.reference_new_connection = True
 
     def entity_leaving_cb(self, page, value, entity):
         print("Editor: entity leaving")
-        #if value.hide_actions:
         value.actions.set_visible(False)
         if not hasattr(value, 'references'):
             value.button.set_visible(True)
@@ -365,22 +367,12 @@ class Editor(ApplicationWindow):
 
     def entity_editing_cb(self, page, value, entity, popover):
         print("Editor: entity editing")
-        if hasattr(self, 'reference_new_connection'):
-            print("Editor: 'reference-new' signals already attached; resetting")
-            page.disconnect(self.reference_new_connection)
-            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_enter_connection)
-            self.current_value.qualifier_new.disconnect(self.from_value_qualifier_new_leave_connection)
-            self.current_value.reference_new.disconnect(self.from_value_reference_new_enter_connection)
-            self.current_value.reference_new.disconnect(self.from_value_reference_new_leave_connection)
-            self.current_value.button_press_connection = self.current_value.connect("button-press-event",
-                                                                                    self.current_value.clicked_cb)
-            self.current_value.actions.set_visible(False)
-            self.current_value.button.set_visible(True)
-            del self.reference_new_connection
+        self.value_disable_signals(page, value, entity)
         self.current_value = value
         value.actions.set_visible(True)
         if not hasattr(value, 'references'):
             value.button.set_visible(False)
+
         self.entity_popover_connection = page.connect("button-press-event",
                                                       self.button_press_event_cb,
                                                       value,
@@ -407,7 +399,6 @@ class Editor(ApplicationWindow):
 
     def object_new_enter_notify_event_cb(self, object_new, event, page, value):
         print("Editor: entering new object entry")
-        #value.hide_actions = False
         page.disconnect(self.entity_popover_connection)
         page.disconnect(self.entity_leaving_connection)
 
@@ -422,12 +413,7 @@ class Editor(ApplicationWindow):
 
     def button_press_event_cb(self, page, event, value, entity):
         print("Disconnecting all signals")
-        page.disconnect(self.entity_popover_connection)
-        value.qualifier_new.disconnect(self.qualifier_new_enter_connection)
-        value.qualifier_new.disconnect(self.qualifier_new_leave_connection)
-        value.reference_new.disconnect(self.reference_new_enter_connection)
-        value.reference_new.disconnect(self.reference_new_leave_connection)
-
+        self.value_disable_signals(page, value, entity)
 
         print("Editor: Entity entry emitting 'focus-out-event'")
         event = Event(EventType(12))
@@ -435,10 +421,6 @@ class Editor(ApplicationWindow):
         event.send_event = True  # this means you sent the event explicitly
         event.in_ = False
         entity.entry.emit("focus-out-event", event)
-        #try:
-        #    page.disconnect(self.entity_popover_connection)
-        #except Exception as e:
-        #    print(e)
 
     def claim_changed_cb(self, page, claim, target, value):
         print("Editor: claim changed")

@@ -212,7 +212,7 @@ class Entity(Stack):
                 print("no popover available for this type of value")
         else:
             self.entry.emit("search-changed")
-            self.popover.set_visible(True)
+            self.popover.popup()
             self.emit("entity-editing", self.popover)
 
     def object_selected_cb(self, popover, entity):

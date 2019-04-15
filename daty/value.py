@@ -94,22 +94,8 @@ class Value(Grid):
         self.entity.connect('new-window-clicked', self.new_window_clicked_cb)
         self.mainsnak.add(self.entity)
 
-        #self.qualifier_new.connect("focus-in-event",
-        #                           self.qualifier_new_focus_in_event_cb)
-        #self.qualifier_new.connect("focus-out-event",
-        #                           self.qualifier_new_focus_out_event_cb)
-        #self.reference_new.connect("focus-in-event",
-        #                           self.qualifier_new_focus_in_event_cb)
-        #self.reference_new.connect("focus-out-event",
-        #                           self.qualifier_new_focus_out_event_cb)
-        self.hide_actions = True
 
-        #qualifier_new_property = QualifierNewProperty()#{"URI":"P0",
-                                     #"Label":"Example property",
-                                     #"Description":"This is an example property"})
-        #qualifier_new_value = QualifierNewValue()
-        #self.qualifier_new.attach(qualifier_new_property, 0, 0, 1, 1)
-        #self.qualifier_new.attach(qualifier_new_value, 1, 0, 2, 1)
+        self.hide_actions = True
 
         if 'qualifiers' in claim:
             self.props.row_spacing = 3
@@ -137,12 +123,22 @@ class Value(Grid):
         context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
         set_style(context, resource, 'search_entry', True)
+        self.data = {"Label":"test", "Description":"test entity","URI":"Q1"}
+        object.popover = EntityPopover(self.data)
+        object.popover.set_relative_to(object)
+        object.connect("search-changed",
+                       object.popover.search_entry_search_changed_cb)
+        object.popover.connect("new-window-clicked", self.new_window_clicked_cb)
+        object.popover.connect("object-selected", self.object_selected_cb)
+        object.popover.popup()
+        #self.emit("entity-editing", self.entity, object.popover)
 
     @Template.Callback()
     def object_new_focus_out_event_cb(self, object, event):
         context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
         set_style(context, resource, 'search_entry', False)
+        object.popover.hide()
 
     def entity_leaving_cb(self, entity, popover):
         print("Value: entity leaving")
