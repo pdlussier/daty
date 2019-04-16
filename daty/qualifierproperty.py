@@ -39,7 +39,7 @@ class QualifierProperty(EventBox):
 
     def __init__(self, prop, *args, **kwargs):
         EventBox.__init__(self, *args, **kwargs)
-
+        self.URI = prop['URI']
         set_text(self.label, prop["Label"], prop["Description"])
 
     def set_label(self, label, tooltip):

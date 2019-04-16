@@ -123,6 +123,8 @@ class Value(Grid):
         if not object.get_name() == 'qualifier_new':
             object.props.secondary_icon_name = "user-trash-symbolic"
             object.props.secondary_icon_activatable = True
+            N = self.get_grid_rows(self.qualifiers)
+            object.connect("icon-press", self.object_new_icon_press_cb, N)
         context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
         set_style(context, resource, 'search_entry', True)
@@ -147,8 +149,24 @@ class Value(Grid):
     def object_new_icon_press_cb(self, entry, icon_pos, event, row):
         if entry.props.secondary_icon_name == "user-trash-symbolic":
             prop = self.qualifiers.get_child_at(0,row)
-            prop.destroy()
+            try:
+                prop.destroy()
+            except AttributeError as e:
+                pass
             entry.destroy()
+
+    def qualifier_new_check(self, property):
+        for child in self.qualifiers.get_children():
+            if type(child) == QualifierProperty:
+                if child.URI == property['URI']:
+                    N = self.qualifiers.child_get_property(child, 'height')
+                    child = self.qualifiers.get_child_at(1,N)
+                    prop = self.qualifiers.get_child_at(0,N)
+                    self.qualifiers.insert_next_to(child, PositionType(2))
+                    self.qualifiers.remove(prop)
+                    self.qualifiers.attach(prop, 0, N, 1, 1)
+                    return N, child, PositionType(2)
+        return None, None, None
 
     def object_new_selected_cb(self, popover, property):
         parent = popover.get_relative_to()
@@ -156,22 +174,32 @@ class Value(Grid):
         self.actions.set_visible(False)
         self.button.set_visible(True)
         if parent.get_name() == "qualifier_new":
-            qualifier = QualifierProperty(property)
-            N = self.get_grid_rows(self.qualifiers)
-            self.qualifiers.attach(qualifier, 0, N, 1, 1)
-
+            N, child, position = self.qualifier_new_check(property)
+            print(N)
+            if not child:
+                qualifier = QualifierProperty(property)
+                N = self.get_grid_rows(self.qualifiers)
+                self.qualifiers.attach(qualifier, 0, N, 1, 1)
+                child = qualifier
+                position = PositionType(1)
             qualifier_value = SearchEntry()
             context = qualifier_value.get_style_context()
             resource = '/ml/prevete/Daty/gtk/entity.css'
             set_style(context, resource, 'flat', True)
             qualifier_value.props.secondary_icon_activatable = True
             qualifier_value.set_visible(True)
+            qualifier_value.set_name("qualifier_new_value")
             qualifier_value.set_placeholder_text("Search to add the value")
             qualifier_value.connect("icon-press", self.object_new_icon_press_cb, N)
             qualifier_value.connect("focus-in-event", self.object_new_focus_in_event_cb)
             qualifier_value.connect("focus-out-event", self.object_new_focus_out_event_cb)
-            self.qualifiers.attach(qualifier_value, 1, N, 2, 1)
+            print(child)
+            print(position)
+            self.qualifiers.attach_next_to(qualifier_value, child, position, 2, 1)
             qualifier_value.grab_focus()
+        if parent.get_name() == "qualifier_new_value":
+            print("hi, I am a new qualifier value")
+
 
     @Template.Callback()
     def object_new_focus_out_event_cb(self, object, event):
@@ -182,6 +210,8 @@ class Value(Grid):
         if not object.get_name() == 'qualifier_new':
             object.props.secondary_icon_name = "user-trash-symbolic"
             object.props.secondary_icon_activatable = True
+            N = self.get_grid_rows(self.qualifiers)
+            object.connect("icon-press", self.object_new_icon_press_cb, N)
         object.popover.popdown()
 
     def entity_leaving_cb(self, entity, popover):
