@@ -263,7 +263,7 @@ class Wikidata:
         """
         pass
 
-    def search(self, query, verbose=False):
+    def search(self, query, filters=[], verbose=False):
         """
         
         Args:
@@ -271,7 +271,11 @@ class Wikidata:
         Returns:
             ({"URI":, "Label":, "Description":} in results)
         """
-        pattern = 'https://www.wikidata.org/w/index.php?limit=20&search='
+
+        pattern = 'https://www.wikidata.org/w/index.php?limit=20'
+        if 'property' in filters:
+            pattern = "".join([pattern, '&ns120=1'])
+        pattern = "".join([pattern, '&search='])
         page = get(pattern + query, timeout=10).content
         soup = BeautifulSoup(page, 'html.parser')
         results = []

@@ -10,11 +10,14 @@
   <template class="Value" parent="GtkGrid">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="margin_start">8</property>
+    <property name="column_spacing">12</property>
     <child>
       <object class="GtkGrid" id="qualifiers">
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
         <property name="row_spacing">3</property>
+        <property name="column_spacing">8</property>
         <property name="column_homogeneous">True</property>
         <child>
           <placeholder/>
@@ -145,6 +148,7 @@
             </child>
             <child>
               <object class="GtkSearchEntry" id="qualifier_new">
+                <property name="name">qualifier_new</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="has_focus">True</property>

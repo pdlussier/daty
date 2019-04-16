@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <template class="QualifierProperty" parent="GtkEventBox">
@@ -12,9 +12,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">end</property>
-        <property name="valign">start</property>
         <property name="margin_start">10</property>
-        <property name="vexpand">True</property>
         <property name="label" translatable="yes">Label</property>
         <property name="justify">right</property>
         <property name="wrap">True</property>

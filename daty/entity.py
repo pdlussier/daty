@@ -1,3 +1,5 @@
+
+
 # -*- coding: utf-8 -*-
 
 #    Entity
@@ -30,7 +32,7 @@ from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import EventType, KEY_Escape
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, ListBoxRow, Stack, StyleContext, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, ListBoxRow, PositionType, Stack, StyleContext, Template
 from pprint import pprint
 from threading import Thread
 from time import sleep
@@ -64,8 +66,8 @@ class Entity(Stack):
 
     #TODO:implement editing
 
-    def __init__(self, snak, *args, qualifier=False, css=None, **kwargs):
-        Stack.__init__(self, *args, **kwargs)
+    def __init__(self, snak=None, qualifier=False, css=None, **kwargs):
+        Stack.__init__(self, **kwargs)
 
         context = self.entry.get_style_context()
         provider = CssProvider()
@@ -190,8 +192,19 @@ class Entity(Stack):
             self.set_visible_child_name("entry")
             self.entry.grab_focus()
 
+    @Template.Callback()
+    def entry_changed_cb(self, entry):
+        if not self.entry.props.secondary_icon_name == "user-trash-symbolic":
+            self.entry.props.secondary_icon_tooltip_text = ""
+
+    @Template.Callback()
+    def entry_icon_press_cb(self, entry, icon_pos, event):
+        if entry.props.secondary_icon_name == "user-trash-symbolic":
+            print("this statement will be destroyed")
+
 #    @Template.Callback()
     def entry_focus_in_event_cb(self, entry, event):
+        self.entry.props.secondary_icon_name = "user-trash-symbolic"
         entry.props.margin_top = 3
         entry.props.margin_bottom = 3
         label = self.label.get_label()
@@ -201,6 +214,7 @@ class Entity(Stack):
                 from .entitypopover import EntityPopover
                 self.popover = EntityPopover(self.data)
                 self.popover.set_relative_to(self)
+                self.popover.set_position(PositionType(3))
                 self.entry.connect("search-changed", self.popover.search_entry_search_changed_cb)
                 self.popover.connect("new-window-clicked", self.new_window_clicked_cb)
                 self.popover.connect("object-selected", self.object_selected_cb)
@@ -227,12 +241,12 @@ class Entity(Stack):
 #    @Template.Callback()
     def entry_focus_out_event_cb(self, widget, event):
         self.set_visible_child_name("view")
-        #self.entry.set_text(self.label.get_text())
+        self.entry.set_text(self.label.get_text())
         self.entry.set_visible(False)
         self.entry.props.margin_top = 0
         self.entry.props.margin_bottom = 0
         try:
-            self.popover.hide()
+            self.popover.popdown()
         except AttributeError as e:
             print("this entity has no popover")
         self.emit("entity-leaving", self)

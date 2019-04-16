@@ -347,14 +347,14 @@ def edit(URI, claim, target, callback, *cb_args, wikidata=None):
     thread.start()
 
 
-def search(query, callback, *cb_args, wikidata=None, **kwargs):
+def search(query, callback, *cb_args, wikidata=None, filters=[], **kwargs):
     if not wikidata:
         from .wikidata import Wikidata
         wikidata = Wikidata()
     def do_call():
         results, error = [], None
         try:
-            results = wikidata.search(query)
+            results = wikidata.search(query, filters=filters)
         except Exception as err:
             from requests.exceptions import ConnectionError
             if type(err) == ConnectionError:

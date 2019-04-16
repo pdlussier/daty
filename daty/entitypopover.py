@@ -72,11 +72,14 @@ class EntityPopover(PopoverMenu):
     variable_title = Template.Child("variable_title")
     variable_subtitle = Template.Child("variable_subtitle")
 
-    def __init__(self, entity, *args,
-                 variables=None, **kwargs):
-        PopoverMenu.__init__(self, *args, **kwargs)
+    def __init__(self, entity=None, variables=None, filters=[], **kwargs):
+        PopoverMenu.__init__(self, **kwargs)
 
+        self.filters = filters
         self.variables = variables
+        if not entity:
+            entity = {"Label":"", "Description":"", "URI":""}
+            self.entity_grid.set_visible(False)
         self.entity = entity
         if self.variables != None:
             self.set_modal(True)
@@ -110,7 +113,7 @@ class EntityPopover(PopoverMenu):
         query = entry.get_text()
         if query:
             self.results_stack.set_visible_child_name("results_searching")
-            search(query, self.on_search_done, query, entry)
+            search(query, self.on_search_done, query, entry, filters=self.filters)
         else:
             self.variable_grid.set_visible(False)
             if self.variables:

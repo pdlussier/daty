@@ -31,13 +31,13 @@ from gi.repository.Gdk import EventType
 from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add #, PRIORITY_LOW
-from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Grid, IconSize, Separator, StyleContext, Grid, Template
+from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Grid, IconSize, PositionType, SearchEntry, Separator, StyleContext, Grid, Template
 from pprint import pprint
 
 from .entity import Entity
 from .entitypopover import EntityPopover
-from .qualifier_new_property import QualifierNewProperty
-from .qualifier_new_value import QualifierNewValue
+#from .qualifier_new_property import QualifierNewProperty
+#from .qualifier_new_value import QualifierNewValue
 from .qualifierproperty import QualifierProperty
 from .reference import Reference
 from .util import MyThread, download_light, set_style
@@ -120,25 +120,69 @@ class Value(Grid):
 
     @Template.Callback()
     def object_new_focus_in_event_cb(self, object, event):
+        if not object.get_name() == 'qualifier_new':
+            object.props.secondary_icon_name = "user-trash-symbolic"
+            object.props.secondary_icon_activatable = True
         context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
         set_style(context, resource, 'search_entry', True)
-        self.data = {"Label":"test", "Description":"test entity","URI":"Q1"}
-        object.popover = EntityPopover(self.data)
+        object.popover = EntityPopover(filters=['property'])
         object.popover.set_relative_to(object)
+        object.popover.set_position(PositionType(3))
         object.connect("search-changed",
                        object.popover.search_entry_search_changed_cb)
         object.popover.connect("new-window-clicked", self.new_window_clicked_cb)
-        object.popover.connect("object-selected", self.object_selected_cb)
+        object.popover.connect("object-selected", self.object_new_selected_cb)
         object.popover.popup()
         #self.emit("entity-editing", self.entity, object.popover)
+
+    def get_grid_rows(self, grid):
+        rows = 0
+        for child in grid.get_children():
+            y = grid.child_get_property(child, 'top-attach')
+            height = grid.child_get_property(child, 'height')
+            rows = max(rows, y+height)
+        return rows
+
+    def object_new_icon_press_cb(self, entry, icon_pos, event, row):
+        if entry.props.secondary_icon_name == "user-trash-symbolic":
+            prop = self.qualifiers.get_child_at(0,row)
+            prop.destroy()
+            entry.destroy()
+
+    def object_new_selected_cb(self, popover, property):
+        parent = popover.get_relative_to()
+        parent.set_text("")
+        self.actions.set_visible(False)
+        self.button.set_visible(True)
+        if parent.get_name() == "qualifier_new":
+            qualifier = QualifierProperty(property)
+            N = self.get_grid_rows(self.qualifiers)
+            self.qualifiers.attach(qualifier, 0, N, 1, 1)
+
+            qualifier_value = SearchEntry()
+            context = qualifier_value.get_style_context()
+            resource = '/ml/prevete/Daty/gtk/entity.css'
+            set_style(context, resource, 'flat', True)
+            qualifier_value.props.secondary_icon_activatable = True
+            qualifier_value.set_visible(True)
+            qualifier_value.set_placeholder_text("Search to add the value")
+            qualifier_value.connect("icon-press", self.object_new_icon_press_cb, N)
+            qualifier_value.connect("focus-in-event", self.object_new_focus_in_event_cb)
+            qualifier_value.connect("focus-out-event", self.object_new_focus_out_event_cb)
+            self.qualifiers.attach(qualifier_value, 1, N, 2, 1)
+            qualifier_value.grab_focus()
 
     @Template.Callback()
     def object_new_focus_out_event_cb(self, object, event):
         context = object.get_style_context()
         resource = '/ml/prevete/Daty/gtk/entity.css'
         set_style(context, resource, 'search_entry', False)
-        object.popover.hide()
+        object.set_text("")
+        if not object.get_name() == 'qualifier_new':
+            object.props.secondary_icon_name = "user-trash-symbolic"
+            object.props.secondary_icon_activatable = True
+        object.popover.popdown()
 
     def entity_leaving_cb(self, entity, popover):
         print("Value: entity leaving")
@@ -177,7 +221,6 @@ class Value(Grid):
         else:
             icon_name = 'pan-end-symbolic'
         self.icon.set_from_icon_name(icon_name, IconSize.BUTTON)
-        #self.reference_new.set_visible(state)
         self.emit('references-toggled', self)
 
     def init_references(self):
@@ -253,7 +296,7 @@ class Value(Grid):
 
     def object_selected_cb(self, entity, target, claim):
         print("Value: object selected")
-        print("Value: entity", entity.entity['Label'])
+        print("Value: entity", entity.data['Label'])
         provider = CssProvider()
         provider.load_from_resource('/ml/prevete/Daty/gtk/value.css')
         self.context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION)
