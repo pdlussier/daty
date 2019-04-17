@@ -226,10 +226,11 @@ class Value(Grid):
     def clicked_cb(self, widget, event):
         print(event.button)
         if hasattr(self, 'references'):
-            if event.type == EventType(4) and event.button == 1: #double click
+            if event.button == 1: #EventType(4) single click
                 self.references_expand_clicked_cb(widget, event)
-
-        if event.type == EventType(4) and event.button == 3: #single right click
+            if event.button == 3:
+                self.reference_new_clicked_cb(widget, event)
+        else:
             self.reference_new_clicked_cb(widget, event)
 
     def reference_new_clicked_cb(self, widget, event):
@@ -261,7 +262,7 @@ class Value(Grid):
             self.references_widgets.append(widget)
             for i,P in enumerate(ref['snaks-order']):
                 download_light(P, self.load_reference, i, widget, ref['snaks'][P])
-        self.references_widgets.append(Reference(new=True))
+        #self.references_widgets.append(Reference(new=True))
 
     def load_reference(self, URI, property, error, i, widget, refs):
         try:

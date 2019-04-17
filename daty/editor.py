@@ -302,7 +302,7 @@ class Editor(ApplicationWindow):
         self.value_disable_signals(page, value, entity)
         if not hasattr(self, 'reference_new_connection'):
             self.current_value = value
-            self.reference_new_connection = page.connect("button-release-event",
+            self.reference_new_connection = page.connect("button-press-event",
                                                          self.reference_new_button_press_event_elsewhere,
                                                          value,
                                                          entity)

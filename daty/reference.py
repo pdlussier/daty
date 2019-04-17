@@ -33,15 +33,16 @@ from gi.repository.Gtk import Box, IconTheme, Template
 class Reference(Box):
     __gtype_name__ = "Reference"
 
+    actions = Template.Child("actions")
     grid = Template.Child("grid")
-    new_ref = Template.Child("new_ref")
+    #new_ref = Template.Child("new_ref")
     #values = Template.Child("values")
 
     def __init__(self, *args, new=False, **kwargs):
         Box.__init__(self, *args, **kwargs)
 
         if new:
-            self.new_ref.set_visible(True)
+            #self.new_ref.set_visible(True)
             self.grid.set_visible(False)
             self.props.margin_top = 0
             self.props.margin_bottom = 0
@@ -51,3 +52,8 @@ class Reference(Box):
         #provider = CssProvider()
         #provider.load_from_resource('/ml/prevete/Daty/gtk/reference.css')
         #context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
+
+    @Template.Callback()
+    def button_press_event_cb(self, widget, event):
+        visible = self.actions.get_visible()
+        self.actions.set_visible(not visible)
