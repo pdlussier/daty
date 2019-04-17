@@ -17,6 +17,7 @@
         <property name="valign">start</property>
         <property name="hexpand">True</property>
         <property name="row_spacing">3</property>
+        <property name="column_spacing">8</property>
         <property name="column_homogeneous">True</property>
         <child>
           <placeholder/>

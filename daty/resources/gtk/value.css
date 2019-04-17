@@ -22,18 +22,17 @@
 */
 
 .unreferenced {
-    background-color:#ffe0e0; /*#fff0f0;*/
+    background:alpha(red, 0.11);
 }
 
 .loading {
-    background-color:#fffae2;
+    background-color:alpha(yellow, 0.08); /*#fffae2;*/
 }
 
 .expanded {
-/*    background-color:#fdefee */
-    background-color:#e0e0e0;
+    background-color:alpha(black, 0.08);
 }
 
 .separator {
-    background-color:#cfc8c3;
+    background-color:alpha(black, 0.15);
 }

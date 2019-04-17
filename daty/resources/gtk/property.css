@@ -26,3 +26,15 @@
     border-bottom-right-radius: 0px;
     border-right-width:0px;
 }
+
+@define-color bg_color alpha(currentColor, 0.05);
+@define-color bd_color alpha(currentColor, 0.10);
+
+.popover_description {
+ background:@bg_color;
+ padding:5px;
+ border-radius:5px;
+ border-style:solid;
+ border-color:@bd_color;
+ border-width:1px;
+}

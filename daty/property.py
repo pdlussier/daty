@@ -26,6 +26,7 @@ from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconTheme, Template
 
+from .util import set_style
 #from .wikidata import Wikidata
 
 @Template.from_resource("/ml/prevete/Daty/gtk/property.ui")
@@ -33,6 +34,8 @@ class Property(Button):
     __gtype_name__ = "Property"
 
     property_label = Template.Child("property_label")
+    popover = Template.Child("popover")
+    description = Template.Child("description")
     #values = Template.Child("values")
 
     def __init__(self, prop, *args, **kwargs):
@@ -41,14 +44,25 @@ class Property(Button):
         # Styling
         context = self.get_style_context()      
         provider = CssProvider()
-        provider.load_from_resource('/ml/prevete/Daty/gtk/property.css')
+        resource = 'ml/prevete/Daty/gtk/property.css'
+        provider.load_from_resource(resource)
         context.add_provider(provider, STYLE_PROVIDER_PRIORITY_APPLICATION) 
+
+        context = self.description.get_style_context()
+        set_style(context, resource, 'popover_description', True)
 
         #wikidata = Wikidata()
         #label, tooltip = wikidata.get_label(prop), wikidata.get_description(prop)
         self.set_label(prop["Label"], prop["Description"])
+        self.description.set_text(prop['Description'])
+        self.description.set_line_wrap(True)
         #del prop
 
     def set_label(self, label, tooltip):
         self.property_label.set_text(label)
         self.property_label.set_tooltip_text(tooltip)
+
+    @Template.Callback()
+    def clicked_cb(self, widget):
+        print("hi")
+        self.popover.popup()

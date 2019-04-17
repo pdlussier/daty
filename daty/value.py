@@ -224,11 +224,12 @@ class Value(Grid):
         self.emit("new-window-clicked", payload)
 
     def clicked_cb(self, widget, event):
+        print(event.button)
         if hasattr(self, 'references'):
-            if event.type == EventType(5): #double click
+            if event.type == EventType(4) and event.button == 1: #double click
                 self.references_expand_clicked_cb(widget, event)
 
-        if event.type == EventType(4): #single click
+        if event.type == EventType(4) and event.button == 3: #single right click
             self.reference_new_clicked_cb(widget, event)
 
     def reference_new_clicked_cb(self, widget, event):
