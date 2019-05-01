@@ -10,6 +10,7 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/loadingpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/preferences.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/property.ui</file>
     <file compressed="true">gtk/property.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/qualifier_new_property.ui</file>

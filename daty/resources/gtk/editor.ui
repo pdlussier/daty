@@ -528,6 +528,20 @@
     <property name="margin_bottom">8</property>
     <property name="margin_top">8</property>
     <child>
+     <object class="GtkModelButton" id="preferences">
+      <property name="visible">True</property>
+      <property name="can_focus">True</property>
+      <property name="receives_default">True</property>
+      <property name="action_name">app.preferences</property>
+      <property name="text" translatable="yes">Preferences</property>
+     </object>
+     <packing>
+      <property name="expand">False</property>
+      <property name="fill">True</property>
+      <property name="position">0</property>
+     </packing>
+    </child>
+    <child>
      <object class="GtkModelButton" id="shortcuts">
       <property name="visible">True</property>
       <property name="can_focus">True</property>
@@ -538,7 +552,7 @@
      <packing>
       <property name="expand">False</property>
       <property name="fill">True</property>
-      <property name="position">0</property>
+      <property name="position">1</property>
      </packing>
     </child>
     <child>
@@ -566,8 +580,7 @@
      <packing>
       <property name="expand">False</property>
       <property name="fill">True</property>
-      <property name="position">2
-</property>
+      <property name="position">2</property>
      </packing>
     </child>
     <child>

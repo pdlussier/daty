@@ -34,7 +34,7 @@ from gi.repository.Gtk import Application, Builder, show_uri
 from platform import system
 from sys import argv
 
-#from .aboutdaty import AboutDaty
+from .preferences import Preferences
 name = "ml.prevete.Daty"
 
 class Daty(Application):
@@ -51,6 +51,11 @@ class Daty(Application):
         Application.do_startup(self)
 
         # Set app menu
+        action = SimpleAction.new("preferences", None)
+        action.connect("activate", self.on_preferences)
+        self.set_accels_for_action("app.preferences", ["<Control>,"])
+        self.add_action(action)
+
         action = SimpleAction.new("shortcuts", None)
         action.connect("activate", self.on_shortcuts)
         self.set_accels_for_action("app.shortcuts", ["<Control>F1"])
@@ -109,6 +114,14 @@ class Daty(Application):
         if system() == 'Windows':
             from webbrowser import open
             open('http://daty.prevete.ml')
+
+    def on_preferences(self, action, param):
+        #builder = Builder()
+        #builder.add_from_resource('/ml/prevete/Daty/gtk/preferences.ui')
+        #window = builder.get_object("Preferences")
+        #window.show_all()
+        preferences = Preferences()
+        preferences.show_all()
 
     def on_shortcuts(self, action, param):
         builder = Builder()
