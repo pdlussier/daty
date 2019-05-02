@@ -74,7 +74,7 @@ class UserSetup(Assistant):
             language = environ.get("LANGUAGE", None)
             if language:
                 language = language.split(":")[0]
-        self.config.default_language = language
+        self.config.data['languages'] = [language]
 
         self.connect('destroy', main_quit)
         self.show_all()

@@ -293,6 +293,7 @@ def download(entity, callback, *cb_args, wikidata=None, use_cache=False, **kwarg
     thread = Thread(target = do_call)
     thread.start()
 
+
 def get_title(url, callback, *cb_args, **kwargs):
     """Asynchronously download entity from wikidata
          Args:

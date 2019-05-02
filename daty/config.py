@@ -151,9 +151,13 @@ class Config:
         f.close()
 
         # Save internal config to disk
-        self.data['user'] = user
-        self.data['bot user'] = bot_user
-        self.data['bot password'] = bot_password
+        self.data['credentials'] = {}
+        self.data['credentials']['user'] = user
+        self.data['credentials']['bot user'] = bot_user
+        self.data['credentials']['bot password'] = bot_password
+        save(self.data, join(self.dirs['config'], 'config.pkl'))
+
+    def save():
         save(self.data, join(self.dirs['config'], 'config.pkl'))
 
     def set_resources(self):

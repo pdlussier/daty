@@ -7,6 +7,7 @@
     <file compressed="true" preprocess="xml-stripblanks">gtk/entityselectable.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/entitypopover.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/filterslist.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/languageadd.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/loadingpage.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/open.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/page.ui</file>
