@@ -487,7 +487,7 @@ class Editor(ApplicationWindow):
 
         # Build entity
         if not entity['Label']:
-            entity['Label'] = self.wikidata.get_label(entity['Data'])
+            entity['Label'] = self.wikidata.get_label(entity['Data'], language='en')
         if not entity['Description']:
             entity['Description'] = self.wikidata.get_description(entity['Data'])
 

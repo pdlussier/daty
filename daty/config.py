@@ -94,7 +94,7 @@ class Config:
         bindtextdomain(self.appname, self.exec_path)
         textdomain(self.appname)
         self.lang = translation(self.appname, self.exec_path,
-        languages=langs, fallback=True)
+                                languages=langs, fallback=True)
 
     def create_pywikibot_config(self, user, bot_user, bot_password):
         """Create pywikibot configuration files

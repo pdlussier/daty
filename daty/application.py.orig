@@ -52,9 +52,9 @@ class Daty(Application):
 
         # Set app menu
 <<<<<<< HEAD
-=======
 
->>>>>>> db00593... preferences window: initial commit
+=======
+>>>>>>> 8b863293de75f0c6dde0d6419915689c9f756e8c
         action = SimpleAction.new("preferences", None)
         action.connect("activate", self.on_preferences)
         self.set_accels_for_action("app.preferences", ["<Control>,"])

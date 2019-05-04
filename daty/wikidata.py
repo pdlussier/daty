@@ -34,7 +34,7 @@ from requests import get
 from time import time
 
 from .config import Config
-config = Config()
+#config = Config()
 
 from .util import load, save
 
@@ -114,7 +114,7 @@ class Wikidata:
         results = list(set([r[var[1:]]['value'].split("/")[-1] for r in results]))
         return results 
 
-    def download(self, URI, use_cache=True, target=None, debug=True):
+    def download(self, URI, use_cache=True, target=None, debug=True, language='en'):
         """
 
         Args:
@@ -162,7 +162,7 @@ class Wikidata:
                         output = {}
                         for t in target:
                             if t == "Label":
-                                output[t] = self.get_label(entity)
+                                output[t] = self.get_label(entity, language=language)
                             if t == "Description":
                                 output[t] = self.get_description(entity)
                             if t == "Data":
