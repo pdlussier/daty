@@ -1,0 +1,22 @@
+name: daty
+version: git
+summary: Daty Wikidata Editor
+description: |
+  Daty is a free Wikidata editor adhering to GNOME Human Interface Guidelines,
+  intended to enable a better editing workflow and faster deployment of requested user features for Wikidata.
+  Use Daty to search, select, read, batch edit items, script actions, share, visualize proposed changes and bots.
+
+confinement: devmode
+base: core18
+
+parts:
+  offlineimap:
+    plugin: python
+    python-version: python3
+    source: .
+    stage-packages:
+      - python-six
+
+apps:
+  offlineimap:
+    command: bin/daty
