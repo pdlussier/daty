@@ -10,7 +10,7 @@ confinement: devmode
 base: core18
 
 parts:
-  offlineimap:
+  daty:
     plugin: python
     python-version: python3
     source: .

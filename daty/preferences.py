@@ -27,7 +27,6 @@ require_version('Gtk', '3.0')
 from gi.repository.GLib import idle_add
 from gi.repository.Gtk import Align, CssProvider, Dialog, Entry, Grid, Label, ListBoxRow, Separator, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, IconTheme, Template, Window
 from pprint import pprint
-from pywikibot.data.sparql import SparqlQuery
 from re import sub
 from threading import Thread
 
@@ -116,6 +115,7 @@ class Preferences(Window):
                 entity (dict): have keys "URI", "Label", "Description"
         """
         def do_call():
+            from pywikibot.data.sparql import SparqlQuery
             sparql = SparqlQuery()
             results = sparql.query(query)
             idle_add(lambda: callback(results, *cb_args, **kwargs))

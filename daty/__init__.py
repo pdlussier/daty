@@ -35,7 +35,7 @@ from setproctitle import setproctitle
 from sys import argv
 
 name = "ml.prevete.Daty"
-version = "1.0beta"
+version = "1.0rc"
 setproctitle(name)
 
 def main():

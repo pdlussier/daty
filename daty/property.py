@@ -51,12 +51,10 @@ class Property(Button):
         context = self.description.get_style_context()
         set_style(context, resource, 'popover_description', True)
 
-        #wikidata = Wikidata()
-        #label, tooltip = wikidata.get_label(prop), wikidata.get_description(prop)
         self.set_label(prop["Label"], prop["Description"])
         self.description.set_text(prop['Description'])
         self.description.set_line_wrap(True)
-        #del prop
+
 
     def set_label(self, label, tooltip):
         self.property_label.set_text(label)

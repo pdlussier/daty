@@ -30,11 +30,10 @@ require_version('Handy', '0.0')
 from gi.repository.Gdk import CURRENT_TIME
 from gi.repository.GLib import OptionArg, OptionFlags
 from gi.repository.Gio import ApplicationFlags, SimpleAction
-from gi.repository.Gtk import Application, Builder, show_uri
+from gi.repository.Gtk import Application, Builder, WindowPosition, show_uri
 from platform import system
 from sys import argv
 
-from .preferences import Preferences
 name = "ml.prevete.Daty"
 
 class Daty(Application):
@@ -50,14 +49,15 @@ class Daty(Application):
     def do_startup(self):
         Application.do_startup(self)
 
-        # Set app menu
-<<<<<<< HEAD
-=======
+        #TODO: Parse args
+        #if "open-entity" in args:
 
->>>>>>> db00593... preferences window: initial commit
+
+
+        # Set app menu
         action = SimpleAction.new("preferences", None)
         action.connect("activate", self.on_preferences)
-        self.set_accels_for_action("app.preferences", ["<Control>,"])
+        #self.set_accels_for_action("app.preferences", ["<Control>,"])
         self.add_action(action)
 
         action = SimpleAction.new("shortcuts", None)
@@ -120,18 +120,20 @@ class Daty(Application):
             open('http://daty.prevete.ml')
 
     def on_preferences(self, action, param):
-        #builder = Builder()
-        #builder.add_from_resource('/ml/prevete/Daty/gtk/preferences.ui')
-        #window = builder.get_object("Preferences")
-        #window.show_all()
         preferences = Preferences()
         preferences.show_all()
 
     def on_shortcuts(self, action, param):
         builder = Builder()
         builder.add_from_resource('/ml/prevete/Daty/gtk/shortcutswindow.ui')
-        window = builder.get_object("shortcuts")
-        window.show_all()
+        shortcuts = builder.get_object("shortcuts")
+        #print(shortcuts.get_position())
+        #print(WindowPosition(1))
+        #shortcuts
+        shortcuts.set_transient_for(self.window)
+        shortcuts.show_all()
+        #shortcuts.set_position(WindowPosition(1))
+        print(shortcuts.get_position())
 
     def on_about(self, action, param):
         from .aboutdaty import AboutDaty

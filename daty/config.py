@@ -54,7 +54,7 @@ class Config:
             'config':user_config_dir(appname, appauthor),
             'cache':user_cache_dir(appname, appauthor)}
 
-    verbose = False
+    verbose = True
 
     def __init__(self):
         self.set_dirs()

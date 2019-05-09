@@ -580,11 +580,8 @@
      <packing>
       <property name="expand">False</property>
       <property name="fill">True</property>
-<<<<<<< HEAD
       <property name="position">2</property>
-=======
       <property name="position">3</property>
->>>>>>> db00593... preferences window: initial commit
      </packing>
     </child>
     <child>
