@@ -11,12 +11,22 @@ base: core18
 
 parts:
   daty:
+    build-packages:
+      - libcairo2-dev
+      - pkg-config
+      - python3-gi
+      - python3-cairo
+    build-snaps:
+      - libhandy
     plugin: python
     python-version: python3
     source: .
     stage-packages:
-      - python-six
+      - libcairo2
+      - python3-cairo
+      - python3-gi
+      - python3-six
 
 apps:
-  offlineimap:
+  daty:
     command: bin/daty
