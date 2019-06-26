@@ -68,7 +68,7 @@
     ],
     "build-options" : {
         "env" : {
-            "GTK_DEBUG" : "interactive"
+            "GTK_DEBUG" : "touchscreen"
         }
     }
 }

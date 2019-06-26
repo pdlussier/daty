@@ -80,8 +80,9 @@ class Value(Grid):
     qualifier_new = Template.Child("qualifier_new")
     reference_new = Template.Child("reference_new")
 
-    def __init__(self, claim, *args, **kwargs):
+    def __init__(self, claim, *args, new=False, **kwargs):
         Grid.__init__(self, *args, **kwargs)
+
 
         self.qualifier_pos = {}
 
@@ -89,7 +90,7 @@ class Value(Grid):
         self.reference_row = 0
         self.references_expanded = False
 
-        self.entity = Entity(claim['mainsnak'])
+        self.entity = Entity(claim['mainsnak'], new=new)
         self.entity.connect("entity-editing", self.entity_editing_cb)
         self.entity.connect("entity-leaving", self.entity_leaving_cb)
         self.entity.connect("object-selected", self.object_selected_cb, claim)

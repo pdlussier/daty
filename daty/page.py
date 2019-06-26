@@ -27,11 +27,11 @@ from copy import deepcopy as cp
 from gi import require_version
 require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
-from gi.repository.Gdk import Event, EventKey, KEY_Escape
+from gi.repository.Gdk import Event, EventButton, EventKey, KEY_Escape
 from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
-from gi.repository.Gtk import Frame, Label, ScrolledWindow, Template
+from gi.repository.Gtk import Frame, Label, ScrolledWindow, Template, Viewport
 from pprint import pprint
 from threading import Thread
 
@@ -72,7 +72,7 @@ class Page(ScrolledWindow):
 
     references_toggled = 1
 
-    def __init__(self, entity, *args, **kwargs):
+    def __init__(self, entity, *args, new=False, **kwargs):
         ScrolledWindow.__init__(self, *args, **kwargs)
 
         claims = entity['claims']
@@ -107,16 +107,50 @@ class Page(ScrolledWindow):
                 self.references_toggled -= 1
             frame.set_min_content_height(frame.height*min(self.references_toggled, 3))
 
+    @Template.Callback()
+    def statement_add_clicked_cb(self, widget):
+        print("deve comparire una barra di ricerca")
+
+
     def load_property(self, URI, prop, error, i):
         try:
             if error:
                 print(error)
             prop = Property(prop)
-            self.statements.attach(prop, 0, i, 1, 1)
+            prop.connect('value-new', self.property_value_new_clicked_cb)
+            prop.position, prop.size = (0,i), (1,1)
+            self.statements.attach(prop, *prop.position, *prop.size)
             return None
         except Exception as e:
             print(URI)
             raise e
+
+    def property_value_new_clicked_cb(self, property, original_position):
+        get_top = lambda x: self.statements.child_get_property(x, 'top-attach')
+        property_top_value = get_top(property)
+        for x in self.statements.get_children():
+            if get_top(x) == property_top_value:
+                while type(x) in (Frame, ScrolledWindow, Viewport):
+                    x = x.get_children()[0]
+                    values = x
+        while not type(x) == Value:
+            x = x.get_children()[0]
+            value = x
+        print(value.entity)
+        print(values.get_children()[0].get_children())
+        claim = {'mainsnak':{'snaktype':'value',
+                             'datavalue':{'type':'wikibase-entityid',
+                                          'value':{'entity-type':'item',
+                                                   'numeric-id':1}},
+                             'datatype':'wikibase-item'}}
+        value = Value(claim=claim, new=True)
+        values.add(value)
+        values.show_all()
+        event = EventButton()
+        value.entity.value_eventbox.do_button_press_event(self, event)
+        value.entity.set_visible_child_name('entry')
+        value.entity.entry.grab_focus()
+
 
     def load_value_async(self, claim, values):
         def do_call():

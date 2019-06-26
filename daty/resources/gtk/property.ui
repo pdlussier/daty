@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <!-- interface-css-provider-path property.css -->
@@ -75,6 +75,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="text" translatable="yes">Add value</property>
+            <signal name="clicked" handler="value_new_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

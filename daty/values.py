@@ -64,6 +64,9 @@ class Values(ListBox):
         row.add(widget)
         super(Values, self).add(row)
 
+    def add_new():
+        pass
+
     def references_toggled_cb(self, widget, child):
         for i, row in enumerate(self.get_children()):
             if hasattr(row, 'child') and row.child == child:

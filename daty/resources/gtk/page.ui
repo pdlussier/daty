@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <requires lib="libhandy" version="0.0"/>
@@ -121,10 +121,11 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkButton" id="add_statement">
+                          <object class="GtkButton" id="statement_add">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
+                            <signal name="clicked" handler="statement_add_clicked_cb" swapped="no"/>
                             <child>
                               <object class="GtkLabel">
                                 <property name="visible">True</property>

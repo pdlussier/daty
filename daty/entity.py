@@ -62,11 +62,12 @@ class Entity(Stack):
 
     entry = Template.Child("entry")
     label = Template.Child("label")
+    value_eventbox = Template.Child("value_eventbox")
     unit = Template.Child("unit")
 
     #TODO:implement editing
 
-    def __init__(self, snak=None, qualifier=False, css=None, **kwargs):
+    def __init__(self, snak=None, new=False, qualifier=False, css=None, **kwargs):
         Stack.__init__(self, **kwargs)
 
         context = self.entry.get_style_context()
@@ -79,77 +80,14 @@ class Entity(Stack):
             self.unit.props.valign = 1
 
         try:
-            if snak['snaktype'] == 'novalue':
-              self.label.set_text("No value")
-            if snak['snaktype'] == 'value':
-              dv = snak['datavalue']
-              dt = snak['datatype']
-              if dt == 'wikibase-item' or dt == 'wikibase-property':
-                if dv['type'] == 'wikibase-entityid':
-                  entity_type = dv['value']['entity-type']
-                  numeric_id = dv['value']['numeric-id']
-                  if entity_type == 'item':
-                    URI = 'Q' + str(numeric_id)
-                  if entity_type == 'property':
-                    URI = 'P' + str(numeric_id)
-                  print("Entity: light downloading", URI)
-                  download_light(URI, self.load_entity)
-              if dt == 'url':
-                  url = dv['value']
-                  #label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
-                  label = url.split('/')[2]
-                  self.data = {"url":url}
-                  self.set_text(label, url)
-                  context = self.label.get_style_context()
-                  set_style(context, '/ml/prevete/Daty/gtk/entity.css', 'url', True)
-                  #self.label.props.use_markup = True
-              if dt == 'quantity':
-                  unit = dv['value']['unit']
-                  if unit.startswith('http'):
-                      unit = dv['value']['unit'].split('/')[-1]
-                      download_light(unit, self.on_download_unit)
-
-                  amount = dv['value']['amount']
-                  ub = dv['value']['upperBound']
-                  lb = dv['value']['lowerBound']
-                  if float(amount) > 0:
-                      amount = str(round(float(amount)))
-                  if ub and lb:
-                      amount = amount + " ± " + str(round(float(ub) - float(amount)))
-                  if ub and not lb:
-                      amount = amount + " + " + str(round(float(ub) - float(amount)))
-                  if not ub and lb:
-                      amount = amount + " - " + str(round(float(amount) - float(lb)))
-                  self.label.set_text(amount)
-              if dt == 'string':
-                  self.set_text(dv['value'], "Text")
-              if dt == 'monolingualtext':
-                  #TODO: better implement monolingual text
-                  self.set_text(dv['value']['text'], dv['value']['language'])
-              if dt == 'commonsMedia':
-                  self.set_text(dv['value'], "Picture")
-              if dt == 'external-id':
-                  self.set_text(dv['value'], "External ID")
-              if dt == 'geo-shape':
-                  #TODO: implement geo-shape
-                  #print('geo-shape')
-                  pass
-              if dt == 'globe-coordinate':
-                  #TODO: implement globe-coordinate
-                  #print('globe-coordinate')
-                  pass
-              if dt == 'tabular-data':
-                  #TODO: implement tabular-data
-                  #print('tabular-data')
-                  pass
-              if dt == 'time':
-                  #TODO: implement time point
-                  #print('time')
-                  pass
-            del snak
-
+            self.read(snak)
         except Exception as err:
             raise err
+
+        self.new = new
+        if self.new:
+            print("new entity")
+
         self.entry_focus_out_connection = self.entry.connect("focus-out-event",
                                                              self.entry_focus_out_event_cb)
         self.entry_focus_in_connection = self.entry.connect("focus-in-event",
@@ -157,11 +95,79 @@ class Entity(Stack):
 
         #self.entry.connect("search-changed", self.entry_search_changed_cb)
 
+    def read(self, snak):
+        if snak['snaktype'] == 'novalue':
+          self.label.set_text("No value")
+        if snak['snaktype'] == 'value':
+          dv = snak['datavalue']
+          dt = snak['datatype']
+          if dt == 'wikibase-item' or dt == 'wikibase-property':
+            if dv['type'] == 'wikibase-entityid':
+              entity_type = dv['value']['entity-type']
+              numeric_id = dv['value']['numeric-id']
+              if entity_type == 'item':
+                URI = 'Q' + str(numeric_id)
+              if entity_type == 'property':
+                URI = 'P' + str(numeric_id)
+              print("Entity: light downloading", URI)
+              download_light(URI, self.load_entity)
+          if dt == 'url':
+              url = dv['value']
+              #label = "".join(["<a href='", url, "'>", url.split('/')[2], '</a>'])
+              label = url.split('/')[2]
+              self.data = {"url":url}
+              self.set_text(label, url)
+              context = self.label.get_style_context()
+              set_style(context, '/ml/prevete/Daty/gtk/entity.css', 'url', True)
+          #self.label.props.use_markup = True
+          if dt == 'quantity':
+              unit = dv['value']['unit']
+              if unit.startswith('http'):
+                  unit = dv['value']['unit'].split('/')[-1]
+                  download_light(unit, self.on_download_unit)
+
+              amount = dv['value']['amount']
+              ub = dv['value']['upperBound']
+              lb = dv['value']['lowerBound']
+              if float(amount) > 0:
+                  amount = str(round(float(amount)))
+              if ub and lb:
+                  amount = amount + " ± " + str(round(float(ub) - float(amount)))
+              if ub and not lb:
+                  amount = amount + " + " + str(round(float(ub) - float(amount)))
+              if not ub and lb:
+                  amount = amount + " - " + str(round(float(amount) - float(lb)))
+              self.label.set_text(amount)
+          if dt == 'string':
+              self.set_text(dv['value'], "Text")
+          if dt == 'monolingualtext':
+              #TODO: better implement monolingual text
+              self.set_text(dv['value']['text'], dv['value']['language'])
+          if dt == 'commonsMedia':
+              self.set_text(dv['value'], "Picture")
+          if dt == 'external-id':
+              self.set_text(dv['value'], "External ID")
+          if dt == 'geo-shape':
+              #TODO: implement geo-shape
+              #print('geo-shape')
+              pass
+          if dt == 'globe-coordinate':
+              #TODO: implement globe-coordinate
+              #print('globe-coordinate')
+              pass
+          if dt == 'tabular-data':
+              #TODO: implement tabular-data
+              #print('tabular-data')
+              pass
+          if dt == 'time':
+              #TODO: implement time point
+              #print('time')
+              pass
+        del snak
+
     def set_text(self, label, description):
         set_text(self.label, label, description)
         set_text(self.entry, label, description)
-
-
 
     def on_download_unit(self, URI, unit, error):
         if error:

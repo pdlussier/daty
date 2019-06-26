@@ -25,6 +25,9 @@
 from gi import require_version
 require_version('Gtk', '3.0')
 from gi.repository.Gtk import CssProvider, StyleContext, STYLE_PROVIDER_PRIORITY_APPLICATION, Button, IconTheme, Template
+from gi.repository.GObject import SignalFlags as sf
+from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
+
 
 from .util import set_style
 #from .wikidata import Wikidata
@@ -32,6 +35,10 @@ from .util import set_style
 @Template.from_resource("/ml/prevete/Daty/gtk/property.ui")
 class Property(Button):
     __gtype_name__ = "Property"
+
+    __gsignals__ = {'value-new':(sf.RUN_LAST,
+                                 TYPE_NONE,
+                                 (TYPE_PYOBJECT,))}
 
     property_label = Template.Child("property_label")
     popover = Template.Child("popover")
@@ -59,6 +66,12 @@ class Property(Button):
     def set_label(self, label, tooltip):
         self.property_label.set_text(label)
         self.property_label.set_tooltip_text(tooltip)
+
+    @Template.Callback()
+    def value_new_clicked_cb(self, widget):
+        print("value-new emitted")
+        self.emit('value-new', self.position)
+        self.popover.popdown()
 
     @Template.Callback()
     def clicked_cb(self, widget):
