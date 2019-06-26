@@ -12,8 +12,10 @@ base: core18
 parts:
   daty:
     build-packages:
+      - libgirepository1.0-dev
       - libcairo2-dev
       - pkg-config
+      - python3-cairo-dev
       - python3-gi
       - python3-cairo
     build-snaps:
@@ -22,9 +24,9 @@ parts:
     python-version: python3
     source: .
     stage-packages:
-      - libcairo2
-      - python3-cairo
-      - python3-gi
+      #- libcairo2
+      #- python3-cairo
+      #- python3-gi
       - python3-six
 
 apps:
