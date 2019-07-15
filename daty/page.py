@@ -143,7 +143,7 @@ class Page(ScrolledWindow):
                                           'value':{'entity-type':'item',
                                                    'numeric-id':1}},
                              'datatype':'wikibase-item'}}
-        value = Value(claim=claim, new=True)
+        value = Value(claim={}, new=True)
         values.add(value)
         values.show_all()
         event = EventButton()
