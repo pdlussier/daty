@@ -56,7 +56,10 @@ class Open(Window):
                                   (TYPE_PYOBJECT,)),
                     'new-window-clicked':(sf.RUN_LAST,
                                           TYPE_NONE,
-                                          (TYPE_PYOBJECT,))}
+                                          (TYPE_PYOBJECT,)),
+                    'window-new':(sf.RUN_LAST,
+                                  TYPE_NONE,
+                                  (TYPE_PYOBJECT,))}
 
     wikidata = Wikidata()
 
@@ -481,3 +484,8 @@ class Open(Window):
     @Template.Callback()
     def deselect_all_clicked_cb(self, widget):
         self.results_listbox.foreach(self.select_row, False)
+
+    @Template.Callback()
+    def window_new_clicked_cb(self, widget):
+        self.emit("window-new", "ciao")
+        print("open dialog: window new clicked")

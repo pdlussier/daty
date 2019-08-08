@@ -93,6 +93,7 @@ class Page(ScrolledWindow):
             frame.set_visible(True)
             values = Values()
             values.connect("reference-toggled", self.reference_toggled_cb, frame)
+
             frame.add(values)
             self.statements.attach(frame, 1, i, 3, 1)
             for claim in claims[P]:
@@ -144,12 +145,13 @@ class Page(ScrolledWindow):
                                                    'numeric-id':1}},
                              'datatype':'wikibase-item'}}
         value = Value(claim=claim, new=True)
-        values.add(value)
+        values.insert(value,0)
         values.show_all()
-        event = EventButton()
-        value.entity.value_eventbox.do_button_press_event(self, event)
-        value.entity.set_visible_child_name('entry')
-        value.entity.entry.grab_focus()
+        #event = EventButton()
+        #value.entity.value_eventbox.do_button_press_event(self, event)
+        #value.entity.set_visible_child_name('entry')
+        #value.entity.entry.grab_focus()
+        #values.show_all()
 
 
     def load_value_async(self, claim, values):

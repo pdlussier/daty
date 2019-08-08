@@ -36,7 +36,7 @@ from gi.repository.Gtk import AccelGroup, ApplicationWindow, IconTheme, IMContex
 from gi.repository.Handy import Column
 from pprint import pprint
 from threading import Thread
-from webbrowser import open
+from webbrowser import open as browser_open
 
 from .entityselectable import EntitySelectable
 from .loadingpage import LoadingPage
@@ -129,6 +129,7 @@ class Editor(ApplicationWindow):
         ApplicationWindow.__init__(self, *args, **kwargs)
 
         self.quit_cb = quit_cb
+        self.open_dialogs = []
 
         # Set window icon
         icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
@@ -146,6 +147,7 @@ class Editor(ApplicationWindow):
         add_accelerator(accelerators, self.cancel_entities_selection, "<Control><Shift>s", signal="clicked")
         add_accelerator(accelerators, self.entities_search, "<Control><Shift>f", signal="activate")
 
+
         # Init sidebar
         self.sidebar_list = SidebarList()
         self.sidebar_list.connect("entity-selected", self.sidebar_row_selected_cb)
@@ -155,8 +157,6 @@ class Editor(ApplicationWindow):
         loading = LoadingPage()
         self.pages.add_titled(loading, "loading", "Loading")
 
-        #self.entity_search_entry.grab_focus()
-
         # Parse args
         self.max_pages = max_pages
         if entities:
@@ -165,8 +165,9 @@ class Editor(ApplicationWindow):
             entities_open_dialog = Open(quit_cb=self.quit_cb,
                                         new_session=True)
             entities_open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
+            entities_open_dialog.connect("window-new", self.open_window_new_clicked_cb)
+            self.open_dialogs.append(entities_open_dialog)
             entities_open_dialog.get_focus()
-            #entities_open_dialog.show_all()
 
     def filter(self, query, text):
         return query.lower() in text.lower()
@@ -526,22 +527,40 @@ class Editor(ApplicationWindow):
         open_dialog = Open(quit_cb=self.quit_cb, new_session=False)
         open_dialog.connect("entity-new", self.entity_new_clicked_cb)
         open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
+        open_dialog.connect("window-new", self.open_window_new_clicked_cb)
+        self.open_dialogs.append(open_dialog)
 
     def new_window_clicked_cb(self, dialog, entities):
         self.load(entities)
-        print("Editor: new window clicked")
+        #print("Editor: new window clicked")
+        #open_dialog = Open(quit_cb=self.quit_cb, new_session=False)
+        #open_dialog.connect("entity-new", self.entity_new_clicked_cb)
+        #open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
+        #open_dialog.connect("window-new", self.open_window_new_clicked_cb)
+        #self.open_dialogs.append(open_dialog)
+
+    def open_window_new_clicked_cb(self, dialog, good):
+        print(good)
+        print("Editor: new open dialog")
+
+        open_dialog = Open(quit_cb=self.quit_cb, new_session=False)
+        open_dialog.connect("entity-new", self.entity_new_clicked_cb)
+        open_dialog.connect("new-window-clicked", self.new_window_clicked_cb)
+        open_dialog.connect("window-new", self.open_window_new_clicked_cb)
+        self.open_dialogs.append(open_dialog)
 
     def entity_new_clicked_cb(self, open, query):
         print("New entity", query)
 
+
     def entity_history_open_external_clicked_cb(self, widget, URI):
-       open(''.join(['https://wikidata.org/w/index.php?action=history&title=', URI]))
+        browser_open(''.join(['https://wikidata.org/w/index.php?action=history&title=', URI]))
 
     def entity_discussion_open_external_clicked_cb(self, widget, URI):
-        open(''.join(['https://www.wikidata.org/wiki/Talk:', URI]))
+        browser_open(''.join(['https://www.wikidata.org/wiki/Talk:', URI]))
 
     def entity_open_external_clicked_cb(self, widget, URI):
-        open('/'.join(['https://wikidata.org/wiki', URI]))
+        browser_open('/'.join(['https://wikidata.org/wiki', URI]))
 
     @Template.Callback()
     def entities_search_toggled_cb(self, widget):

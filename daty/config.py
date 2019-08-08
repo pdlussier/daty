@@ -53,6 +53,7 @@ class Config:
     dirs = {'data':user_data_dir(appname, appauthor),
             'config':user_config_dir(appname, appauthor),
             'cache':user_cache_dir(appname, appauthor)}
+    mobile = False
 
     verbose = True
 
@@ -60,7 +61,6 @@ class Config:
         self.set_dirs()
         self.set_locales()
         self.set_resources()
-        self.tette = 3
         if not exists(join(self.dirs['config'], "config.pkl")):
             self.data = {}
         else:
@@ -165,6 +165,6 @@ class Config:
         path = join(self.exec_path, 'resources', 'daty.gresource')
         resource = resource_load(path)
         Resource._register(resource)
-        if self.verbose:
+        if not self.verbose:
             print(resource.lookup_data("/ml/prevete/Daty/gtk/filterslist.ui",
                                        ResourceLookupFlags(0)))

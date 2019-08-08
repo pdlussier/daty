@@ -20,6 +20,7 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
+        "plotinus.json",
         "python3-appdirs.json",
         "python3-beautifulsoup4.json",
         "python3-bleach.json",
@@ -39,7 +40,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "tag" : "v0.0.9",
+                    "tag" : "v0.0.10",
                     "url" : "https://source.puri.sm/Librem5/libhandy.git"
                 }
             ]
@@ -68,7 +69,7 @@
     ],
     "build-options" : {
         "env" : {
-            "GTK_DEBUG" : "touchscreen"
+            "GTK_DEBUG" : "interactive"
         }
     }
 }

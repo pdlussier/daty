@@ -53,6 +53,10 @@ def main():
                         action='store',
                         default=['en'],
                         help="start daty in a given language (stub)")
+    parser.add_argument('--mobile',
+                        action="store_true",
+                        default=False,
+                        help="whether to show window controls")
     parser.add_argument('--verbose', 
                         dest='verbose', 
                         action='store_true', 

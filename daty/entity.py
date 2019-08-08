@@ -187,6 +187,11 @@ class Entity(Stack):
         self.URI = URI
         self.set_text(entity["Label"], entity["Description"])
         self.show_all()
+
+        if self.new:
+            self.set_visible_child_name('entry')
+            self.entry.grab_focus()
+
         return None
 
     @Template.Callback()
@@ -228,7 +233,7 @@ class Entity(Stack):
                 self.popover.set_visible(True)
                 self.emit("entity-editing", self.popover)
             except AttributeError as e:
-                #raise e
+                raise e
                 print("no popover available for this type of value")
         else:
             self.entry.emit("search-changed")
