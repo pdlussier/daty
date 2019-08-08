@@ -157,7 +157,7 @@ class Config:
         self.data['credentials']['bot password'] = bot_password
         save(self.data, join(self.dirs['config'], 'config.pkl'))
 
-    def save():
+    def save(self):
         save(self.data, join(self.dirs['config'], 'config.pkl'))
 
     def set_resources(self):

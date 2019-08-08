@@ -1,0 +1,11 @@
+{
+    "name": "plotinus",
+    "buildsystem": "cmake",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/p-e-w/plotinus",
+            "commit": "0ce7a4b98cd9c568ddebfc50ac3ec8392a574e39"
+        }
+    ]
+}
