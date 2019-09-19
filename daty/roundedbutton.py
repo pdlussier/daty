@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-#    Property
+#    RoundedButton
 #
 #    ----------------------------------------------------------------------
-#    Copyright © 2018  Pellegrino Prevete
+#    Copyright © 2018, 2019  Pellegrino Prevete
 #
 #    All rights reserved
 #    ----------------------------------------------------------------------
