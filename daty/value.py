@@ -90,7 +90,12 @@ class Value(Grid):
         self.reference_row = 0
         self.references_expanded = False
 
-        self.entity = Entity(claim['mainsnak'], new=new)
+        if new:
+            snak = None
+        else:
+            snak = claim['mainsnak']
+
+        self.entity = Entity(snak=snak, new=new)
         self.entity.connect("entity-editing", self.entity_editing_cb)
         self.entity.connect("entity-leaving", self.entity_leaving_cb)
         self.entity.connect("object-selected", self.object_selected_cb, claim)

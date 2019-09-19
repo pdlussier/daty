@@ -40,7 +40,7 @@ You can download the installer [here](https://gitlab.gnome.org/World/Daty/upload
 
 #### Flatpak
 
-[![](https://terminal.run/stuff/flathub_download_badge.png)](https://flathub.org/apps/details/ml.prevete.Daty)
+[![](https://flathub.org/assets/badges/flathub-badge-en.png)](https://flathub.org/apps/details/ml.prevete.Daty)
 
 #### Archlinux
 The package `daty-git` has been published on [AUR](https://aur.archlinux.org/packages/daty-git/).

@@ -79,14 +79,20 @@ class Entity(Stack):
             self.label.props.valign = 1
             self.unit.props.valign = 1
 
+        self.new = new
+        if self.new:
+            print("new entity")
+            item_new = lambda Q: {'snaktype':'value',
+                                   'datavalue':{'type':'wikibase-entityid',
+                                                'value':{'entity-type':'item',
+                                                'numeric-id':Q}},
+                                                'datatype':'wikibase-item'}
+            snak = item_new(352346)
+
         try:
             self.read(snak)
         except Exception as err:
             raise err
-
-        self.new = new
-        if self.new:
-            print("new entity")
 
         self.entry_focus_out_connection = self.entry.connect("focus-out-event",
                                                              self.entry_focus_out_event_cb)
@@ -233,7 +239,11 @@ class Entity(Stack):
                 self.popover.set_visible(True)
                 self.emit("entity-editing", self.popover)
             except AttributeError as e:
+<<<<<<< HEAD
                 raise e
+=======
+                print("Exception", e)
+>>>>>>> 4033436b19a40fea5b7d881328f2b82a1837d434
                 print("no popover available for this type of value")
         else:
             self.entry.emit("search-changed")
@@ -259,6 +269,8 @@ class Entity(Stack):
         try:
             self.popover.popdown()
         except AttributeError as e:
+            print(self.label.get_text())
+            print(e)
             print("this entity has no popover")
         self.emit("entity-leaving", self)
         return True
