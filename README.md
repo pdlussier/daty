@@ -68,7 +68,7 @@ Hardware or contributors needed.
 
 #### Option 1: with GNOME Builder
 Open GNOME Builder, click the "Clone..." button, paste the repository url.
-Clone the project and hit the ![](https://terminal.run/stuff/run_button.png) button to start building Daty.
+Clone the project and hit the ![](help/C/figures/builder-run.png) button to start building Daty.
 
 **Note**
 
