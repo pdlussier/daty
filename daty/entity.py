@@ -239,11 +239,8 @@ class Entity(Stack):
                 self.popover.set_visible(True)
                 self.emit("entity-editing", self.popover)
             except AttributeError as e:
-<<<<<<< HEAD
                 raise e
-=======
                 print("Exception", e)
->>>>>>> 4033436b19a40fea5b7d881328f2b82a1837d434
                 print("no popover available for this type of value")
         else:
             self.entry.emit("search-changed")

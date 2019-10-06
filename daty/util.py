@@ -27,7 +27,7 @@ from copy import deepcopy as cp
 from gi.repository.GLib import idle_add
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, AccelFlags, CssProvider, accelerator_parse
 from os import makedirs, umask
-from pickle import dumpn
+from pickle import dump
 from pickle import load as pickle_load
 from re import IGNORECASE, compile, escape, sub
 from threading import BoundedSemaphore, Thread
