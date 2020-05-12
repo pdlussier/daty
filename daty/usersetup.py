@@ -25,6 +25,7 @@
 
 from gi.repository.Gtk import Align, Assistant, Grid, IconTheme, Label, ListBoxRow, Separator, Template, main_quit
 from locale import getdefaultlocale
+from os import environ
 
 name = 'ml.prevete.Daty'
 
