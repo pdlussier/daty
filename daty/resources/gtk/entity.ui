@@ -6,7 +6,6 @@
   <template class="Entity" parent="GtkStack">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="hexpand">True</property>
     <property name="vexpand">True</property>
     <child>
       <object class="GtkGrid" id="view">
@@ -14,25 +13,6 @@
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
-        <child>
-          <object class="GtkLabel" id="unit">
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="halign">start</property>
-            <property name="margin_left">4</property>
-            <property name="margin_start">4</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="label" translatable="yes">unit</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkEventBox" id="value_eventbox">
             <property name="visible">True</property>
@@ -48,11 +28,36 @@
                 <property name="wrap">True</property>
                 <property name="wrap_mode">char</property>
                 <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="font-desc" value="Cantarell 9"/>
+                </attributes>
               </object>
             </child>
           </object>
           <packing>
             <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="unit">
+            <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
+            <property name="halign">start</property>
+            <property name="margin_left">4</property>
+            <property name="margin_start">4</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="label" translatable="yes">unit</property>
+            <attributes>
+              <attribute name="font-desc" value="Cantarell 8"/>
+            </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
             <property name="top_attach">0</property>
           </packing>
         </child>

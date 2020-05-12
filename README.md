@@ -45,6 +45,13 @@ You can download the installer [here](https://gitlab.gnome.org/World/Daty/upload
 #### Archlinux
 The package `daty-git` has been published on [AUR](https://aur.archlinux.org/packages/daty-git/).
 
+### PostmarketOS
+
+```
+sudo apk add gcc musl-dev python3-dev
+pip install --user daty
+```
+
 #### Ubuntu Disco (19.04)
 
     # apt install python3-gi gir1.2-gtk-3.0 python3-pip libhandy-0.0-0

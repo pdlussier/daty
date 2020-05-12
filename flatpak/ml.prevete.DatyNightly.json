@@ -17,7 +17,6 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
-        "plotinus.json",
         "python3-appdirs.json",
         "python3-beautifulsoup4.json",
         "python3-bleach.json",
@@ -63,5 +62,9 @@
                 "Q356"
             ]
         }
-    ]
+    ],
+    "build-options" : {
+        "env" : {
+        }
+    }
 }

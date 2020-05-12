@@ -32,6 +32,7 @@ from gi.repository.GObject import SignalFlags as sf
 from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add #, PRIORITY_LOW
 from gi.repository.Gtk import STYLE_PROVIDER_PRIORITY_APPLICATION, CssProvider, Grid, IconSize, PositionType, SearchEntry, Separator, StyleContext, Grid, Template
+from gi.repository.Pango import FontDescription
 from pprint import pprint
 
 from .entity import Entity
@@ -84,6 +85,8 @@ class Value(Grid):
         Grid.__init__(self, *args, **kwargs)
 
 
+        self.qualifier_new.modify_font(FontDescription('Cantarell 8'))
+        self.reference_new.modify_font(FontDescription('Cantarell 8'))
         self.qualifier_pos = {}
 
         self.qualifier_row = 0
