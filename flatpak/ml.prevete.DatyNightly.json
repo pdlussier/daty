@@ -43,23 +43,15 @@
         },
         {
             "name" : "daty",
-            "buildsystem" : "simple",
-            "build-commands" : [
-                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} .",
-                "install -Dm644 ml.prevete.DatyNightly.appdata.xml /app/share/metainfo/ml.prevete.DatyNightly.appdata.xml"
+            "buildsystem" : "meson",
+            "config-opts" : [
             ],
             "sources" : [
                 {
-                    "type" : "dir",
-                    "path" : "."
-                },
-                {
-                    "type" : "file",
-                    "path" : "./flatpak/ml.prevete.DatyNightly.appdata.xml"
+                    "type" : "git",
+                    "branch" : "meson",
+                    "url" : "https://gitlab.gnome.org/World/Daty.git"
                 }
-            ],
-            "config-opts" : [
-                "Q356"
             ]
         }
     ],
