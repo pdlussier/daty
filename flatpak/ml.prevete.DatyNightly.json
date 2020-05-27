@@ -46,7 +46,7 @@
             "buildsystem" : "simple",
             "build-commands" : [
                 "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} .",
-                "install -Dm644 ./flatpak/ml.prevete.DatyNightly.appdata.xml /app/share/metainfo/ml.prevete.DatyNightly.appdata.xml"
+                "install -Dm644 ml.prevete.DatyNightly.appdata.xml /app/share/metainfo/ml.prevete.DatyNightly.appdata.xml"
             ],
             "sources" : [
                 {
