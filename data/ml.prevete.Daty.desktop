@@ -104,7 +104,7 @@ StartupNotify=true
 Terminal=false
 Icon=ml.prevete.Daty
 Type=Application
-Categories=GNOME;GTK;Network;Wikidata;
+Categories=GNOME;GTK;Network;X-Wikidata;
 MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
 Actions=open;
 
