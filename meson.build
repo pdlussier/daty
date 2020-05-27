@@ -31,7 +31,7 @@ message('Getting python install dir')
 #     error('Cannot find python install dir')
 # endif
 # python_dir = r.stdout().strip()
-python.sysconfig_path('purelib'))
+python_dir = join_paths(get_option('prefix'), python.sysconfig_path('purelib'))
 # 
 subdir('data')
 # subdir('po')
