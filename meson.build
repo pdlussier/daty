@@ -26,11 +26,12 @@ gtk = dependency('gtk+-3.0', version : '>=3.13.2')
 libhandy = dependency('libhandy-0.0', version :'>=0.0.3')
 
 message('Getting python install dir')
-r = run_command(py3, '-c', 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')
-if r.returncode() != 0
-    error('Cannot find python install dir')
-endif
-python_dir = r.stdout().strip()
+# r = run_command(py3, '-c', 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')
+# if r.returncode() != 0
+#     error('Cannot find python install dir')
+# endif
+# python_dir = r.stdout().strip()
+python.sysconfig_path('purelib'))
 # 
 subdir('data')
 # subdir('po')
