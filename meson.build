@@ -3,9 +3,9 @@ project('daty', 'c')
 
 version = '3.37.1'
 
-project_id = 'ml.prevete.Daty'
-
 i18n = import('i18n')
+python = import('python3')
+project_id = 'ml.prevete.Daty'
 
 DATA_DIR = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 bindir = join_paths(get_option('prefix'), get_option('bindir'))
@@ -17,6 +17,14 @@ conf.set('PACKAGE_URL', 'https://wiki.gnome.org/World/Daty')
 conf.set('DATA_DIR', DATA_DIR)
 
 message('Looking for dependencies')
+
+python_bin = python.find_python()
+if not python_bin.found()
+    error('No valid python3 binary found')
+else
+    message('Found python3 binary')
+endif
+
 py3 = find_program('python3')
 glib = dependency('glib-2.0')
 gobject = dependency('gobject-2.0')
