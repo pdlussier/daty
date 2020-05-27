@@ -1,12 +1,20 @@
 # See https://github.com/mesonbuild/meson/issues/226
 project('daty', 'c')
 
-version = '3.35.1'
+version = '3.37.1'
+
+project_id = 'ml.prevete.Daty'
+
+i18n = import('i18n')
+
+DATA_DIR = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
+bindir = join_paths(get_option('prefix'), get_option('bindir'))
 
 # Configuration params
 conf = configuration_data()
 conf.set('PACKAGE_VERSION', version)
 conf.set('PACKAGE_URL', 'https://wiki.gnome.org/World/Daty')
+conf.set('DATA_DIR', DATA_DIR)
 
 message('Looking for dependencies')
 py3 = find_program('python3')
@@ -24,7 +32,7 @@ if r.returncode() != 0
 endif
 python_dir = r.stdout().strip()
 # 
-# subdir('daty')
+subdir('data')
 # subdir('po')
 # subdir('help')
 # 
@@ -56,9 +64,21 @@ python_dir = r.stdout().strip()
 # message('TODO: Generate authors list')
 # 
 install_subdir('daty', install_dir: python_dir)
+
+message('Preparing init file')
+configure_file(
+  input: 'daty.in',
+  output: 'daty',
+  configuration: conf,
+  install_dir: bindir
+)
+
 # 
 # message('Preparing init file')
 # configure_file(input : 'gnome-music.in', output : 'gnome-music', configuration : conf)
 # install_data('daty', install_dir: 'bin')
 # 
+
+meson.add_install_script('meson_post_install.py')
+
 # meson.set_install_script('meson_install.sh')

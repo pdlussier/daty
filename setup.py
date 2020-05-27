@@ -1,5 +1,6 @@
 from os import walk
 from os.path import join
+from pathlib import Path
 from pprint import pprint
 from setuptools import setup, find_packages
 from subprocess import check_output as sh
@@ -38,20 +39,58 @@ def help():
                 raise e
     return build
 
+# GResources
 try:
     sh(['daty/resources/compile-resources.sh'])
     print("Gresources compiled")
 except Exception as e:
     print("WARNING: to compile gresource be sure to have \"glib-compile-resources\" in your $PATH")
 
-data_files = [
-    ('share/applications', ['daty/resources/ml.prevete.Daty.desktop']),
-    ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/ml.prevete.Daty.svg']),
-    ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/ml.prevete.Daty-symbolic.svg']),
-    ('share/icons/hicolor/scalable/places', ['daty/resources/icons/scalable/places/discussion-page-symbolic.svg']),
-    ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/ml.prevete.Daty.png']),
-    ('share/icons/hicolor/16x16/apps', ['daty/resources/icons/16x16/apps/ml.prevete.Daty-symbolic.png'])
-]
+# Variables
+theme_dir = "daty/resources/icons/hicolor"
+hicolor_path = "share/icons/hicolor"
+
+# Auxiliary functions
+# for paths
+in_hicolor_src = lambda x: join(theme_dir, x)
+in_hicolor = lambda x: join(hicolor_path, x)
+
+# to install things
+encode = lambda src, dest: (dest, [src])
+add_data_file = lambda src, dest: data_files.append(encode(src, dest))
+
+# to install icons
+def encode_icon(icon):
+    icon_path = str(Path(icon).parents[0])
+    return encode(in_hicolor_src(icon), in_hicolor(icon_path))
+add_icon = lambda icon: data_files.append(encode_icon(icon))
+
+# These files will be installed into prefix
+data_files = []
+
+# Icons and desktop file
+add_data_file('data/ml.prevete.Daty.desktop', 'share/applications')
+
+icons = ['scalable/apps/ml.prevete.Daty.svg',
+         'scalable/apps/ml.prevete.Daty-symbolic.svg',
+         'scalable/places/discussion-page-symbolic.svg',
+         '48x48/apps/ml.prevete.Daty.png',
+         '16x16/apps/ml.prevete.Daty-symbolic.png'
+        ]
+
+for icon in icons:
+    add_icon(icon)
+
+# data_files = data_files + [encode_icon(icon) for icon in icons]
+# 
+# data_files = [
+#     ('share/applications', ['daty/resources/ml.prevete.Daty.desktop']),
+#     (hicolor_path('scalable/apps'),   [hicolor_src_path('scalable/apps/ml.prevete.Daty.svg')]),
+#     (hicolor_path('scalable/apps'),   [hicolor_src_path('scalable/apps/ml.prevete.Daty-symbolic.svg')]),
+#     (hicolor_path('scalable/places'), [hicolor_src_path('scalable/places/discussion-page-symbolic.svg')]),
+#     (hicolor_path('48x48/apps'),      [hicolor_src_path('48x48/apps/ml.prevete.Daty.png')]),
+#     (hicolor_path('16x16/apps'),      [hicolor_src_path('16x16/apps/ml.prevete.Daty-symbolic.png')])
+# ]
 
 data_files.extend(help())
 
@@ -72,12 +111,7 @@ setup(
         '': ['*.sh'],
         'daty':daty_files
     },
-    data_files = data_files, #[
-    #    ('share/applications', ['daty/resources/ml.prevete.Daty.desktop']),
-    #    ('share/icons/hicolor/scalable/apps', ['daty/resources/icons/scalable/apps/ml.prevete.Daty.svg']),
-    #    ('share/icons/hicolor/48x48/apps', ['daty/resources/icons/48x48/apps/ml.prevete.Daty.png']),
-    #    ('share/icons/hicolor/16x16/apps', ['daty/resources/icons/16x16/apps/ml.prevete.Daty-symbolic.png'])
-    #],
+    data_files = data_files,
     entry_points = {'gui_scripts': ['daty = daty:main']},
     install_requires = [
     'appdirs',
