@@ -103,7 +103,13 @@ flatpak build-bundle repo ml.prevete.Daty.flatpak ml.prevete.Daty
 flatpak install ml.prevete.Daty.flatpak
 ```
 
-#### Option 3: with Pypi
+#### Option 3: with Meson
+```
+meson _build --prefix=/usr
+sudo ninja -C _build install
+```
+
+#### Option 4: with Pypi
 Provided you have installed
 
 ```
