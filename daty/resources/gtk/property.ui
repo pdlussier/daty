@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <!-- interface-css-provider-path property.css -->
@@ -18,10 +18,11 @@
         <property name="can_focus">False</property>
         <property name="margin_start">3</property>
         <property name="margin_end">3</property>
-        <property name="hexpand">False</property>
+        <property name="vexpand">True</property>
         <property name="label" translatable="yes">Property</property>
         <property name="justify">right</property>
         <property name="wrap">True</property>
+        <property name="wrap_mode">word-char</property>
         <property name="xalign">1</property>
         <attributes>
           <attribute name="font-desc" value="Cantarell Bold 10"/>

@@ -5,9 +5,6 @@
     "sdk" : "org.gnome.Sdk",
     "command" : "daty",
     "x-run-args" : [
-        "Q342545",
-        "Q35795",
-        "Q4115189"
     ],
     "finish-args" : [
         "--share=ipc",
@@ -20,7 +17,6 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
-        "plotinus.json",
         "python3-appdirs.json",
         "python3-beautifulsoup4.json",
         "python3-bleach.json",
@@ -47,29 +43,20 @@
         },
         {
             "name" : "daty",
-            "buildsystem" : "simple",
-            "build-commands" : [
-                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} .",
-                "install -Dm644 ./flatpak/ml.prevete.DatyNightly.appdata.xml /app/share/metainfo/ml.prevete.DatyNightly.appdata.xml"
+            "buildsystem" : "meson",
+            "config-opts" : [
             ],
             "sources" : [
                 {
-                    "type" : "dir",
-                    "path" : "."
-                },
-                {
-                    "type" : "file",
-                    "path" : "./flatpak/ml.prevete.DatyNightly.appdata.xml"
+                    "type" : "git",
+                    "branch" : "meson",
+                    "url" : "https://gitlab.gnome.org/World/Daty.git"
                 }
-            ],
-            "config-opts" : [
-                "Q356"
             ]
         }
     ],
     "build-options" : {
         "env" : {
-            "GTK_DEBUG" : "interactive"
         }
     }
 }

@@ -331,7 +331,6 @@
          <object class="GtkStack" id="entity_stack">
           <property name="visible">True</property>
           <property name="can_focus">False</property>
-          <property name="valign">center</property>
           <property name="hexpand">True</property>
           <child>
            <object class="GtkScrolledWindow" id="entity_button">
@@ -347,6 +346,7 @@
               <child>
                <object class="GtkGrid">
                 <property name="visible">True</property>
+                <property name="halign">center</property>
                 <property name="can_focus">False</property>
                 <child>
                  <object class="GtkLabel" id="entity">
@@ -354,9 +354,12 @@
                   <property name="can_focus">False</property>
                   <property name="valign">end</property>
                   <property name="hexpand">True</property>
+                  <property name="halign">center</property>
                   <property name="vexpand">True</property>
                   <property name="label" translatable="yes">entity</property>
                   <property name="justify">center</property>
+                  <property name="wrap">True</property>
+                  <property name="wrap_mode">word-char</property>
                   <property name="ellipsize">middle</property>
                   <attributes>
                    <attribute name="font-desc" value="Cantarell Bold 10"/>
@@ -449,59 +452,83 @@
          </packing>
         </child>
         <child>
-         <object class="GtkBox">
+         <object class="HdyLeaflet" id="entity_buttons_end_leaflet">
           <property name="visible">True</property>
           <property name="can_focus">False</property>
-          <property name="orientation">horizontal</property>
+          <property name="visible_child">entity_buttons_end_box</property>
+          <property name="mode_transition_type">slide</property>
+          <property name="child_transition_type">slide</property>
+          <property name="interpolate_size">False</property>
           <child>
-           <object class="GtkButton" id="entity_discussion_open_external">
+           <object class="GtkBox" id="entity_buttons_end_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">horizontal</property>
+            <child>
+             <object class="HdyLeaflet" id="entity_buttons_end_group_leaflet">
+              <property name="visible">True</property>
+              <property name="can_focus">False</property>
+              <property name="visible_child">entity_discussion_open_external</property>
+              <property name="mode_transition_type">slide</property>
+              <property name="child_transition_type">slide</property>
+              <property name="interpolate_size">False</property>
+              <style>
+               <class name="linked"/>
+              </style>
+              <child>
+               <object class="GtkButton" id="entity_history_open_external">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">history-page-icon</property>
+                <property name="always_show_image">True</property>
+                <property name="tooltip_text" translatable="yes">Open history in the browser</property>
+               </object>
+               <packing>
+                <property name="pack_type">start</property>
+                <property name="position">1</property>
+               </packing>
+              </child>
+              <child>
+               <object class="GtkButton" id="entity_discussion_open_external">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">discussion-page-icon</property>
+                <property name="always_show_image">True</property>
+                <property name="tooltip_text" translatable="yes">Open talk page in the browser</property>
+                <signal name="clicked" handler="entity_discussion_open_external_clicked_cb" swapped="no"/>
+               </object>
+               <packing>
+                <property name="pack_type">start</property>
+                <property name="position">0</property>
+               </packing>
+              </child>
+             </object>
+             <packing>
+              <property name="pack_type">end</property>
+              <property name="position">1</property>
+             </packing>
+            </child>
+           </object>
+          </child>
+          <child>
+           <object class="GtkButton" id="entity_menu">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="image">discussion-page-icon</property>
-            <property name="always_show_image">True</property>
-            <property name="tooltip_text" translatable="yes">Open talk page in the browser</property>
-            <signal name="clicked" handler="entity_discussion_open_external_clicked_cb" swapped="no"/>
+            <property name="image">entity-menu-icon</property>
+            <signal name="clicked" handler="entity_menu_clicked_cb" swapped="no"/>
            </object>
            <packing>
-            <property name="pack_type">start</property>
+            <property name="pack_type">end</property>
             <property name="position">0</property>
            </packing>
           </child>
-          <child>
-           <object class="GtkButton" id="entity_history_open_external">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">history-page-icon</property>
-            <property name="always_show_image">True</property>
-            <property name="tooltip_text" translatable="yes">Open history in the browser</property>
-           </object>
-           <packing>
-            <property name="pack_type">start</property>
-            <property name="position">1</property>
-           </packing>
-          </child>
-          <style>
-           <class name="linked"/>
-          </style>
          </object>
          <packing>
           <property name="pack_type">end</property>
           <property name="position">1</property>
-         </packing>
-        </child>
-        <child>
-         <object class="GtkButton" id="entity_menu">
-          <property name="visible">True</property>
-          <property name="can_focus">True</property>
-          <property name="receives_default">True</property>
-          <property name="image">entity-menu-icon</property>
-          <signal name="clicked" handler="entity_menu_clicked_cb" swapped="no"/>
-         </object>
-         <packing>
-          <property name="pack_type">end</property>
-          <property name="position">0</property>
          </packing>
         </child>
        </object>

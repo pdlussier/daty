@@ -55,9 +55,10 @@ class Config:
             'cache':user_cache_dir(appname, appauthor)}
     mobile = False
 
-    verbose = True
+    debug = False
 
-    def __init__(self):
+    def __init__(self, debug=True):
+        self.debug = debug
         self.set_dirs()
         self.set_locales()
         self.set_resources()
@@ -95,6 +96,8 @@ class Config:
         textdomain(self.appname)
         self.lang = translation(self.appname, self.exec_path,
                                 languages=langs, fallback=True)
+
+        if self.debug: print("Config.set_locales: langs {}".format(langs))
 
     def create_pywikibot_config(self, user, bot_user, bot_password):
         """Create pywikibot configuration files
@@ -165,6 +168,9 @@ class Config:
         path = join(self.exec_path, 'resources', 'daty.gresource')
         resource = resource_load(path)
         Resource._register(resource)
-        if not self.verbose:
-            print(resource.lookup_data("/ml/prevete/Daty/gtk/filterslist.ui",
-                                       ResourceLookupFlags(0)))
+
+        if not self.debug:
+            flag = ResourceLookupFlags(0)
+            resource_path = "/ml/prevete/Daty/gtk/filterslist.ui"
+            resource_cmd = resource.lookup_data(resource_path, flag)
+            print("Config.set_resources: {}".format(resource_debug))

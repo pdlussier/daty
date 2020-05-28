@@ -1,8 +1,8 @@
 {
-    "app-id": "ml.prevete.Daty",
-    "runtime": "org.gnome.Platform",
-    "runtime-version":"3.34",
-    "sdk": "org.gnome.Sdk",
+    "app-id" : "ml.prevete.Daty",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.34",
+    "sdk" : "org.gnome.Sdk",
     "command" : "daty",
     "finish-args" : [
         "--share=ipc",
@@ -15,7 +15,7 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
-    	"python3-appdirs.json",
+        "python3-appdirs.json",
         "python3-beautifulsoup4.json",
         "python3-bleach.json",
         "python3-pywikibot.json",
@@ -24,7 +24,7 @@
         {
             "name" : "libhandy",
             "buildsystem" : "meson",
-            "config-opts": [
+            "config-opts" : [
                 "-Dtests=false",
                 "-Dexamples=false",
                 "-Dgtk_doc=false",
@@ -42,14 +42,14 @@
         {
             "name" : "daty",
             "buildsystem" : "simple",
-            "build-commands": [
+            "build-commands" : [
                 "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} .",
                 "install -Dm644 ${PWD}/flatpak/ml.prevete.Daty.appdata.xml /app/share/metainfo/ml.prevete.Daty.appdata.xml"
             ],
             "sources" : [
                 {
                     "type" : "git",
-                    "tag": "1.0beta",
+                    "tag" : "1.0beta",
                     "url" : "https://gitlab.gnome.org/World/Daty"
                 },
                 {
@@ -58,5 +58,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "build-options" : {
+        "env" : {
+            "GTK_DEBUG" : "interactive"
+        }
+    }
 }

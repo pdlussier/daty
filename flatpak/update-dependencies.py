@@ -39,7 +39,7 @@ def clone_exception_handler(exception):
         pull = "git -C ./update-dependencies pull"
         sh(pull)
 
-sh(clone, clone_exception_handler)
+sh(clone, exception_handler=clone_exception_handler)
 
 for x in ls():
     if is_python_package(x):

@@ -45,6 +45,13 @@ You can download the installer [here](https://gitlab.gnome.org/World/Daty/upload
 #### Archlinux
 The package `daty-git` has been published on [AUR](https://aur.archlinux.org/packages/daty-git/).
 
+### PostmarketOS
+
+```
+sudo apk add gcc musl-dev python3-dev
+pip install --user daty
+```
+
 #### Ubuntu Disco (19.04)
 
     # apt install python3-gi gir1.2-gtk-3.0 python3-pip libhandy-0.0-0
@@ -96,7 +103,13 @@ flatpak build-bundle repo ml.prevete.Daty.flatpak ml.prevete.Daty
 flatpak install ml.prevete.Daty.flatpak
 ```
 
-#### Option 3: with Pypi
+#### Option 3: with Meson
+```
+meson _build --prefix=/usr
+sudo ninja -C _build install
+```
+
+#### Option 4: with Pypi
 Provided you have installed
 
 ```

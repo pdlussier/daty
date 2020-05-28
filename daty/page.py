@@ -144,13 +144,10 @@ class Page(ScrolledWindow):
                                           'value':{'entity-type':'item',
                                                    'numeric-id':1}},
                              'datatype':'wikibase-item'}}
-<<<<<<< HEAD
-        value = Value(claim=claim, new=True)
-        values.insert(value,0)
-=======
+        #value = Value(claim=claim, new=True)
+        #values.insert(value,0)
         value = Value(claim={}, new=True)
         values.add(value)
->>>>>>> 4033436b19a40fea5b7d881328f2b82a1837d434
         values.show_all()
         #event = EventButton()
         #value.entity.value_eventbox.do_button_press_event(self, event)
