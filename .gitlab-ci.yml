@@ -12,14 +12,3 @@ flatpak:
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "ml.prevete.Daty"
     extends: .flatpak
-
-review:
-    stage: deploy
-    dependencies:
-        - 'flatpak'
-    extends: '.review'
-
-stop_review:
-    stage: deploy
-    extends: '.stop_review'
-
