@@ -1,11 +1,10 @@
 {
     "app-id" : "ml.prevete.Daty",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "master",
+    "runtime-version" : "3.38",
     "sdk" : "org.gnome.Sdk",
     "command" : "daty",
-    "x-run-args" : [
-    ],
+    "x-run-args" : [],
     "finish-args" : [
         "--share=ipc",
         "--socket=x11",
@@ -36,7 +35,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "tag" : "v0.0.10",
+                    "tag" : "v0.0.13",
                     "url" : "https://source.puri.sm/Librem5/libhandy.git"
                 }
             ]
@@ -44,19 +43,17 @@
         {
             "name" : "daty",
             "buildsystem" : "meson",
-            "config-opts" : [
-            ],
+            "config-opts" : [],
             "sources" : [
                 {
                     "type" : "git",
-                    "branch" : "meson",
+                    "branch" : "master",
                     "url" : "https://gitlab.gnome.org/World/Daty.git"
                 }
             ]
         }
     ],
     "build-options" : {
-        "env" : {
-        }
+        "env" : {        }
     }
 }

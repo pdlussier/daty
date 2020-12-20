@@ -54,7 +54,7 @@
   <property name="window_position">center</property>
   <property name="default_width">1366</property>
   <property name="default_height">768</property>
-  <property name="icon_name">org.prevete.Daty</property>
+  <property name="icon_name">ml.prevete.Daty</property>
   <property name="gravity">center</property>
   <property name="show_menubar">False</property>
   <!-- <signal name="key-press-event" handler="key_press_event_cb" swapped="no"/> -->
