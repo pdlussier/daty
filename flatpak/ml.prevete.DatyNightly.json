@@ -1,7 +1,7 @@
 {
     "app-id" : "ml.prevete.Daty",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "3.38",
+    "runtime-version" : "master",
     "sdk" : "org.gnome.Sdk",
     "command" : "daty",
     "x-run-args" : [],
@@ -36,7 +36,7 @@
                 {
                     "type" : "git",
                     "tag" : "v0.0.13",
-                    "url" : "https://source.puri.sm/Librem5/libhandy.git"
+                    "url" : "https://gitlab.gnome.org/GNOME/libhandy.git"
                 }
             ]
         },
@@ -54,6 +54,8 @@
         }
     ],
     "build-options" : {
-        "env" : {        }
+        "env" : {
+            "GTK_DEBUG" : "interactive"
+        }
     }
 }

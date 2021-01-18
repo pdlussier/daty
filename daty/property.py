@@ -45,7 +45,7 @@ class Property(Button):
     description = Template.Child("description")
     #values = Template.Child("values")
 
-    def __init__(self, prop, *args, **kwargs):
+    def __init__(self, prop, *args, debug=True, **kwargs):
         Button.__init__(self, *args, **kwargs)
 
         # Styling
@@ -61,6 +61,10 @@ class Property(Button):
         self.set_label(prop["Label"], prop["Description"])
         self.description.set_text(prop['Description'])
         self.description.set_line_wrap(True)
+
+        if debug:
+          print(prop.keys())
+
 
 
     def set_label(self, label, tooltip):

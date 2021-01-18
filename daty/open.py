@@ -268,19 +268,27 @@ class Open(Window):
             triplet = row.child
             entities = [o.entity for o in triplet.members]
             ready = all('Variable' in e or e['URI'] for e in entities)
-            #triplets.append(ready)
+
             if ready:
                 statements.append({'s':entities[0],
                                    'p':entities[1],
                                    'o':entities[2]})
+
+                # TODO: remove
+
                 try:
                     row.context.remove_class('unreferenced')
                 except:
                     pass
+
             else:
                 row.context.add_class("unreferenced")
+
+        # TODO: this check should go somewhere else
         var = [s[r] for s in statements for r in s if "Variable" in s[r] and s[r]["Variable"]]
+
         if var: var = var[-1]
+
         if statements and var:
             self.results.set_visible_child_name("results_searching")
             select(var, statements, self.on_select_done)

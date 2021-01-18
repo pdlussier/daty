@@ -35,7 +35,7 @@
                 {
                     "type" : "git",
                     "tag" : "v0.0.13",
-                    "url" : "https://source.puri.sm/Librem5/libhandy.git"
+                    "url" : "https://gitlab.gnome.org/GNOME/libhandy.git"
                 }
             ]
         },
