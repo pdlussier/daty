@@ -16,6 +16,7 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
+        "org.gnome.gtk.json",
         "org.gnome.pygobject.json",
         "python3-appdirs.json",
         "python3-beautifulsoup4.json",
@@ -49,7 +50,7 @@
                 {
                     "type" : "git",
                     "branch" : "master",
-                    "url" : "https://gitlab.gnome.org/World/Daty.git"
+                    "url" : "https://gitlab.gnome.org/tallero/Daty.git"
                 }
             ]
         }

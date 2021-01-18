@@ -1094,7 +1094,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
-            <property name="text" translatable="yes">About</property>
+            <property name="text" translatable="yes">About Daty</property>
             <signal name="clicked" handler="on_about" swapped="no"/>
           </object>
           <packing>
