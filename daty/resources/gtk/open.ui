@@ -1075,10 +1075,24 @@
           </packing>
         </child>
         <child>
+          <object class="GtkModelButton" id="preferences">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="action_name">app.preferences</property>
+            <property name="text" translatable="yes">Preferences</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkModelButton" id="help_menu">
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
+            <property name="tooltip_text" translatable="yes">Help manual</property>
             <property name="text" translatable="yes">Help</property>
             <signal name="clicked" handler="help_clicked_cb" swapped="no"/>
           </object>
@@ -1093,7 +1107,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Select all entities shown in the results</property>
+            <property name="tooltip_text" translatable="yes">About this application</property>
             <property name="text" translatable="yes">About Daty</property>
             <signal name="clicked" handler="on_about" swapped="no"/>
           </object>
