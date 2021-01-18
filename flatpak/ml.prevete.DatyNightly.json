@@ -16,6 +16,7 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
+        "org.gnome.pygobject.json",
         "python3-appdirs.json",
         "python3-beautifulsoup4.json",
         "python3-bleach.json",
