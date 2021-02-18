@@ -23,6 +23,7 @@
         "python3-bleach.json",
         "python3-pywikibot.json",
         "python3-requests.json",
+        "python3-setuptools.json",
         "python3-setproctitle.json",
         {
             "name" : "libhandy",
@@ -49,7 +50,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "branch" : "master",
+                    "branch" : "gtk4",
                     "url" : "https://gitlab.gnome.org/tallero/Daty.git"
                 }
             ]
