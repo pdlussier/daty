@@ -4,7 +4,7 @@
 #    Daty
 #
 #    ----------------------------------------------------------------------
-#    Copyright © 2018  Pellegrino Prevete
+#    Copyright © 2018,2019,2020,2021  Pellegrino Prevete
 #
 #    All rights reserved
 #    ----------------------------------------------------------------------
@@ -30,7 +30,7 @@ require_version('Handy', '0.0')
 from gi.repository.Gdk import CURRENT_TIME
 from gi.repository.GLib import OptionArg, OptionFlags
 from gi.repository.Gio import ApplicationFlags, SimpleAction
-from gi.repository.Gtk import Application, Builder, WindowPosition, show_uri
+from gi.repository.Gtk import Application, Builder, show_uri
 from platform import system
 from sys import argv
 

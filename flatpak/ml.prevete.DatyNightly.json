@@ -4,8 +4,7 @@
     "runtime-version" : "master",
     "sdk" : "org.gnome.Sdk",
     "command" : "daty",
-    "x-run-args" : [
-    ],
+    "x-run-args" : [],
     "finish-args" : [
         "--share=ipc",
         "--socket=x11",
@@ -17,11 +16,14 @@
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules" : [
+        "org.gnome.gtk.json",
+        "org.gnome.pygobject.json",
         "python3-appdirs.json",
         "python3-beautifulsoup4.json",
         "python3-bleach.json",
         "python3-pywikibot.json",
         "python3-requests.json",
+        "python3-setuptools.json",
         "python3-setproctitle.json",
         {
             "name" : "libhandy",
@@ -36,27 +38,27 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "tag" : "v0.0.10",
-                    "url" : "https://source.puri.sm/Librem5/libhandy.git"
+                    "tag" : "v0.0.13",
+                    "url" : "https://gitlab.gnome.org/GNOME/libhandy.git"
                 }
             ]
         },
         {
             "name" : "daty",
             "buildsystem" : "meson",
-            "config-opts" : [
-            ],
+            "config-opts" : [],
             "sources" : [
                 {
                     "type" : "git",
-                    "branch" : "meson",
-                    "url" : "https://gitlab.gnome.org/World/Daty.git"
+                    "branch" : "gtk4",
+                    "url" : "https://gitlab.gnome.org/tallero/Daty.git"
                 }
             ]
         }
     ],
     "build-options" : {
         "env" : {
+            "GTK_DEBUG" : "interactive"
         }
     }
 }

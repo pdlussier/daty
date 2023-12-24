@@ -32,6 +32,7 @@ from gi.repository.GObject import TYPE_NONE, TYPE_STRING, TYPE_PYOBJECT
 from gi.repository.GLib import idle_add, PRIORITY_LOW
 from gi.repository.Gdk import KEY_Escape, KEY_Control_L, KEY_Control_R, KEY_Alt_R, KEY_Alt_L, KEY_ISO_Level3_Shift, KEY_ISO_Level3_Lock, KEY_Tab, KEY_Menu, KEY_Up, KEY_Down, KEY_Right, KEY_Left
 from gi.repository.Gdk import Event, EventFocus, EventType
+from gi.repository.Gio import Settings
 from gi.repository.Gtk import AccelGroup, ApplicationWindow, IconTheme, IMContext, Label, ListBoxRow, Template, Separator, SearchEntry
 from gi.repository.Handy import Column
 from pprint import pprint
@@ -131,10 +132,14 @@ class Editor(ApplicationWindow):
         self.quit_cb = quit_cb
         self.open_dialogs = []
 
+        #self.gio_settings = Settings.new(name)
+
+        #account_set = self.gio_settings.get_boolean("remember-position")
+
         # Set window icon
-        icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
-        icons = [icon(size) for size in [32, 48, 64, 96]];
-        self.set_icon_list(icons);
+        #icon = lambda x: IconTheme.get_default().load_icon((name), x, 0)
+        #icons = [icon(size) for size in [32, 48, 64, 96]];
+        #self.set_icon_list(icons);
 
         # Set shortcuts
         accelerators = AccelGroup()

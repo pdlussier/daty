@@ -8,11 +8,6 @@
   <property name="can_focus">False</property>
   <property name="icon_name">discussion-page-symbolic</property>
  </object>
- <object class="GtkImage" id="back-icon">
-  <property name="visible">True</property>
-  <property name="can_focus">False</property>
-  <property name="icon_name">go-previous-symbolic</property>
- </object>
  <object class="GtkImage" id="editor-search-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
@@ -33,16 +28,6 @@
   <property name="can_focus">False</property>
   <property name="icon_name">list-add-symbolic</property>
  </object>
- <object class="GtkImage" id="app-menu-icon">
-  <property name="visible">True</property>
-  <property name="can_focus">False</property>
-  <property name="icon_name">open-menu-symbolic</property>
- </object>
- <object id="entity-menu-icon" class="GtkImage">
-  <property name="visible">True</property>
-  <property name="can_focus">False</property>
-  <property name="icon_name">view-more-symbolic</property>
- </object>
  <object class="GtkImage" id="entities-search-icon">
   <property name="visible">True</property>
   <property name="can_focus">False</property>
@@ -54,7 +39,7 @@
   <property name="window_position">center</property>
   <property name="default_width">1366</property>
   <property name="default_height">768</property>
-  <property name="icon_name">org.prevete.Daty</property>
+  <property name="icon_name">ml.prevete.Daty</property>
   <property name="gravity">center</property>
   <property name="show_menubar">False</property>
   <!-- <signal name="key-press-event" handler="key_press_event_cb" swapped="no"/> -->
@@ -245,7 +230,7 @@
           <property name="visible">True</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
-          <property name="image">app-menu-icon</property>
+          <property name="icon-name">open-menu-symbolic</property>
           <signal name="clicked" handler="app_menu_clicked_cb" object="app_menu_popover" swapped="no"/>
          </object>
          <packing>
@@ -427,7 +412,7 @@
           <property name="name">entity_back</property>
           <property name="can_focus">True</property>
           <property name="receives_default">True</property>
-          <property name="image">back-icon</property>
+	  <property name="icon-name">go-previous-symbolic</property>
           <property name="always_show_image">True</property>
           <property name="tooltip_text" translatable="yes">Back to entity list</property>
           <signal name="clicked" handler="entity_back_clicked_cb" swapped="no"/>
@@ -517,7 +502,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="image">entity-menu-icon</property>
+            <property name="icon-name">view-more-symbolic</property>
             <signal name="clicked" handler="entity_menu_clicked_cb" swapped="no"/>
            </object>
            <packing>
